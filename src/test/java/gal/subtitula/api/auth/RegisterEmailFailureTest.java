@@ -13,8 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.containers.PostgreSQLContainer;
-
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
@@ -34,18 +32,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(RegisterEmailFailureTest.ThrowingEmailConfig.class)
 class RegisterEmailFailureTest {
 
-    // Stand-alone postgres container — JVM-level singleton for this context.
-    static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:16");
-
-    static {
-        POSTGRES.start();
-    }
-
     @DynamicPropertySource
     static void datasourceProps(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", POSTGRES::getJdbcUrl);
-        registry.add("spring.datasource.username", POSTGRES::getUsername);
-        registry.add("spring.datasource.password", POSTGRES::getPassword);
+        registry.add("spring.datasource.url", gal.subtitula.api.support.AbstractIntegrationTest.POSTGRES::getJdbcUrl);
+        registry.add("spring.datasource.username", gal.subtitula.api.support.AbstractIntegrationTest.POSTGRES::getUsername);
+        registry.add("spring.datasource.password", gal.subtitula.api.support.AbstractIntegrationTest.POSTGRES::getPassword);
     }
 
     @Autowired
