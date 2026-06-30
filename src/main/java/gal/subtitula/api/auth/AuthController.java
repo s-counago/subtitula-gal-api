@@ -3,7 +3,6 @@ package gal.subtitula.api.auth;
 import gal.subtitula.api.auth.dto.UserResponse;
 import gal.subtitula.api.user.User;
 import gal.subtitula.api.user.UserRepository;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
