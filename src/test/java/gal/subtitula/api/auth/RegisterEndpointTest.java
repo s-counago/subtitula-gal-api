@@ -15,9 +15,12 @@ class RegisterEndpointTest extends AbstractIntegrationTest {
         mockMvc.perform(post("/auth/register").with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
-                    {"email":"new@example.com","password":"hunter2hunter","displayName":"New"}"""))
+                    {"email":"register-new@example.com","password":"hunter2hunter","displayName":"New"}"""))
             .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.email").value("new@example.com"))
+            .andExpect(jsonPath("$.id").exists())
+            .andExpect(jsonPath("$.id").isNotEmpty())
+            .andExpect(jsonPath("$.email").value("register-new@example.com"))
+            .andExpect(jsonPath("$.displayName").value("New"))
             .andExpect(jsonPath("$.emailVerified").value(false))
             .andExpect(cookie().exists("SESSION"));
     }
@@ -27,7 +30,8 @@ class RegisterEndpointTest extends AbstractIntegrationTest {
         String body = """
             {"email":"register-dup@example.com","password":"hunter2hunter","displayName":"Dup"}""";
         mockMvc.perform(post("/auth/register").with(csrf())
-            .contentType(MediaType.APPLICATION_JSON).content(body));
+                .contentType(MediaType.APPLICATION_JSON).content(body))
+            .andExpect(status().isCreated());
         mockMvc.perform(post("/auth/register").with(csrf())
                 .contentType(MediaType.APPLICATION_JSON).content(body))
             .andExpect(status().isConflict())

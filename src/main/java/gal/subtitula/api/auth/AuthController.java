@@ -5,6 +5,7 @@ import gal.subtitula.api.auth.dto.UserResponse;
 import gal.subtitula.api.user.User;
 import gal.subtitula.api.user.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -35,9 +36,10 @@ public class AuthController {
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public UserResponse register(@Valid @RequestBody RegisterRequest req,
-                                 HttpServletRequest request) {
+                                 HttpServletRequest request,
+                                 HttpServletResponse response) {
         User user = registrationService.register(req);
-        sessionAuthService.login(request, user);
+        sessionAuthService.login(request, response, user);
         return UserResponse.from(user);
     }
 }
