@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.Instant;
@@ -39,7 +40,7 @@ public class OneTimeTokenService {
             byte[] digest = MessageDigest.getInstance("SHA-256")
                 .digest(raw.getBytes(StandardCharsets.UTF_8));
             return HexFormat.of().formatHex(digest);
-        } catch (Exception e) { throw new IllegalStateException(e); }
+        } catch (NoSuchAlgorithmException e) { throw new IllegalStateException(e); }
     }
 
     @Transactional
@@ -54,8 +55,8 @@ public class OneTimeTokenService {
     public User consumeVerification(String raw) {
         VerificationToken t = verificationTokens.findByTokenHash(hash(raw))
             .orElseThrow(InvalidTokenException::new);
-        validate(t.getUsedAt(), t.getExpiresAt());
-        t.markUsed();
+        if (Instant.now().isAfter(t.getExpiresAt())) throw new InvalidTokenException();
+        if (verificationTokens.markUsedIfUnused(t.getId(), Instant.now()) == 0) throw new InvalidTokenException();
         return users.findById(t.getUserId()).orElseThrow(InvalidTokenException::new);
     }
 
@@ -71,14 +72,8 @@ public class OneTimeTokenService {
     public User consumeReset(String raw) {
         ResetToken t = resetTokens.findByTokenHash(hash(raw))
             .orElseThrow(InvalidTokenException::new);
-        validate(t.getUsedAt(), t.getExpiresAt());
-        t.markUsed();
+        if (Instant.now().isAfter(t.getExpiresAt())) throw new InvalidTokenException();
+        if (resetTokens.markUsedIfUnused(t.getId(), Instant.now()) == 0) throw new InvalidTokenException();
         return users.findById(t.getUserId()).orElseThrow(InvalidTokenException::new);
-    }
-
-    private static void validate(Instant usedAt, Instant expiresAt) {
-        if (usedAt != null || Instant.now().isAfter(expiresAt)) {
-            throw new InvalidTokenException();
-        }
     }
 }

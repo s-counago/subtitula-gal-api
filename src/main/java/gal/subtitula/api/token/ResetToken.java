@@ -24,8 +24,8 @@ public class ResetToken {
         t.userId = userId; t.tokenHash = tokenHash; t.expiresAt = expiresAt;
         return t;
     }
+    public UUID getId() { return id; }
     public UUID getUserId() { return userId; }
     public Instant getExpiresAt() { return expiresAt; }
     public Instant getUsedAt() { return usedAt; }
-    public void markUsed() { this.usedAt = Instant.now(); }
 }
