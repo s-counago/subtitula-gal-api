@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -32,6 +33,7 @@ class PasswordResetTest extends AbstractIntegrationTest {
                     """))
             .andReturn();
         Cookie oldSession = reg.getResponse().getCookie("SESSION");
+        assertNotNull(oldSession, "register must issue a SESSION cookie");
         emails.sent.clear();
 
         // CORRECTION 1: use string literal for single-line body
@@ -64,5 +66,14 @@ class PasswordResetTest extends AbstractIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"email\":\"rst@example.com\",\"password\":\"oldpassword1\"}"))
             .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void badResetTokenIs400() throws Exception {
+        mockMvc.perform(post("/auth/reset-password").with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"token\":\"invalid-token\",\"password\":\"newpassword9\"}"))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.error").value("invalid_token"));
     }
 }

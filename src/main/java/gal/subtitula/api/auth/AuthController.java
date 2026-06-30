@@ -126,8 +126,13 @@ public class AuthController {
     @PostMapping("/forgot-password")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void forgotPassword(@Valid @RequestBody ForgotPasswordRequest req) {
-        users.findByEmail(req.email().toLowerCase())
-             .ifPresent(authMailService::sendReset);   // silent if absent → no enumeration
+        users.findByEmail(req.email().toLowerCase()).ifPresent(user -> {
+            try {
+                authMailService.sendReset(user);
+            } catch (Exception e) {
+                log.warn("Password reset email send failed for user {}: {}", user.getId(), e.toString());
+            }
+        });
     }
 
     @PostMapping("/reset-password")
