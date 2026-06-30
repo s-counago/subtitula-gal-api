@@ -19,6 +19,13 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping("/auth")
 public class AuthController {
 
+    // Pre-computed valid BCrypt hash used to equalize timing on the no-real-hash path
+    // (missing user or Google-only account). BCryptPasswordEncoder.matches() logs a
+    // warning and short-circuits when the encoded value is not syntactically valid BCrypt,
+    // which would both break the timing guarantee and pollute test output.
+    private static final String DUMMY_HASH =
+            new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder().encode("timing-blind-dummy");
+
     private final UserRepository users;
     private final RegistrationService registrationService;
     private final SessionAuthService sessionAuthService;
@@ -55,12 +62,19 @@ public class AuthController {
     public UserResponse login(@Valid @RequestBody LoginRequest req,
                               HttpServletRequest request,
                               HttpServletResponse response) {
-        User user = users.findByEmail(req.email().toLowerCase())
-            .filter(u -> u.getPasswordHash() != null)
-            .filter(u -> encoder.matches(req.password(), u.getPasswordHash()))
-            .orElseThrow(InvalidCredentialsException::new);
-        sessionAuthService.login(request, response, user);
-        return UserResponse.from(user);
+        // Always run exactly one BCrypt verification to prevent timing-based email
+        // enumeration (mirrors Spring Security's DaoAuthenticationProvider behaviour).
+        java.util.Optional<User> found = users.findByEmail(req.email().toLowerCase());
+        User candidate = found.orElse(null);
+        String hash = (candidate != null && candidate.getPasswordHash() != null)
+                ? candidate.getPasswordHash()
+                : DUMMY_HASH;
+        boolean matched = encoder.matches(req.password(), hash);
+        if (candidate == null || candidate.getPasswordHash() == null || !matched) {
+            throw new InvalidCredentialsException();
+        }
+        sessionAuthService.login(request, response, candidate);
+        return UserResponse.from(candidate);
     }
 
     @PostMapping("/logout")

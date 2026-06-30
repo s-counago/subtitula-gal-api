@@ -18,7 +18,12 @@ class LoginLogoutTest extends AbstractIntegrationTest {
         mockMvc.perform(post("/auth/register").with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .content("""
-                {"email":"li@example.com","password":"hunter2hunter","displayName":"Li"}"""));
+                {"email":"li@example.com","password":"hunter2hunter","displayName":"Li"}"""))
+            .andExpect(result -> {
+                int s = result.getResponse().getStatus();
+                if (s != 201 && s != 409)
+                    throw new AssertionError("seed failed with unexpected status: " + s);
+            });
     }
 
     @Test
@@ -39,6 +44,10 @@ class LoginLogoutTest extends AbstractIntegrationTest {
 
         mockMvc.perform(post("/auth/logout").with(csrf()).cookie(session))
             .andExpect(status().isNoContent());
+
+        // Prove the session cookie is now rejected — invalidation actually worked
+        mockMvc.perform(get("/auth/me").cookie(session))
+            .andExpect(status().isUnauthorized());
     }
 
     @Test
