@@ -1,5 +1,6 @@
 package gal.subtitula.api.config;
 
+import gal.subtitula.api.oauth.OAuthSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,8 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http,
-                                    UrlBasedCorsConfigurationSource cors) throws Exception {
+                                    UrlBasedCorsConfigurationSource cors,
+                                    OAuthSuccessHandler oauthSuccessHandler) throws Exception {
         http
             .cors(c -> c.configurationSource(cors))
             .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
@@ -39,6 +41,7 @@ public class SecurityConfig {
                 new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
             // REST API: no redirect-after-login; suppress session creation on 401.
             .requestCache(rc -> rc.requestCache(new NullRequestCache()))
+            .oauth2Login(o -> o.successHandler(oauthSuccessHandler))
             .formLogin(f -> f.disable())
             .httpBasic(b -> b.disable());
         return http.build();
