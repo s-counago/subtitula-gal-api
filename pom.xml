@@ -39,13 +39,27 @@
     <dependencies>
       <dependency>
         <groupId>org.testcontainers</groupId><artifactId>testcontainers-bom</artifactId>
-        <version>1.20.4</version><type>pom</type><scope>import</scope>
+        <version>1.21.3</version><type>pom</type><scope>import</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
   <build>
     <plugins>
       <plugin><groupId>org.springframework.boot</groupId><artifactId>spring-boot-maven-plugin</artifactId></plugin>
+      <!--
+        The docker-java client bundled with Testcontainers defaults to Docker API 1.32,
+        which Docker 29.x daemons reject (they require >= 1.40). Pin the client API version
+        for the forked test JVM so `./mvnw test` works without a command-line flag or env var.
+      -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <api.version>1.43</api.version>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 </project>
