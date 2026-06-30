@@ -15,11 +15,15 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
+
+    private static final Logger log = LoggerFactory.getLogger(AuthController.class);
 
     // Pre-computed valid BCrypt hash used to equalize timing on the no-real-hash path
     // (missing user or Google-only account). BCryptPasswordEncoder.matches() logs a
@@ -63,7 +67,11 @@ public class AuthController {
                                  HttpServletResponse response) {
         User user = registrationService.register(req);
         sessionAuthService.login(request, response, user);
-        authMailService.sendVerification(user);
+        try {
+            authMailService.sendVerification(user);
+        } catch (Exception e) {
+            log.warn("Verification email send failed for user {}: {}", user.getId(), e.toString());
+        }
         return UserResponse.from(user);
     }
 
