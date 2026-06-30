@@ -1,0 +1,6 @@
+# Local development overrides. Activate with: SPRING_PROFILES_ACTIVE=dev
+# Defaults in application.yml already target the docker-compose Postgres on
+# localhost:5432, so this profile only needs explicit dev-only tweaks.
+spring:
+  jpa:
+    show-sql: true

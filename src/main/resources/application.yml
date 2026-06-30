@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: subtitula-api
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/subtitula}
+    username: ${DB_USER:subtitula}
+    password: ${DB_PASSWORD:subtitula}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    enabled: true
+  session:
+    store-type: jdbc
+    jdbc:
+      initialize-schema: never   # Flyway owns the session schema (V2)
+    timeout: 30d
+
+app:
+  cookie:
+    domain: ${COOKIE_DOMAIN:}    # empty in dev (host-only cookie on localhost)
+    secure: ${COOKIE_SECURE:false}
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:3000}
+  frontend:
+    base-url: ${FRONTEND_URL:http://localhost:3000}
