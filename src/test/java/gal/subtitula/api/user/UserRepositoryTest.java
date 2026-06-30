@@ -18,6 +18,13 @@ class UserRepositoryTest extends AbstractIntegrationTest {
     }
 
     @Test
+    void findsByEmailCaseInsensitive() {
+        users.saveAndFlush(User.create("bob@example.com", "Bob", "hash"));
+        assertTrue(users.findByEmail("BOB@EXAMPLE.COM").isPresent());
+        assertTrue(users.existsByEmail("Bob@Example.Com"));
+    }
+
+    @Test
     void rejectsDuplicateEmail() {
         users.saveAndFlush(User.create("dup@example.com", "One", "h1"));
         assertThrows(DataIntegrityViolationException.class,
