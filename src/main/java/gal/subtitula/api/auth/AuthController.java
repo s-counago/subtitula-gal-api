@@ -3,6 +3,8 @@ package gal.subtitula.api.auth;
 import gal.subtitula.api.auth.dto.LoginRequest;
 import gal.subtitula.api.auth.dto.RegisterRequest;
 import gal.subtitula.api.auth.dto.UserResponse;
+import gal.subtitula.api.auth.dto.VerifyEmailRequest;
+import gal.subtitula.api.token.OneTimeTokenService;
 import gal.subtitula.api.user.User;
 import gal.subtitula.api.user.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,15 +32,21 @@ public class AuthController {
     private final RegistrationService registrationService;
     private final SessionAuthService sessionAuthService;
     private final PasswordEncoder encoder;
+    private final AuthMailService authMailService;
+    private final OneTimeTokenService oneTimeTokenService;
 
     public AuthController(UserRepository users,
                           RegistrationService registrationService,
                           SessionAuthService sessionAuthService,
-                          PasswordEncoder encoder) {
+                          PasswordEncoder encoder,
+                          AuthMailService authMailService,
+                          OneTimeTokenService oneTimeTokenService) {
         this.users = users;
         this.registrationService = registrationService;
         this.sessionAuthService = sessionAuthService;
         this.encoder = encoder;
+        this.authMailService = authMailService;
+        this.oneTimeTokenService = oneTimeTokenService;
     }
 
     @GetMapping("/me")
@@ -55,6 +63,7 @@ public class AuthController {
                                  HttpServletResponse response) {
         User user = registrationService.register(req);
         sessionAuthService.login(request, response, user);
+        authMailService.sendVerification(user);
         return UserResponse.from(user);
     }
 
@@ -83,5 +92,21 @@ public class AuthController {
         var session = request.getSession(false);
         if (session != null) session.invalidate();
         SecurityContextHolder.clearContext();
+    }
+
+    @PostMapping("/verify-email")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void verifyEmail(@Valid @RequestBody VerifyEmailRequest req) {
+        User user = oneTimeTokenService.consumeVerification(req.token());
+        user.setEmailVerified(true);
+        users.save(user);
+    }
+
+    @PostMapping("/resend-verification")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void resendVerification(@AuthenticationPrincipal AuthPrincipal principal) {
+        User user = users.findById(principal.userId())
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+        if (!user.isEmailVerified()) authMailService.sendVerification(user);
     }
 }

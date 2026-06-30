@@ -31,4 +31,11 @@ public class ApiExceptionHandler {
             .body(Map.of("error", "invalid_credentials",
                          "message", "Invalid email or password."));
     }
+
+    @ExceptionHandler(gal.subtitula.api.token.InvalidTokenException.class)
+    ResponseEntity<Map<String, String>> invalidToken() {
+        return ResponseEntity.badRequest()
+            .body(Map.of("error", "invalid_token",
+                         "message", "This link is invalid or has expired."));
+    }
 }
