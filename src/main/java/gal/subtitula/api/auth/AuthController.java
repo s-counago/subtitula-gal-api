@@ -1,7 +1,9 @@
 package gal.subtitula.api.auth;
 
+import gal.subtitula.api.auth.dto.ForgotPasswordRequest;
 import gal.subtitula.api.auth.dto.LoginRequest;
 import gal.subtitula.api.auth.dto.RegisterRequest;
+import gal.subtitula.api.auth.dto.ResetPasswordRequest;
 import gal.subtitula.api.auth.dto.UserResponse;
 import gal.subtitula.api.auth.dto.VerifyEmailRequest;
 import gal.subtitula.api.token.OneTimeTokenService;
@@ -38,19 +40,22 @@ public class AuthController {
     private final PasswordEncoder encoder;
     private final AuthMailService authMailService;
     private final OneTimeTokenService oneTimeTokenService;
+    private final SessionRegistryService sessionRegistryService;
 
     public AuthController(UserRepository users,
                           RegistrationService registrationService,
                           SessionAuthService sessionAuthService,
                           PasswordEncoder encoder,
                           AuthMailService authMailService,
-                          OneTimeTokenService oneTimeTokenService) {
+                          OneTimeTokenService oneTimeTokenService,
+                          SessionRegistryService sessionRegistryService) {
         this.users = users;
         this.registrationService = registrationService;
         this.sessionAuthService = sessionAuthService;
         this.encoder = encoder;
         this.authMailService = authMailService;
         this.oneTimeTokenService = oneTimeTokenService;
+        this.sessionRegistryService = sessionRegistryService;
     }
 
     @GetMapping("/me")
@@ -116,5 +121,21 @@ public class AuthController {
         User user = users.findById(principal.userId())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
         if (!user.isEmailVerified()) authMailService.sendVerification(user);
+    }
+
+    @PostMapping("/forgot-password")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void forgotPassword(@Valid @RequestBody ForgotPasswordRequest req) {
+        users.findByEmail(req.email().toLowerCase())
+             .ifPresent(authMailService::sendReset);   // silent if absent → no enumeration
+    }
+
+    @PostMapping("/reset-password")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void resetPassword(@Valid @RequestBody ResetPasswordRequest req) {
+        User user = oneTimeTokenService.consumeReset(req.token());
+        user.setPasswordHash(encoder.encode(req.password()));
+        users.save(user);
+        sessionRegistryService.invalidateAllForPrincipal(user.getId().toString());
     }
 }
