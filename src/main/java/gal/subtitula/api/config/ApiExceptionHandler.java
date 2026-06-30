@@ -24,4 +24,11 @@ public class ApiExceptionHandler {
             .body(Map.of("error", "validation_failed",
                          "message", "Check the submitted fields."));
     }
+
+    @ExceptionHandler(gal.subtitula.api.auth.InvalidCredentialsException.class)
+    ResponseEntity<Map<String, String>> invalidCreds() {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+            .body(Map.of("error", "invalid_credentials",
+                         "message", "Invalid email or password."));
+    }
 }
