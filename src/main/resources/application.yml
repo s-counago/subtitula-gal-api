@@ -1,6 +1,14 @@
 spring:
   application:
     name: subtitula-api
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope: [openid, email, profile]
   datasource:
     url: ${DB_URL:jdbc:postgresql://localhost:5432/subtitula}
     username: ${DB_USER:subtitula}
@@ -17,10 +25,13 @@ spring:
       initialize-schema: never   # Flyway owns the session schema (V2)
     timeout: 30d
 
+server:
+  # App runs behind a TLS-terminating reverse proxy (Nginx/ALB) in prod: honour
+  # X-Forwarded-* so getRemoteAddr()/isSecure() reflect the real client, not the proxy.
+  # This makes per-IP rate limiting effective and lets the Secure session cookie be set.
+  forward-headers-strategy: framework
+
 app:
-  cookie:
-    domain: ${COOKIE_DOMAIN:}    # empty in dev (host-only cookie on localhost)
-    secure: ${COOKIE_SECURE:false}
   cors:
     allowed-origins: ${CORS_ORIGINS:http://localhost:3000}
   frontend:
