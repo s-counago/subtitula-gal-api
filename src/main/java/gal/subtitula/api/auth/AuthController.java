@@ -120,7 +120,15 @@ public class AuthController {
     public void resendVerification(@AuthenticationPrincipal AuthPrincipal principal) {
         User user = users.findById(principal.userId())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
-        if (!user.isEmailVerified()) authMailService.sendVerification(user);
+        if (!user.isEmailVerified()) {
+            // Best-effort, consistent with register/forgot-password: a transient mailer
+            // failure must not surface as a 500 to the client.
+            try {
+                authMailService.sendVerification(user);
+            } catch (Exception e) {
+                log.warn("Resend verification email failed for user {}: {}", user.getId(), e.toString());
+            }
+        }
     }
 
     @PostMapping("/forgot-password")

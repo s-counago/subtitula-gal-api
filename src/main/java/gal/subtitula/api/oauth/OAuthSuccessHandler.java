@@ -35,6 +35,12 @@ public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
         Boolean verified = principal.getAttribute("email_verified");
         String name = principal.getAttribute("name");
 
+        // Defensive: the 'email' scope is mandatory, but never trust the provider blindly.
+        if (email == null || email.isBlank()) {
+            response.sendRedirect(frontendUrl + "/login?error=oauth_failed");
+            return;
+        }
+
         try {
             User user = oauthUsers.findOrCreate(sub, email, Boolean.TRUE.equals(verified),
                 name != null ? name : email);
