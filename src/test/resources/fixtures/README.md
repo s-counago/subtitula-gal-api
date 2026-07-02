@@ -2,14 +2,17 @@
 
 ## `scribe-sample.json`
 
-**Provenance: hand-authored to ElevenLabs' *documented* Scribe (`scribe_v1`) response shape — NOT yet a real API capture.**
+**Provenance: real `scribe_v1` API capture (2026-07-02)** — 20 s of the spoken
+Galician Wikipedia article "Galicia" (Wikimedia Commons, `Gal-Galicia 1 of
+4-article.ogg`, CC BY-SA), auto-detect (no `language_code` sent).
 
-Decision (2026-07-01): build the transcription mapping against the documented
-shape now, and replace this file with a real captured response **before Phase 2**
-(the frontend consumes the `Word` JSON shape verified here). The spec lists the
-exact-shape + Galician check as "Phase-1 verification, non-blocking now".
+Galician verification (2026-07-02): auto-detect returned `language_code: "glg"`
+at 0.93 probability; forcing `-F language_code=glg` returned an **identical
+transcript** at 1.0 — so leaving the language hint unset is fine for Galician.
+Real responses carry extra fields the mapper ignores (`logprob` per word,
+`audio_duration_secs`, `transcription_id`).
 
-### To capture the real fixture (run before Phase 2)
+### To re-capture the fixture
 
 ```bash
 export ELEVENLABS_API_KEY=sk_...        # dev key, from your shell only — never commit it
