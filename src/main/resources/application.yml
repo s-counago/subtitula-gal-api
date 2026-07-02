@@ -36,3 +36,10 @@ app:
     allowed-origins: ${CORS_ORIGINS:http://localhost:3000}
   frontend:
     base-url: ${FRONTEND_URL:http://localhost:3000}
+  elevenlabs:
+    base-url: https://api.elevenlabs.io
+    api-key: ${ELEVENLABS_API_KEY:}
+    model-id: scribe_v1
+    # language-hint left empty = auto-detect; set to the value verified against the live API
+    # (Task 2 fixture caveat) if Galician needs forcing
+    language-hint: ${ELEVENLABS_LANGUAGE_HINT:}
