@@ -1,0 +1,49 @@
+package gal.subtitula.api.project;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.util.UUID;
+
+@Service
+public class ProjectService {
+
+    private final ProjectRepository projects;
+    private final TranscriptionClient transcription;
+    private final String languageHint;
+
+    public ProjectService(ProjectRepository projects, TranscriptionClient transcription,
+                          @Value("${app.elevenlabs.language-hint:}") String languageHint) {
+        this.projects = projects;
+        this.transcription = transcription;
+        this.languageHint = languageHint;
+    }
+
+    @Transactional
+    public Project createFromUpload(UUID userId, MultipartFile file, String name, JsonNode style) {
+        byte[] media;
+        try {
+            media = file.getBytes();   // in-request only — never persisted
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+        TranscriptionResult result = transcription.transcribe(
+            media, file.getOriginalFilename(), file.getContentType(),
+            (languageHint == null || languageHint.isBlank()) ? null : languageHint);
+
+        double durationSec = result.words().stream().mapToDouble(Word::end).max().orElse(0);
+        String projectName = (name == null || name.isBlank())
+            ? (file.getOriginalFilename() == null ? "Novo proxecto" : file.getOriginalFilename())
+            : name;
+
+        Project project = Project.create(userId, projectName, result.languageCode(),
+            durationSec, result.words(), style);
+        return projects.save(project);
+        // media goes out of scope here — no bytes stored
+    }
+}

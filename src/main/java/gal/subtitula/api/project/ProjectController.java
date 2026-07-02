@@ -1,0 +1,34 @@
+package gal.subtitula.api.project;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import gal.subtitula.api.auth.AuthPrincipal;
+import gal.subtitula.api.project.dto.ProjectResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+@RestController
+@RequestMapping("/projects")
+public class ProjectController {
+
+    private final ProjectService service;
+    private final ObjectMapper mapper;
+
+    public ProjectController(ProjectService service, ObjectMapper mapper) {
+        this.service = service;
+        this.mapper = mapper;
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public ProjectResponse create(@AuthenticationPrincipal AuthPrincipal principal,
+                                  @RequestParam("file") MultipartFile file,
+                                  @RequestParam(value = "name", required = false) String name,
+                                  @RequestParam(value = "style", required = false) String styleJson)
+            throws Exception {
+        JsonNode style = (styleJson == null || styleJson.isBlank()) ? null : mapper.readTree(styleJson);
+        return ProjectResponse.from(service.createFromUpload(principal.userId(), file, name, style));
+    }
+}

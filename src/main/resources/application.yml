@@ -24,6 +24,10 @@ spring:
     jdbc:
       initialize-schema: never   # Flyway owns the session schema (V2)
     timeout: 30d
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 500MB
 
 server:
   # App runs behind a TLS-terminating reverse proxy (Nginx/ALB) in prod: honour
