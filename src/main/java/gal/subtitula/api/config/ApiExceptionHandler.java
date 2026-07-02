@@ -38,4 +38,10 @@ public class ApiExceptionHandler {
             .body(Map.of("error", "invalid_token",
                          "message", "This link is invalid or has expired."));
     }
+
+    @ExceptionHandler(gal.subtitula.api.project.ProjectNotFoundException.class)
+    ResponseEntity<Map<String, String>> projectNotFound() {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body(Map.of("error", "not_found", "message", "Project not found."));
+    }
 }

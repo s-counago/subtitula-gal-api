@@ -46,4 +46,15 @@ public class ProjectService {
         return projects.save(project);
         // media goes out of scope here — no bytes stored
     }
+
+    @Transactional(readOnly = true)
+    public java.util.List<Project> list(UUID userId) {
+        return projects.findByUserIdOrderByCreatedAtDesc(userId);
+    }
+
+    @Transactional(readOnly = true)
+    public Project get(UUID id, UUID userId) {
+        return projects.findByIdAndUserId(id, userId)
+            .orElseThrow(ProjectNotFoundException::new);
+    }
 }

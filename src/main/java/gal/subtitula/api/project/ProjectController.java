@@ -31,4 +31,17 @@ public class ProjectController {
         JsonNode style = (styleJson == null || styleJson.isBlank()) ? null : mapper.readTree(styleJson);
         return ProjectResponse.from(service.createFromUpload(principal.userId(), file, name, style));
     }
+
+    @GetMapping
+    public java.util.List<gal.subtitula.api.project.dto.ProjectSummary> list(
+            @AuthenticationPrincipal AuthPrincipal principal) {
+        return service.list(principal.userId()).stream()
+            .map(gal.subtitula.api.project.dto.ProjectSummary::from).toList();
+    }
+
+    @GetMapping("/{id}")
+    public ProjectResponse get(@AuthenticationPrincipal AuthPrincipal principal,
+                               @PathVariable java.util.UUID id) {
+        return ProjectResponse.from(service.get(id, principal.userId()));
+    }
 }
