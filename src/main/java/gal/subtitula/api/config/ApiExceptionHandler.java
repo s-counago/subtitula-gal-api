@@ -44,4 +44,10 @@ public class ApiExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
             .body(Map.of("error", "not_found", "message", "Project not found."));
     }
+
+    @ExceptionHandler(gal.subtitula.api.font.FontNotFoundException.class)
+    ResponseEntity<Map<String, String>> fontNotFound() {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body(Map.of("error", "not_found", "message", "Font not found."));
+    }
 }

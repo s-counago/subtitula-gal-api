@@ -33,4 +33,15 @@ public class FontService {
     public List<Font> list(UUID userId) {
         return fonts.findByUserIdOrderByCreatedAtDesc(userId);
     }
+
+    @Transactional(readOnly = true)
+    public Font getBytes(UUID id, UUID userId) {
+        return fonts.findByIdAndUserId(id, userId).orElseThrow(FontNotFoundException::new);
+    }
+
+    @Transactional
+    public void delete(UUID id, UUID userId) {
+        Font f = fonts.findByIdAndUserId(id, userId).orElseThrow(FontNotFoundException::new);
+        fonts.delete(f);
+    }
 }

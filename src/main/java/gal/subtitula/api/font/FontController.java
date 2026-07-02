@@ -29,4 +29,20 @@ public class FontController {
     public List<FontResponse> list(@AuthenticationPrincipal AuthPrincipal principal) {
         return service.list(principal.userId()).stream().map(FontResponse::from).toList();
     }
+
+    @GetMapping("/{id}")
+    public org.springframework.http.ResponseEntity<byte[]> serve(
+            @AuthenticationPrincipal AuthPrincipal principal, @PathVariable java.util.UUID id) {
+        Font f = service.getBytes(id, principal.userId());
+        return org.springframework.http.ResponseEntity.ok()
+            .header(org.springframework.http.HttpHeaders.CONTENT_TYPE, f.getContentType())
+            .header(org.springframework.http.HttpHeaders.CACHE_CONTROL, "private, max-age=31536000, immutable")
+            .body(f.getBytes());
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@AuthenticationPrincipal AuthPrincipal principal, @PathVariable java.util.UUID id) {
+        service.delete(id, principal.userId());
+    }
 }
