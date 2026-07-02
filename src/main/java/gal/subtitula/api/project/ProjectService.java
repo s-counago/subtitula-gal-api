@@ -57,4 +57,20 @@ public class ProjectService {
         return projects.findByIdAndUserId(id, userId)
             .orElseThrow(ProjectNotFoundException::new);
     }
+
+    @Transactional
+    public Project update(UUID id, UUID userId, gal.subtitula.api.project.dto.ProjectUpdateRequest req) {
+        Project p = get(id, userId);               // throws ProjectNotFoundException if not owner
+        if (req.name() != null) p.setName(req.name());
+        if (req.words() != null) p.setWords(req.words());
+        if (req.style() != null) p.setStyle(req.style());
+        if (req.speedFactor() != null) p.setSpeedFactor(req.speedFactor());
+        return projects.save(p);
+    }
+
+    @Transactional
+    public void delete(UUID id, UUID userId) {
+        Project p = get(id, userId);               // 404 for non-owner
+        projects.delete(p);
+    }
 }

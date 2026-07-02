@@ -44,4 +44,18 @@ public class ProjectController {
                                @PathVariable java.util.UUID id) {
         return ProjectResponse.from(service.get(id, principal.userId()));
     }
+
+    @PatchMapping("/{id}")
+    public ProjectResponse update(@AuthenticationPrincipal AuthPrincipal principal,
+                                  @PathVariable java.util.UUID id,
+                                  @RequestBody gal.subtitula.api.project.dto.ProjectUpdateRequest req) {
+        return ProjectResponse.from(service.update(id, principal.userId(), req));
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@AuthenticationPrincipal AuthPrincipal principal,
+                       @PathVariable java.util.UUID id) {
+        service.delete(id, principal.userId());
+    }
 }
