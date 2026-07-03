@@ -44,6 +44,6 @@ app:
     base-url: https://api.elevenlabs.io
     api-key: ${ELEVENLABS_API_KEY:}
     model-id: scribe_v1
-    # language-hint left empty = auto-detect; set to the value verified against the live API
-    # (Task 2 fixture caveat) if Galician needs forcing
-    language-hint: ${ELEVENLABS_LANGUAGE_HINT:}
+    # Force Galician: auto-detect hears real-world Galician as Spanish.
+    # "glg" live-verified 2026-07-02 (see src/test/resources/fixtures/README.md).
+    language-hint: ${ELEVENLABS_LANGUAGE_HINT:glg}

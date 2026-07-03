@@ -5,6 +5,7 @@ import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -25,6 +26,10 @@ class CreateProjectTest extends AbstractIntegrationTest {
             .andExpect(jsonPath("$.speedFactor").value(1.0))
             .andExpect(jsonPath("$.words.length()").value(3))
             .andExpect(jsonPath("$.words[2].text").value("mundo"));
+
+        assertThat(transcriber.calls)
+            .as("Scribe must be asked for Galician explicitly — auto-detect hears Spanish")
+            .last().extracting(c -> c.languageHint()).isEqualTo("glg");
     }
 
     @Test
