@@ -32,7 +32,7 @@ class ProjectRepositoryTest extends AbstractIntegrationTest {
                             new Word("mundo", 0.5, 0.9, "word"));
         var style = mapper.readTree("{\"preset\":\"glass\",\"fontSizePct\":6}");
 
-        Project saved = projects.save(Project.create(owner, "clip.mp4", "gl", 0.9, words, style));
+        Project saved = projects.save(Project.create(owner, "clip.mp4", "gl", 0.9, words, style, "creator"));
 
         Project reloaded = projects.findById(saved.getId()).orElseThrow();
         assertThat(reloaded.getWords()).hasSize(3);
@@ -45,8 +45,8 @@ class ProjectRepositoryTest extends AbstractIntegrationTest {
     void scopesByUser() {
         UUID a = newUser();
         UUID b = newUser();
-        Project pa = projects.save(Project.create(a, "a.mp4", "gl", 1.0, List.of(), null));
-        projects.save(Project.create(b, "b.mp4", "gl", 1.0, List.of(), null));
+        Project pa = projects.save(Project.create(a, "a.mp4", "gl", 1.0, List.of(), null, "creator"));
+        projects.save(Project.create(b, "b.mp4", "gl", 1.0, List.of(), null, "creator"));
 
         assertThat(projects.findByUserIdOrderByCreatedAtDesc(a)).extracting(Project::getId)
             .containsExactly(pa.getId());

@@ -19,11 +19,13 @@ class CreateProjectTest extends AbstractIntegrationTest {
 
         mockMvc.perform(multipart("/projects").file(file)
                 .param("name", "My clip")
+                .param("workflowMode", "institution")
                 .with(csrf()).cookie(session))
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.name").value("My clip"))
             .andExpect(jsonPath("$.language").value("glg"))
             .andExpect(jsonPath("$.speedFactor").value(1.0))
+            .andExpect(jsonPath("$.workflowMode").value("institution"))
             .andExpect(jsonPath("$.words.length()").value(3))
             .andExpect(jsonPath("$.words[2].text").value("mundo"));
 

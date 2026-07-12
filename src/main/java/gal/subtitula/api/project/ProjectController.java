@@ -26,10 +26,11 @@ public class ProjectController {
     public ProjectResponse create(@AuthenticationPrincipal AuthPrincipal principal,
                                   @RequestParam("file") MultipartFile file,
                                   @RequestParam(value = "name", required = false) String name,
-                                  @RequestParam(value = "style", required = false) String styleJson)
+                                  @RequestParam(value = "style", required = false) String styleJson,
+                                  @RequestParam(value = "workflowMode", required = false) String workflowMode)
             throws Exception {
         JsonNode style = (styleJson == null || styleJson.isBlank()) ? null : mapper.readTree(styleJson);
-        return ProjectResponse.from(service.createFromUpload(principal.userId(), file, name, style));
+        return ProjectResponse.from(service.createFromUpload(principal.userId(), file, name, style, workflowMode));
     }
 
     @GetMapping

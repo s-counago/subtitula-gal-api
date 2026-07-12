@@ -38,6 +38,9 @@ public class Project {
     @Column(name = "speed_factor", nullable = false)
     private double speedFactor;
 
+    @Column(name = "workflow_mode", nullable = false)
+    private String workflowMode;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
@@ -47,7 +50,7 @@ public class Project {
     protected Project() {}
 
     public static Project create(UUID userId, String name, String language,
-                                 double durationSec, List<Word> words, JsonNode style) {
+                                 double durationSec, List<Word> words, JsonNode style, String workflowMode) {
         Project p = new Project();
         p.id = UUID.randomUUID();
         p.userId = userId;
@@ -57,6 +60,7 @@ public class Project {
         p.words = words == null ? List.of() : words;
         p.style = style;
         p.speedFactor = 1.0;
+        p.workflowMode = workflowMode;
         p.createdAt = Instant.now();
         p.updatedAt = p.createdAt;
         return p;
@@ -78,6 +82,7 @@ public class Project {
     public void setStyle(JsonNode s) { this.style = s; }
     public double getSpeedFactor() { return speedFactor; }
     public void setSpeedFactor(double f) { this.speedFactor = f; }
+    public String getWorkflowMode() { return workflowMode; }
     public Instant getCreatedAt() { return createdAt; }
     public Instant getUpdatedAt() { return updatedAt; }
 }

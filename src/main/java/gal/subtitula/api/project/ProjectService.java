@@ -25,7 +25,7 @@ public class ProjectService {
     }
 
     @Transactional
-    public Project createFromUpload(UUID userId, MultipartFile file, String name, JsonNode style) {
+    public Project createFromUpload(UUID userId, MultipartFile file, String name, JsonNode style, String workflowMode) {
         byte[] media;
         try {
             media = file.getBytes();   // in-request only — never persisted
@@ -42,7 +42,7 @@ public class ProjectService {
             : name;
 
         Project project = Project.create(userId, projectName, result.languageCode(),
-            durationSec, result.words(), style);
+            durationSec, result.words(), style, normalizeWorkflowMode(workflowMode));
         return projects.save(project);
         // media goes out of scope here — no bytes stored
     }
@@ -72,5 +72,9 @@ public class ProjectService {
     public void delete(UUID id, UUID userId) {
         Project p = get(id, userId);               // 404 for non-owner
         projects.delete(p);
+    }
+
+    private static String normalizeWorkflowMode(String workflowMode) {
+        return "institution".equals(workflowMode) ? "institution" : "creator";
     }
 }
