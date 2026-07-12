@@ -45,7 +45,7 @@ public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
             User user = oauthUsers.findOrCreate(sub, email, Boolean.TRUE.equals(verified),
                 name != null ? name : email);
             sessionAuth.login(request, response, user);
-            response.sendRedirect(frontendUrl + "/upload");
+            response.sendRedirect(frontendUrl + "/projects");
         } catch (EmailConflictException e) {
             response.sendRedirect(frontendUrl + "/login?error=email_conflict");
         }

@@ -3,5 +3,9 @@ target/
 .idea/
 *.iml
 *.log
+# Keep every local environment file out of Git. The committed .env.example is
+# the only onboarding template and contains no credentials.
 .env
+.env.*
+!.env.example
 .DS_Store

@@ -12,13 +12,17 @@ transcript** at 1.0 — so leaving the language hint unset is fine for Galician.
 Real responses carry extra fields the mapper ignores (`logprob` per word,
 `audio_duration_secs`, `transcription_id`).
 
+`scribe_v1` has since been retired. The mapping is kept against this historical
+response, but re-capture this fixture with `scribe_v2` before treating it as a
+current provider-contract test.
+
 ### To re-capture the fixture
 
 ```bash
 export ELEVENLABS_API_KEY=sk_...        # dev key, from your shell only — never commit it
 curl -s -X POST https://api.elevenlabs.io/v1/speech-to-text \
   -H "xi-api-key: $ELEVENLABS_API_KEY" \
-  -F "model_id=scribe_v1" \
+  -F "model_id=scribe_v2" \
   -F "file=@/path/to/galician-sample.mp4" \
   > src/test/resources/fixtures/scribe-sample.json
 ```

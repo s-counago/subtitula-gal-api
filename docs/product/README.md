@@ -3,7 +3,7 @@ Wall time: 0.7 seconds
 Output:
 # Subtitula — centro de producto y mercado
 
-**Estado:** borrador operativo · **Actualizado:** 12 de julio de 2026
+**Estado:** borrador operativo · **Actualizado:** 13 de julio de 2026
 
 Este directorio convierte la conversación de estrategia en un artefacto que se puede mantener. No sustituye a Linear o GitHub Issues cuando haya equipo: por ahora sirve de fuente de verdad legible y de briefing para diseño y desarrollo.
 
@@ -19,6 +19,8 @@ La entrada comercial es la accesibilidad y el ahorro operativo; el valor públic
 - [Backlog priorizado](backlog.md): trabajo de producto, tecnología, investigación y validación.
 - [Mercado y competidores](market-watch.md): proveedores, productos análogos, precios públicos y huecos por investigar.
 - [Registro de decisiones](decision-log.md): hipótesis que ya orientan el producto y las que aún necesitan prueba.
+- [Infraestructura y entornos](infrastructure.md): servicios, secretos, costes y orden de activación para dev/prod.
+- [Contrato operativo de entornos](../operations/environment-contract.md): ramas, GitHub Environments, URLs y requisitos para desplegar.
 - [Tablero operativo](dashboard.html): vista navegable de tareas, investigación, mercado, decisiones y documentos.
 - [Instantánea de datos del tablero](dashboard-data.json): fichero intercambiable para conservar cambios entre ordenadores.
 - [Fuente editable del tablero](dashboard.fragment.html): fragmento del que se genera el tablero estático.

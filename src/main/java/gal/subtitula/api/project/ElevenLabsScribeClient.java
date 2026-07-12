@@ -27,7 +27,7 @@ public class ElevenLabsScribeClient implements TranscriptionClient {
     public ElevenLabsScribeClient(
             @Value("${app.elevenlabs.base-url:https://api.elevenlabs.io}") String baseUrl,
             @Value("${app.elevenlabs.api-key:}") String apiKey,
-            @Value("${app.elevenlabs.model-id:scribe_v1}") String modelId) {
+            @Value("${app.elevenlabs.model-id:scribe_v2}") String modelId) {
         var factory = new SimpleClientHttpRequestFactory();
         factory.setConnectTimeout(Duration.ofSeconds(15));
         factory.setReadTimeout(Duration.ofMinutes(10)); // transcription of long clips is slow

@@ -1,0 +1,43 @@
+name: API deployment gate
+
+on:
+  push:
+    branches: [develop, main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Placeholder by design: the Spring API needs a compute host and database, and
+# Cloudflare is currently only the future DNS/tunnel edge. This maps branches to
+# GitHub Environments without treating an open pull request as production.
+jobs:
+  development:
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    environment: development
+    steps:
+      - name: Report deployment status
+        env:
+          DEPLOY_ENABLED: ${{ vars.DEPLOY_ENABLED }}
+        run: |
+          if [ "$DEPLOY_ENABLED" = "true" ]; then
+            echo "::error::Deployment is not implemented yet. Configure the provider before enabling it."
+            exit 1
+          fi
+          echo "Development deployment is intentionally disabled until hosting is configured."
+
+  production:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Report deployment status
+        env:
+          DEPLOY_ENABLED: ${{ vars.DEPLOY_ENABLED }}
+        run: |
+          if [ "$DEPLOY_ENABLED" = "true" ]; then
+            echo "::error::Deployment is not implemented yet. Configure the provider before enabling it."
+            exit 1
+          fi
+          echo "Production deployment is intentionally disabled until hosting is configured."

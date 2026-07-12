@@ -9,16 +9,19 @@ Convención: **P0** desbloquea el primer piloto; **P1** aumenta el valor del pil
 
 | ID | Pri. | Estado | Iniciativa | Resultado verificable |
 |---|---:|---|---|---|
-| UX-01 | P0 | Pendiente | Selector de intención tras login | Tres tarjetas, recientes y acceso a biblioteca; no se pierde el acceso a un proyecto anterior. |
-| UX-02 | P0 | Pendiente | Asistente único de subida | Creador e institución generan el mismo proyecto; sus metadatos contextuales quedan guardados. |
-| UX-03 | P0 | Pendiente | Editor como superficie única | Vídeo, transcript y segmentos se sincronizan; editar una frase no obliga a salir del flujo. |
-| UX-04 | P0 | Pendiente | Modo institución | Se pueden corregir hablantes, ver/filtrar segmentos con señales y adjuntar orden del día/documentos. |
+| UX-01 | P0 | Hecho | Selector de intención tras login | Tres tarjetas, recientes y acceso a biblioteca; no se pierde el acceso a un proyecto anterior. |
+| UX-02 | P0 | Hecho | Asistente único de subida | Creador e institución generan el mismo proyecto; sus metadatos contextuales quedan guardados. |
+| UX-03 | P0 | Hecho | Editor como superficie única | Vídeo, transcript y segmentos se sincronizan; editar una frase no obliga a salir del flujo. |
+| UX-04 | P0 | Hecho | Modo institución | Se pueden corregir hablantes, ver/filtrar segmentos con señales y adjuntar orden del día/documentos. |
 | PUB-01 | P0 | Pendiente | Ficha pública de una sesión | URL estable con vídeo original, transcript con timestamp, índice y documentos; funciona sin login. |
 | SRCH-01 | P0 | Pendiente | Búsqueda dentro de sesión | Consulta literal, resalta resultados y enlaza al segundo exacto. |
 | DATA-01 | P0 | Pendiente | Versionado de transcript/publicación | Toda publicación referencia una revisión; el original y sus cambios son auditables. |
 | COST-01 | P0 | Pendiente | Medición por archivo | Registrar minutos, coste por fase/modelo, duración de proceso, segmentos marcados, edición humana y calidad de muestra. |
 | VAL-01 | P0 | Pendiente | Descubrimiento con 5–8 usuarios | Entrevistas separadas: 2 creadores, 2 comunicación, 2 secretaría y 2 usuarios de información pública. Grabar tareas, no solo opiniones. |
 | PIL-01 | P0 | Pendiente | Elegir piloto seguro | Una entidad publica vídeo ya público y no integra expedientes internos. Definir responsable, periodo, propiedad de datos y criterios de salida. |
+| INF-01 | P0 | Pendiente | Google OAuth separado | Dos clientes OAuth web —dev/prod— con callback exacto; no confundir con API key. |
+| INF-02 | P0 | Pendiente | Base de datos de desarrollo aislada | Esquema/Flyway igual que producción, datos sintéticos y sin secretos/datos reales compartidos. |
+| INF-03 | P0 | En código | Migración y validación Scribe v2 | El código usa `scribe_v2`; falta clave dev limitada, corpus gallego y medición de coste/calidad. |
 
 ## Siguiente — hacer que sea valioso para institución y ciudadanía
 
@@ -34,6 +37,10 @@ Convención: **P0** desbloquea el primer piloto; **P1** aumenta el valor del pil
 | GOV-01 | P1 | Pendiente | Paquete de compra/piloto | DPA, ubicación de datos, subencargados, seguridad, soporte, salida/exportación y explicación de IA. |
 | GOV-02 | P1 | Pendiente | Brecha ENS/RGPD/accesibilidad | Inventario de tratamientos, análisis de riesgo y plan de medidas antes de procesar contenido no público. |
 | MARKET-01 | P1 | Pendiente | Mapa de implantaciones | Para 15 concellos: proveedor de sede/transparencia, vídeo de plenos, volumen, URL, buscabilidad y contacto público. |
+| INF-04 | P1 | En código | CI, ramas y gate de despliegue | `develop` verifica y queda asociado a development; producción se prepara tras merge a `master`/`main`, pero ningún proveedor se activa aún. |
+| INF-05 | P1 | Pendiente | Hosting de API y PostgreSQL | Decidir cómputo persistente, base de datos, backups, retención de archivos y coste máximo. |
+| INF-06 | P1 | Pendiente | Cloudflare DNS y túnel nombrado | Crear subdominios dev/prod y ruta estable cuando la zona y el hosting estén listos. |
+| INF-07 | P1 | Pendiente | Correo SES separado | Sandbox/allow-list dev y dominio autenticado/credenciales mínimas en producción. |
 
 ## Después — solo tras comprobar necesidad
 
@@ -66,5 +73,4 @@ Métricas de salida: coste por minuto publicado, porcentaje de minutos escalados
 - ¿Qué minuto de revisión ahorra el marcador de dudas frente a un editor genérico?
 - ¿Una persona encuentra una decisión antes de pedir información? Medirlo con tareas reales.
 - ¿Qué presupuestos y vías de compra usan las entidades objetivo? No diseñar precio para encajar artificialmente en un umbral contractual.
-
 

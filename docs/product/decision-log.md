@@ -15,6 +15,8 @@ Output:
 | 2026-07-12 | En validación | Una diputación puede adquirir para varios concellos. | Centralizaría compra/soporte para municipios con poca capacidad. | Entrevistas y licitaciones previas; necesidad de marca blanca y soporte. |
 | 2026-07-12 | Rechazada por ahora | Construir un portal generalista de presupuestos, contratos y expedientes. | Duplica infraestructura existente y dispersa la tesis. | Solo reconsiderar si sesiones/documentos demuestran una necesidad clara y acceso fiable a datos. |
 | 2026-07-12 | Rechazada por ahora | Un asistente que responda sin mostrar evidencia. | Riesgo de error, sesgo y falta de confianza pública. | Nunca lanzar sin evaluación, citas por fragmento y controles de seguridad. |
+| 2026-07-13 | Adoptada | Desarrollo y producción son entornos aislados, no solo ramas. | Evita probar sobre datos, credenciales o presupuesto reales; permite medir costes por entorno. | Dos bases, dos clientes OAuth, dos claves de transcripción y dos GitHub Environments configurados. |
+| 2026-07-13 | Adoptada | Cloudflare será borde/DNS/túnel, no el host implícito de la API Spring. | La API y PostgreSQL requieren un proveedor de cómputo/persistencia que aún no se ha elegido. | Despliegue remoto de dev con URLs estables, CORS y OAuth funcionando de extremo a extremo. |
 
 ## North-star y métricas de salud
 
@@ -29,5 +31,4 @@ Output:
 | Negocio responsable | renovación de piloto, coste de soporte por entidad, margen por sesión sin recortar revisión necesaria |
 
 No usar visitas al portal como única métrica de éxito: la transparencia se consulta a menudo por necesidad puntual. La medida relevante es si, cuando surge esa necesidad, la respuesta se encuentra y se puede comprobar.
-
 
