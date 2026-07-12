@@ -1,0 +1,1563 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src 'unsafe-inline' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Subtitula operating hub</title>
+<style>:root{color-scheme:light dark;background:light-dark(rgb(255 255 255), rgb(24 24 24))}html,body{margin:0}body{box-sizing:border-box;padding:1rem;background:inherit}iframe{display:block;width:100%;max-width:736px;height:calc(100vh - 2rem);margin:0 auto;border:0}</style>
+</head>
+<body>
+<iframe sandbox="allow-scripts" referrerpolicy="no-referrer" title="Subtitula operating hub" srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#x27;none&#x27;; script-src &#x27;unsafe-inline&#x27; &#x27;unsafe-eval&#x27; &#x27;wasm-unsafe-eval&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src &#x27;unsafe-inline&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src &#x27;none&#x27;; object-src &#x27;none&#x27;; base-uri &#x27;none&#x27;; form-action &#x27;none&#x27;&quot;&gt;
+&lt;title&gt;Subtitula operating hub&lt;/title&gt;
+&lt;style&gt;:root {
+  color-scheme: light dark;
+  background-color: var(--background) !important;
+
+  /* Agent-facing contract; keep in sync with SKILL.md. */
+  --background: light-dark(rgb(255 255 255), rgb(24 24 24));
+  --foreground: light-dark(rgb(26 28 31), rgb(255 255 255));
+  --card: color-mix(in oklab, var(--foreground) 5%, transparent);
+  --card-foreground: var(--foreground);
+  --popover: light-dark(rgb(255 255 255), rgb(45 45 45));
+  --popover-foreground: var(--foreground);
+  --primary: light-dark(rgb(51 156 255), rgb(131 195 255));
+  --primary-foreground: light-dark(rgb(255 255 255), rgb(13 13 13));
+  --secondary: light-dark(rgb(255 255 255 / 96%), rgb(54 54 54 / 96%));
+  --secondary-foreground: var(--foreground);
+  --muted: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --muted-foreground: light-dark(
+    rgb(26 28 31 / 49.4%),
+    rgb(255 255 255 / 49.8%)
+  );
+  --accent: light-dark(rgb(229 242 255), rgb(13 39 63));
+  --accent-foreground: var(--primary);
+  --destructive: light-dark(rgb(226 85 7), rgb(255 133 73));
+  --border: light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%));
+  --input: light-dark(
+    rgb(26 28 31 / 11.8%),
+    color-mix(in oklab, rgb(0 0 0) 10%, transparent)
+  );
+  --ring: light-dark(rgb(51 156 255), rgb(131 195 255 / 76%));
+  --font-size-base: 14px;
+  --viz-series-1: var(--primary);
+  --viz-series-2: light-dark(rgb(243 136 59), rgb(245 154 86));
+  --viz-series-3: light-dark(rgb(93 201 119), rgb(116 213 139));
+  --viz-series-4: light-dark(rgb(235 119 177), rgb(240 143 192));
+  --viz-series-5: light-dark(rgb(155 121 236), rgb(170 145 239));
+  --viz-series-6: light-dark(rgb(58 185 177), rgb(90 203 194));
+
+  /* Internal implementation variables; not part of the agent contract. */
+  --font-sans: -apple-system, system-ui, &quot;Segoe UI&quot;, sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, &quot;Liberation Mono&quot;,
+    monospace;
+  --font-size-normal: max(11px, var(--font-size-base));
+  --font-size-tooltip: calc(var(--font-size-base) - 1px);
+  --font-size-small: max(11px, calc(var(--font-size-base) - 2px));
+  --font-size-h1: calc(var(--font-size-normal) * 1.7142857143);
+  --font-size-h2: calc(var(--font-size-normal) * 1.4285714286);
+  --font-size-h3: calc(var(--font-size-normal) * 1.2857142857);
+  --font-weight-normal: 430;
+  --font-weight-medium: 500;
+  --line-height-normal: calc(var(--font-size-normal) * 1.5);
+  --line-height-tooltip: calc(var(--font-size-tooltip) * 1.4285714286);
+  --line-height-small: calc(var(--font-size-small) + 4px);
+  --radius: 12.5px;
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-2xl: calc(var(--radius) * 1.6);
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 8%);
+  --checkmark-image: url(&quot;data:image/svg+xml,%3Csvg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; viewBox=&#x27;0 0 17 17&#x27;%3E%3Cpath d=&#x27;M12.8961 3.64101C13.1297 3.41418 13.4984 3.37523 13.7779 3.56581C14.0571 3.75635 14.1554 4.11331 14.0299 4.41347L13.9615 4.53847L7.71151 13.7045C7.59411 13.8767 7.4063 13.9877 7.19881 14.0072C6.99136 14.0267 6.78564 13.9533 6.63826 13.806L2.88826 10.056L2.79842 9.9457C2.6192 9.67407 2.64927 9.30496 2.88826 9.06581C3.12738 8.82669 3.49647 8.79676 3.76815 8.97597L3.8785 9.06581L7.03084 12.2182L12.8053 3.74941L12.8961 3.64101Z&#x27;/%3E%3C/svg%3E&quot;);
+
+  /* Legacy aliases; not part of the current agent contract. */
+  --viz-bg: transparent;
+  --viz-panel: var(--card);
+  --viz-border: var(--border);
+  --viz-text: var(--foreground);
+  --viz-muted: var(--muted-foreground);
+  --viz-accent: var(--primary);
+  --viz-accent-text: var(--primary-foreground);
+  --viz-accent-bg: var(--accent);
+  --viz-font-size: var(--font-size-base);
+  --viz-warning: var(--destructive);
+  --color-background-primary: var(--background);
+  --color-text-primary: var(--foreground);
+  --color-border-secondary: var(--border);
+}
+
+:root[data-theme=&quot;light&quot;] {
+  color-scheme: light;
+}
+
+:root[data-theme=&quot;dark&quot;] {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html &gt; body {
+  margin: 0;
+  padding: 5px;
+  color: var(--foreground);
+  background: transparent !important;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+}
+
+a {
+  color: color-mix(in srgb, var(--viz-accent) 80%, var(--viz-text) 20%);
+  cursor: pointer;
+  font-weight: var(--viz-font-weight-medium);
+  text-decoration: none;
+  text-underline-offset: 2px;
+}
+
+a:is(:hover, :focus-visible) {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 0.5px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-block: 0;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+}
+
+b,
+strong,
+th {
+  font-weight: var(--font-weight-medium);
+}
+
+code:not(pre code) {
+  display: inline;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  corner-shape: superellipse(1.5);
+  background: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  overflow-wrap: anywhere;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  word-break: break-word;
+}
+
+#widget {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  background: transparent !important;
+}
+
+.card {
+  min-width: 0;
+  padding: 12px;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  border-radius: var(--radius-2xl);
+  corner-shape: superellipse(1.5);
+  color: var(--card-foreground);
+  background: var(--card);
+}
+
+#widget &gt; :not(.card) {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  width: max-content;
+  max-width: min(
+    20rem,
+    var(--tooltip-available-width, calc(100vw - 10px)),
+    calc(100vw - 10px)
+  );
+  max-height: min(
+    var(--tooltip-available-height, calc(100vh - 10px)),
+    calc(100vh - 10px)
+  );
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--popover-foreground);
+  background: var(--popover);
+  box-shadow: none;
+  font-size: var(--font-size-tooltip);
+  line-height: var(--line-height-tooltip);
+  overflow-wrap: break-word;
+  white-space: normal;
+  pointer-events: none;
+  user-select: none;
+}
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(max(180px, 24%), 1fr));
+  gap: 10px;
+}
+
+.viz-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.viz-stat-value {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+.viz-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.viz-badge {
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  color: var(--accent-foreground);
+  background: var(--accent);
+  font-weight: var(--font-weight-medium);
+}
+
+small,
+.text-small,
+.viz-badge {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.text-muted {
+  color: var(--muted-foreground);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.viz-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz-controls &gt; .form-label {
+  display: grid;
+  min-width: min(100%, 260px);
+  flex: 1 1 280px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 12px;
+  margin-bottom: 0;
+}
+
+.viz-controls &gt; .form-label &gt; :is(.form-control, .form-range, .form-select) {
+  grid-column: 1 / -1;
+}
+
+.btn,
+.form-check-input,
+.form-control,
+.form-range,
+.form-select {
+  font: inherit;
+}
+
+.btn {
+  appearance: button;
+  display: inline-flex;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0 8px;
+  -webkit-app-region: no-drag;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: var(--cursor-interaction, pointer);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.btn:is(.btn-block, .viz-tile) {
+  inline-size: 100%;
+}
+
+.btn.viz-tile {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+a.btn {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn-primary {
+  border-color: transparent;
+  color: var(--primary-foreground);
+  background: var(--foreground);
+  background-clip: padding-box;
+}
+
+.btn-primary .text-muted {
+  color: color-mix(in srgb, var(--primary-foreground) 50%, transparent);
+}
+
+.btn-primary:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 80%, transparent);
+  background-clip: padding-box;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.btn-ghost:not(:disabled):hover {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+[data-lucide] {
+  stroke-width: 1.6;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--foreground);
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--foreground);
+  background: var(--secondary);
+}
+
+.form-control::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-control[type=&quot;file&quot;] {
+  padding: 0;
+  overflow: hidden;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control[type=&quot;file&quot;]::file-selector-button {
+  min-height: 26px;
+  margin-right: 8px;
+  padding: 0 8px;
+  border: 0;
+  border-right: 1px solid var(--input);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: inherit;
+  font: inherit;
+}
+
+.form-control[type=&quot;file&quot;]:not(:disabled):hover::file-selector-button {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-control-color[type=&quot;color&quot;] {
+  width: 40px;
+  height: 28px;
+  padding: 3px;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch {
+  border: 0;
+  border-radius: calc(var(--radius-lg) - 4px);
+  corner-shape: superellipse(1.5);
+}
+
+textarea.form-control {
+  height: auto;
+  min-height: 72px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.form-control:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.form-select {
+  appearance: none;
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  margin: 0;
+  padding: 0 32px 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--foreground);
+  background-color: var(--secondary);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted-foreground) 50%),
+    linear-gradient(135deg, var(--muted-foreground) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) 50%,
+    calc(100% - 10px) 50%;
+  background-repeat: no-repeat;
+  background-size: 4px 4px;
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-select:not(:disabled):hover {
+  background-color: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-select:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-check {
+  display: flex;
+  min-height: 20px;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-check-input {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  margin: 0;
+  border: 1px solid var(--input);
+  color: var(--primary-foreground);
+  background-color: transparent;
+  cursor: var(--cursor-interaction, default);
+  transition:
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms;
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;] {
+  border-color: var(--input);
+  border-radius: var(--radius-sm);
+  corner-shape: superellipse(1.5);
+  background-color: var(--secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input:not(:disabled):not(:checked):hover {
+  background-color: var(--card);
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;]:checked {
+  border-color: var(--primary);
+  background-color: var(--primary);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input[type=&quot;checkbox&quot;]:checked::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-foreground);
+  content: &quot;&quot;;
+  mask: var(--checkmark-image) center / 12px 12px no-repeat;
+}
+
+.form-check-input[type=&quot;radio&quot;] {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+}
+
+.form-check-input[type=&quot;radio&quot;]:checked {
+  border: 2px solid var(--primary);
+  background:
+    radial-gradient(circle, var(--primary-foreground) 0 2.5px, transparent 3px),
+    var(--primary);
+}
+
+.form-check:not(.form-switch) .form-check-input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+}
+
+.form-switch .form-check-input:disabled,
+.form-switch .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-check-label {
+  color: var(--foreground);
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-switch .form-check-input {
+  position: relative;
+  width: 32px;
+  height: 20px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  box-shadow: none;
+  transition: background-color 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1px solid light-dark(var(--primary-foreground), var(--foreground));
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+  box-shadow: var(--shadow-sm);
+  content: &quot;&quot;;
+  transform: translate(2px, -50%);
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input:checked {
+  background: var(--primary);
+}
+
+.form-switch .form-check-input:checked::before {
+  transform: translate(14px, -50%);
+}
+
+.form-switch .form-check-input:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.form-range {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 28px;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: 0;
+  accent-color: var(--primary);
+  background: linear-gradient(
+      color-mix(in srgb, var(--foreground) 7%, transparent),
+      color-mix(in srgb, var(--foreground) 7%, transparent)
+    )
+    center / 100% 2px no-repeat;
+}
+
+.form-range::-webkit-slider-runnable-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-webkit-slider-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range::-moz-range-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-moz-range-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.btn:not(.btn-primary, .viz-tile):is(
+    [aria-pressed=&quot;true&quot;],
+    [aria-selected=&quot;true&quot;],
+    .is-selected
+  ) {
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.btn.viz-tile:is([aria-pressed=&quot;true&quot;], [aria-selected=&quot;true&quot;], .is-selected) {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#widget &gt; svg {
+  width: 100%;
+}
+
+.text-warning,
+.text-destructive {
+  color: var(--destructive);
+}
+
+html&gt;body{padding:0}&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div id=&quot;subtitula-dashboard&quot;&gt;
+  &lt;style&gt;
+    #subtitula-dashboard .dashboard-shell { display: grid; gap: 1rem; }
+    #subtitula-dashboard .dashboard-head,
+    #subtitula-dashboard .dashboard-actions,
+    #subtitula-dashboard .item-head,
+    #subtitula-dashboard .item-meta,
+    #subtitula-dashboard .form-actions { display: flex; gap: 0.55rem; flex-wrap: wrap; align-items: center; }
+    #subtitula-dashboard .dashboard-head { justify-content: space-between; }
+    #subtitula-dashboard .dashboard-actions { justify-content: flex-end; }
+    #subtitula-dashboard .nav-row { display: flex; gap: 0.45rem; flex-wrap: wrap; }
+    #subtitula-dashboard .summary-grid,
+    #subtitula-dashboard .content-grid,
+    #subtitula-dashboard .form-grid { display: grid; gap: 0.8rem; }
+    #subtitula-dashboard .summary-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    #subtitula-dashboard .content-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    #subtitula-dashboard .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    #subtitula-dashboard .list { display: grid; gap: 0.65rem; }
+    #subtitula-dashboard .item { display: grid; gap: 0.4rem; padding-block: 0.6rem; border-block-end: 1px solid var(--border); }
+    #subtitula-dashboard .item:last-child { border-block-end: 0; }
+    #subtitula-dashboard .item-head { justify-content: space-between; align-items: start; }
+    #subtitula-dashboard .item-meta { gap: 0.35rem; }
+    #subtitula-dashboard .item-details { margin: 0; }
+    #subtitula-dashboard .form-panel { display: none; }
+    #subtitula-dashboard .form-panel.is-open { display: grid; gap: 0.75rem; }
+    #subtitula-dashboard .wide { grid-column: 1 / -1; }
+    #subtitula-dashboard .empty { margin: 0; }
+    #subtitula-dashboard .document-link { display: inline-flex; align-items: center; }
+    #subtitula-dashboard .state-done { text-decoration: line-through; }
+    @media (max-width: 560px) {
+      #subtitula-dashboard .summary-grid,
+      #subtitula-dashboard .content-grid,
+      #subtitula-dashboard .form-grid { grid-template-columns: 1fr; }
+      #subtitula-dashboard .dashboard-actions { justify-content: flex-start; }
+    }
+  &lt;/style&gt;
+
+  &lt;main class=&quot;dashboard-shell&quot; aria-live=&quot;polite&quot;&gt;
+    &lt;header class=&quot;dashboard-head&quot;&gt;
+      &lt;div&gt;
+        &lt;h2&gt;Centro operativo&lt;/h2&gt;
+        &lt;span id=&quot;storage-state&quot; class=&quot;text-muted&quot;&gt;Datos locales&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;dashboard-actions&quot;&gt;
+        &lt;button id=&quot;export-data&quot; type=&quot;button&quot; class=&quot;btn&quot;&gt;Exportar JSON&lt;/button&gt;
+        &lt;label class=&quot;btn&quot; for=&quot;import-data&quot;&gt;Importar JSON&lt;/label&gt;
+        &lt;input id=&quot;import-data&quot; type=&quot;file&quot; accept=&quot;application/json&quot; class=&quot;sr-only&quot;&gt;
+        &lt;button id=&quot;reset-data&quot; type=&quot;button&quot; class=&quot;btn btn-ghost&quot;&gt;Restaurar base&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/header&gt;
+
+    &lt;nav class=&quot;nav-row&quot; aria-label=&quot;Secciones del tablero&quot;&gt;
+      &lt;button type=&quot;button&quot; class=&quot;btn btn-primary&quot; data-view=&quot;overview&quot; aria-pressed=&quot;true&quot;&gt;Resumen&lt;/button&gt;
+      &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-view=&quot;tasks&quot; aria-pressed=&quot;false&quot;&gt;Tareas&lt;/button&gt;
+      &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-view=&quot;research&quot; aria-pressed=&quot;false&quot;&gt;Investigación&lt;/button&gt;
+      &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-view=&quot;market&quot; aria-pressed=&quot;false&quot;&gt;Mercado&lt;/button&gt;
+      &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-view=&quot;decisions&quot; aria-pressed=&quot;false&quot;&gt;Ideas y decisiones&lt;/button&gt;
+      &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-view=&quot;documents&quot; aria-pressed=&quot;false&quot;&gt;Documentos&lt;/button&gt;
+    &lt;/nav&gt;
+
+    &lt;section class=&quot;summary-grid&quot; aria-label=&quot;Estado&quot;&gt;
+      &lt;article class=&quot;card viz-stat&quot;&gt;
+        &lt;span class=&quot;text-muted&quot;&gt;Tareas cerradas&lt;/span&gt;
+        &lt;strong id=&quot;task-progress&quot; class=&quot;viz-stat-value&quot;&gt;0/0&lt;/strong&gt;
+        &lt;span id=&quot;task-progress-note&quot; class=&quot;text-small text-muted&quot;&gt;Sin tareas&lt;/span&gt;
+      &lt;/article&gt;
+      &lt;article class=&quot;card viz-stat&quot;&gt;
+        &lt;span class=&quot;text-muted&quot;&gt;Prioridad P0 abierta&lt;/span&gt;
+        &lt;strong id=&quot;p0-count&quot; class=&quot;viz-stat-value&quot;&gt;0&lt;/strong&gt;
+        &lt;span class=&quot;text-small text-muted&quot;&gt;Desbloquea piloto&lt;/span&gt;
+      &lt;/article&gt;
+      &lt;article class=&quot;card viz-stat&quot;&gt;
+        &lt;span class=&quot;text-muted&quot;&gt;Vigilancia activa&lt;/span&gt;
+        &lt;strong id=&quot;watch-count&quot; class=&quot;viz-stat-value&quot;&gt;0&lt;/strong&gt;
+        &lt;span class=&quot;text-small text-muted&quot;&gt;Investigación y mercado&lt;/span&gt;
+      &lt;/article&gt;
+    &lt;/section&gt;
+
+    &lt;section id=&quot;view-overview&quot; data-panel=&quot;overview&quot;&gt;
+      &lt;div class=&quot;content-grid&quot;&gt;
+        &lt;article class=&quot;card&quot;&gt;
+          &lt;h3&gt;La tesis&lt;/h3&gt;
+          &lt;p&gt;Hacer accesible, revisable y encontrable lo que se dijo en el audiovisual público.&lt;/p&gt;
+          &lt;div class=&quot;item-meta&quot;&gt;
+            &lt;span class=&quot;viz-badge&quot;&gt;Creador&lt;/span&gt;
+            &lt;span class=&quot;viz-badge&quot;&gt;Institución&lt;/span&gt;
+            &lt;span class=&quot;viz-badge&quot;&gt;Transparencia&lt;/span&gt;
+          &lt;/div&gt;
+        &lt;/article&gt;
+        &lt;article class=&quot;card&quot;&gt;
+          &lt;h3&gt;Siguiente decisión&lt;/h3&gt;
+          &lt;p id=&quot;next-task&quot;&gt;Cargando tarea prioritaria…&lt;/p&gt;
+          &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-jump=&quot;tasks&quot;&gt;Abrir tareas&lt;/button&gt;
+        &lt;/article&gt;
+      &lt;/div&gt;
+      &lt;article class=&quot;card&quot;&gt;
+        &lt;h3&gt;Señal de éxito&lt;/h3&gt;
+        &lt;p&gt;Número de sesiones públicas en las que una persona llega de una búsqueda a un minuto verificable y un documento relacionado.&lt;/p&gt;
+      &lt;/article&gt;
+    &lt;/section&gt;
+
+    &lt;section id=&quot;view-tasks&quot; data-panel=&quot;tasks&quot; hidden&gt;
+      &lt;div class=&quot;dashboard-head&quot;&gt;
+        &lt;div&gt;
+          &lt;h3&gt;Tareas&lt;/h3&gt;
+          &lt;span class=&quot;text-muted&quot;&gt;Marca una tarea para cerrarla. Los cambios se guardan en este navegador.&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;button type=&quot;button&quot; class=&quot;btn btn-primary&quot; data-toggle-form=&quot;task-form&quot;&gt;Añadir tarea&lt;/button&gt;
+      &lt;/div&gt;
+      &lt;form id=&quot;task-form&quot; class=&quot;card form-panel&quot; aria-label=&quot;Añadir tarea&quot;&gt;
+        &lt;div class=&quot;form-grid&quot;&gt;
+          &lt;label class=&quot;wide&quot;&gt;
+            &lt;span class=&quot;form-label&quot;&gt;Tarea&lt;/span&gt;
+            &lt;input id=&quot;task-title&quot; class=&quot;form-control&quot; required&gt;
+          &lt;/label&gt;
+          &lt;label&gt;
+            &lt;span class=&quot;form-label&quot;&gt;Área&lt;/span&gt;
+            &lt;input id=&quot;task-area&quot; class=&quot;form-control&quot; value=&quot;Producto&quot;&gt;
+          &lt;/label&gt;
+          &lt;label&gt;
+            &lt;span class=&quot;form-label&quot;&gt;Prioridad&lt;/span&gt;
+            &lt;select id=&quot;task-priority&quot; class=&quot;form-select&quot;&gt;
+              &lt;option&gt;P0&lt;/option&gt;
+              &lt;option selected&gt;P1&lt;/option&gt;
+              &lt;option&gt;P2&lt;/option&gt;
+            &lt;/select&gt;
+          &lt;/label&gt;
+          &lt;label&gt;
+            &lt;span class=&quot;form-label&quot;&gt;Horizonte&lt;/span&gt;
+            &lt;select id=&quot;task-lane&quot; class=&quot;form-select&quot;&gt;
+              &lt;option&gt;Ahora&lt;/option&gt;
+              &lt;option selected&gt;Siguiente&lt;/option&gt;
+              &lt;option&gt;Después&lt;/option&gt;
+            &lt;/select&gt;
+          &lt;/label&gt;
+          &lt;label&gt;
+            &lt;span class=&quot;form-label&quot;&gt;Nota&lt;/span&gt;
+            &lt;input id=&quot;task-note&quot; class=&quot;form-control&quot; placeholder=&quot;Criterio o siguiente paso&quot;&gt;
+          &lt;/label&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;form-actions&quot;&gt;
+          &lt;button type=&quot;submit&quot; class=&quot;btn btn-primary&quot;&gt;Guardar tarea&lt;/button&gt;
+          &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-toggle-form=&quot;task-form&quot;&gt;Cancelar&lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/form&gt;
+      &lt;div id=&quot;task-list&quot; class=&quot;list&quot;&gt;&lt;/div&gt;
+    &lt;/section&gt;
+
+    &lt;section id=&quot;view-research&quot; data-panel=&quot;research&quot; hidden&gt;
+      &lt;div class=&quot;dashboard-head&quot;&gt;
+        &lt;div&gt;
+          &lt;h3&gt;Investigación&lt;/h3&gt;
+          &lt;span class=&quot;text-muted&quot;&gt;Preguntas que reducen incertidumbre antes de construir.&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;button type=&quot;button&quot; class=&quot;btn btn-primary&quot; data-toggle-form=&quot;research-form&quot;&gt;Añadir investigación&lt;/button&gt;
+      &lt;/div&gt;
+      &lt;form id=&quot;research-form&quot; class=&quot;card form-panel&quot; aria-label=&quot;Añadir investigación&quot;&gt;
+        &lt;div class=&quot;form-grid&quot;&gt;
+          &lt;label class=&quot;wide&quot;&gt;
+            &lt;span class=&quot;form-label&quot;&gt;Pregunta&lt;/span&gt;
+            &lt;input id=&quot;research-title&quot; class=&quot;form-control&quot; required&gt;
+          &lt;/label&gt;
+          &lt;label&gt;
+            &lt;span class=&quot;form-label&quot;&gt;Método&lt;/span&gt;
+            &lt;input id=&quot;research-method&quot; class=&quot;form-control&quot; placeholder=&quot;Entrevista, auditoría, corpus…&quot;&gt;
+          &lt;/label&gt;
+          &lt;label&gt;
+            &lt;span class=&quot;form-label&quot;&gt;Resultado esperado&lt;/span&gt;
+            &lt;input id=&quot;research-outcome&quot; class=&quot;form-control&quot; placeholder=&quot;Decisión informada&quot;&gt;
+          &lt;/label&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;form-actions&quot;&gt;
+          &lt;button type=&quot;submit&quot; class=&quot;btn btn-primary&quot;&gt;Guardar investigación&lt;/button&gt;
+          &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-toggle-form=&quot;research-form&quot;&gt;Cancelar&lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/form&gt;
+      &lt;div id=&quot;research-list&quot; class=&quot;list&quot;&gt;&lt;/div&gt;
+    &lt;/section&gt;
+
+    &lt;section id=&quot;view-market&quot; data-panel=&quot;market&quot; hidden&gt;
+      &lt;div class=&quot;dashboard-head&quot;&gt;
+        &lt;div&gt;
+          &lt;h3&gt;Mercado y competidores&lt;/h3&gt;
+          &lt;span class=&quot;text-muted&quot;&gt;La comparación sirve para descubrir diferenciación, no para copiar funciones.&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;button type=&quot;button&quot; class=&quot;btn btn-primary&quot; data-toggle-form=&quot;market-form&quot;&gt;Añadir referencia&lt;/button&gt;
+      &lt;/div&gt;
+      &lt;form id=&quot;market-form&quot; class=&quot;card form-panel&quot; aria-label=&quot;Añadir referencia de mercado&quot;&gt;
+        &lt;div class=&quot;form-grid&quot;&gt;
+          &lt;label&gt;
+            &lt;span class=&quot;form-label&quot;&gt;Organización / producto&lt;/span&gt;
+            &lt;input id=&quot;market-name&quot; class=&quot;form-control&quot; required&gt;
+          &lt;/label&gt;
+          &lt;label&gt;
+            &lt;span class=&quot;form-label&quot;&gt;Tipo&lt;/span&gt;
+            &lt;input id=&quot;market-type&quot; class=&quot;form-control&quot; placeholder=&quot;Proveedor, portal, referencia&quot;&gt;
+          &lt;/label&gt;
+          &lt;label class=&quot;wide&quot;&gt;
+            &lt;span class=&quot;form-label&quot;&gt;Qué aporta o qué observar&lt;/span&gt;
+            &lt;input id=&quot;market-note&quot; class=&quot;form-control&quot; required&gt;
+          &lt;/label&gt;
+          &lt;label class=&quot;wide&quot;&gt;
+            &lt;span class=&quot;form-label&quot;&gt;Fuente o precio&lt;/span&gt;
+            &lt;input id=&quot;market-source&quot; class=&quot;form-control&quot; placeholder=&quot;URL, importe público o por investigar&quot;&gt;
+          &lt;/label&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;form-actions&quot;&gt;
+          &lt;button type=&quot;submit&quot; class=&quot;btn btn-primary&quot;&gt;Guardar referencia&lt;/button&gt;
+          &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-toggle-form=&quot;market-form&quot;&gt;Cancelar&lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/form&gt;
+      &lt;div id=&quot;market-list&quot; class=&quot;list&quot;&gt;&lt;/div&gt;
+    &lt;/section&gt;
+
+    &lt;section id=&quot;view-decisions&quot; data-panel=&quot;decisions&quot; hidden&gt;
+      &lt;div class=&quot;dashboard-head&quot;&gt;
+        &lt;div&gt;
+          &lt;h3&gt;Ideas y decisiones&lt;/h3&gt;
+          &lt;span class=&quot;text-muted&quot;&gt;Separar lo adoptado de lo que todavía necesita evidencia.&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;button type=&quot;button&quot; class=&quot;btn btn-primary&quot; data-toggle-form=&quot;decision-form&quot;&gt;Añadir idea&lt;/button&gt;
+      &lt;/div&gt;
+      &lt;form id=&quot;decision-form&quot; class=&quot;card form-panel&quot; aria-label=&quot;Añadir idea o decisión&quot;&gt;
+        &lt;div class=&quot;form-grid&quot;&gt;
+          &lt;label class=&quot;wide&quot;&gt;
+            &lt;span class=&quot;form-label&quot;&gt;Idea o decisión&lt;/span&gt;
+            &lt;input id=&quot;decision-title&quot; class=&quot;form-control&quot; required&gt;
+          &lt;/label&gt;
+          &lt;label&gt;
+            &lt;span class=&quot;form-label&quot;&gt;Estado&lt;/span&gt;
+            &lt;select id=&quot;decision-status&quot; class=&quot;form-select&quot;&gt;
+              &lt;option&gt;En validación&lt;/option&gt;
+              &lt;option&gt;Adoptada&lt;/option&gt;
+              &lt;option&gt;Rechazada por ahora&lt;/option&gt;
+            &lt;/select&gt;
+          &lt;/label&gt;
+          &lt;label&gt;
+            &lt;span class=&quot;form-label&quot;&gt;Área&lt;/span&gt;
+            &lt;input id=&quot;decision-area&quot; class=&quot;form-control&quot; value=&quot;Producto&quot;&gt;
+          &lt;/label&gt;
+          &lt;label class=&quot;wide&quot;&gt;
+            &lt;span class=&quot;form-label&quot;&gt;Motivo o evidencia necesaria&lt;/span&gt;
+            &lt;input id=&quot;decision-note&quot; class=&quot;form-control&quot;&gt;
+          &lt;/label&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;form-actions&quot;&gt;
+          &lt;button type=&quot;submit&quot; class=&quot;btn btn-primary&quot;&gt;Guardar idea&lt;/button&gt;
+          &lt;button type=&quot;button&quot; class=&quot;btn&quot; data-toggle-form=&quot;decision-form&quot;&gt;Cancelar&lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/form&gt;
+      &lt;div id=&quot;decision-list&quot; class=&quot;list&quot;&gt;&lt;/div&gt;
+    &lt;/section&gt;
+
+    &lt;section id=&quot;view-documents&quot; data-panel=&quot;documents&quot; hidden&gt;
+      &lt;h3&gt;Documentos fuente&lt;/h3&gt;
+      &lt;div id=&quot;document-list&quot; class=&quot;content-grid&quot;&gt;&lt;/div&gt;
+    &lt;/section&gt;
+  &lt;/main&gt;
+
+  &lt;script&gt;
+    (function () {
+      const root = document.getElementById(&#x27;subtitula-dashboard&#x27;);
+      const storageKey = &#x27;subtitula-operating-hub-v1&#x27;;
+      const seed = {
+        updatedAt: &#x27;2026-07-12&#x27;,
+        tasks: [
+          { id: &#x27;UX-01&#x27;, title: &#x27;Selector de intención tras login&#x27;, area: &#x27;UX&#x27;, priority: &#x27;P0&#x27;, lane: &#x27;Ahora&#x27;, note: &#x27;Tres tarjetas, recientes y biblioteca.&#x27;, done: false },
+          { id: &#x27;UX-02&#x27;, title: &#x27;Asistente único de subida&#x27;, area: &#x27;UX&#x27;, priority: &#x27;P0&#x27;, lane: &#x27;Ahora&#x27;, note: &#x27;Creador e institución generan el mismo proyecto.&#x27;, done: false },
+          { id: &#x27;UX-03&#x27;, title: &#x27;Editor como superficie única&#x27;, area: &#x27;UX&#x27;, priority: &#x27;P0&#x27;, lane: &#x27;Ahora&#x27;, note: &#x27;Vídeo, transcript y segmentos sincronizados.&#x27;, done: false },
+          { id: &#x27;UX-04&#x27;, title: &#x27;Modo institución&#x27;, area: &#x27;UX&#x27;, priority: &#x27;P0&#x27;, lane: &#x27;Ahora&#x27;, note: &#x27;Hablantes, señales y documentos.&#x27;, done: false },
+          { id: &#x27;PUB-01&#x27;, title: &#x27;Ficha pública de una sesión&#x27;, area: &#x27;Publicación&#x27;, priority: &#x27;P0&#x27;, lane: &#x27;Ahora&#x27;, note: &#x27;URL estable, vídeo, transcript, índice y documentos.&#x27;, done: false },
+          { id: &#x27;SRCH-01&#x27;, title: &#x27;Búsqueda dentro de sesión&#x27;, area: &#x27;Búsqueda&#x27;, priority: &#x27;P0&#x27;, lane: &#x27;Ahora&#x27;, note: &#x27;Coincidencia y salto al segundo exacto.&#x27;, done: false },
+          { id: &#x27;DATA-01&#x27;, title: &#x27;Versionado de transcript y publicación&#x27;, area: &#x27;Datos&#x27;, priority: &#x27;P0&#x27;, lane: &#x27;Ahora&#x27;, note: &#x27;Publicar una revisión concreta y auditable.&#x27;, done: false },
+          { id: &#x27;COST-01&#x27;, title: &#x27;Medición por archivo&#x27;, area: &#x27;Coste&#x27;, priority: &#x27;P0&#x27;, lane: &#x27;Ahora&#x27;, note: &#x27;Minutos, coste, revisión y calidad.&#x27;, done: false },
+          { id: &#x27;VAL-01&#x27;, title: &#x27;Descubrimiento con 5–8 usuarios&#x27;, area: &#x27;Validación&#x27;, priority: &#x27;P0&#x27;, lane: &#x27;Ahora&#x27;, note: &#x27;Creadores, comunicación, secretaría y ciudadanía.&#x27;, done: false },
+          { id: &#x27;PIL-01&#x27;, title: &#x27;Elegir piloto seguro&#x27;, area: &#x27;Piloto&#x27;, priority: &#x27;P0&#x27;, lane: &#x27;Ahora&#x27;, note: &#x27;Vídeo ya público, sin expedientes internos.&#x27;, done: false },
+          { id: &#x27;UX-05&#x27;, title: &#x27;Checklist de publicación&#x27;, area: &#x27;UX&#x27;, priority: &#x27;P1&#x27;, lane: &#x27;Siguiente&#x27;, note: &#x27;Título, fecha, origen, accesibilidad y responsable.&#x27;, done: false },
+          { id: &#x27;UX-06&#x27;, title: &#x27;Asociación al orden del día&#x27;, area: &#x27;UX&#x27;, priority: &#x27;P1&#x27;, lane: &#x27;Siguiente&#x27;, note: &#x27;Mapear tramos y permitir corrección.&#x27;, done: false },
+          { id: &#x27;PUB-02&#x27;, title: &#x27;Portal por entidad&#x27;, area: &#x27;Publicación&#x27;, priority: &#x27;P1&#x27;, lane: &#x27;Siguiente&#x27;, note: &#x27;Archivo, filtros y embebido o enlace.&#x27;, done: false },
+          { id: &#x27;SRCH-02&#x27;, title: &#x27;Búsqueda global léxica&#x27;, area: &#x27;Búsqueda&#x27;, priority: &#x27;P1&#x27;, lane: &#x27;Siguiente&#x27;, note: &#x27;Entidad, órgano, fecha, hablante y punto del día.&#x27;, done: false },
+          { id: &#x27;SRCH-03&#x27;, title: &#x27;Analítica de necesidades ciudadanas&#x27;, area: &#x27;Búsqueda&#x27;, priority: &#x27;P1&#x27;, lane: &#x27;Siguiente&#x27;, note: &#x27;Consultas sin resultado y clics a evidencia.&#x27;, done: false },
+          { id: &#x27;COST-02&#x27;, title: &#x27;Cascada de transcripción&#x27;, area: &#x27;Coste&#x27;, priority: &#x27;P1&#x27;, lane: &#x27;Siguiente&#x27;, note: &#x27;Escalar solo segmentos con señales de riesgo.&#x27;, done: false },
+          { id: &#x27;COST-03&#x27;, title: &#x27;Cascada de traducción&#x27;, area: &#x27;Coste&#x27;, priority: &#x27;P1&#x27;, lane: &#x27;Siguiente&#x27;, note: &#x27;Traducir tracks publicados o solicitados.&#x27;, done: false },
+          { id: &#x27;GOV-01&#x27;, title: &#x27;Paquete de compra y piloto&#x27;, area: &#x27;Gobierno&#x27;, priority: &#x27;P1&#x27;, lane: &#x27;Siguiente&#x27;, note: &#x27;DPA, seguridad, soporte y salida.&#x27;, done: false },
+          { id: &#x27;GOV-02&#x27;, title: &#x27;Brecha ENS, RGPD y accesibilidad&#x27;, area: &#x27;Gobierno&#x27;, priority: &#x27;P1&#x27;, lane: &#x27;Siguiente&#x27;, note: &#x27;Riesgo y medidas antes de contenido no público.&#x27;, done: false },
+          { id: &#x27;MARKET-01&#x27;, title: &#x27;Mapa de implantaciones&#x27;, area: &#x27;Mercado&#x27;, priority: &#x27;P1&#x27;, lane: &#x27;Siguiente&#x27;, note: &#x27;15 concellos: proveedor, vídeo, volumen y portal.&#x27;, done: false },
+          { id: &#x27;SRCH-04&#x27;, title: &#x27;Recuperación híbrida o vectorial&#x27;, area: &#x27;Búsqueda&#x27;, priority: &#x27;P2&#x27;, lane: &#x27;Después&#x27;, note: &#x27;Comparar calidad, latencia y coste contra búsqueda léxica.&#x27;, done: false },
+          { id: &#x27;SRCH-05&#x27;, title: &#x27;Preguntas en lenguaje natural con citas&#x27;, area: &#x27;Búsqueda&#x27;, priority: &#x27;P2&#x27;, lane: &#x27;Después&#x27;, note: &#x27;Solo con evidencia y evaluación humana.&#x27;, done: false },
+          { id: &#x27;INT-01&#x27;, title: &#x27;Embed, API o sede electrónica&#x27;, area: &#x27;Integración&#x27;, priority: &#x27;P2&#x27;, lane: &#x27;Después&#x27;, note: &#x27;Priorizar tras pilotos.&#x27;, done: false },
+          { id: &#x27;PUB-03&#x27;, title: &#x27;Archivo histórico&#x27;, area: &#x27;Publicación&#x27;, priority: &#x27;P2&#x27;, lane: &#x27;Después&#x27;, note: &#x27;Estimar calidad y coste antes de vender.&#x27;, done: false },
+          { id: &#x27;CRE-01&#x27;, title: &#x27;Presets sociales y publicación directa&#x27;, area: &#x27;Creador&#x27;, priority: &#x27;P2&#x27;, lane: &#x27;Después&#x27;, note: &#x27;Solo si elimina un paso doloroso.&#x27;, done: false },
+          { id: &#x27;BIZ-01&#x27;, title: &#x27;Oferta provincial&#x27;, area: &#x27;Negocio&#x27;, priority: &#x27;P2&#x27;, lane: &#x27;Después&#x27;, note: &#x27;Tras operación repetible en varios concellos.&#x27;, done: false }
+        ],
+        research: [
+          { id: &#x27;M-01&#x27;, title: &#x27;¿Qué portales y proveedores usan 15 concellos?&#x27;, method: &#x27;Auditoría pública de URLs, sedes, plenos y portal.&#x27;, outcome: &#x27;Mapa de incumbencia e integraciones.&#x27;, done: false },
+          { id: &#x27;M-02&#x27;, title: &#x27;¿Quién transmite y archiva plenos, y cuánto volumen genera?&#x27;, method: &#x27;Muestra del último año por entidad.&#x27;, outcome: &#x27;Coste, frecuencia y mercado alcanzable.&#x27;, done: false },
+          { id: &#x27;M-03&#x27;, title: &#x27;¿Qué contratos revelan precio de portal, streaming o subtitulado?&#x27;, method: &#x27;PLACSP y PcPG por CPV y proveedor.&#x27;, outcome: &#x27;Rango de compra real.&#x27;, done: false },
+          { id: &#x27;M-04&#x27;, title: &#x27;¿Qué uso ciudadano existe?&#x27;, method: &#x27;Solicitudes, analítica compartida, prensa y tests de tarea.&#x27;, outcome: &#x27;Métrica de utilidad, no visitas vanidosas.&#x27;, done: false },
+          { id: &#x27;M-05&#x27;, title: &#x27;¿Las alternativas reconocen gallego y con qué calidad?&#x27;, method: &#x27;Corpus de plenos públicos y revisión humana.&#x27;, outcome: &#x27;Baseline de WER, nombres y coste.&#x27;, done: false },
+          { id: &#x27;M-06&#x27;, title: &#x27;¿Qué requisitos de seguridad exigen compradores?&#x27;, method: &#x27;Entrevistas con contratación, DPD e IT.&#x27;, outcome: &#x27;Secuencia para ENS, DPA y alojamiento.&#x27;, done: false }
+        ],
+        market: [
+          { id: &#x27;EIDOLOCAL&#x27;, name: &#x27;EidoLocal / Portal de Transparencia Local de Galicia&#x27;, type: &#x27;Infraestructura pública&#x27;, note: &#x27;Cumplimiento, categorías y enlace a portales externos; oportunidad de complementar con audiovisual navegable.&#x27;, source: &#x27;Gratuito para entidades locales; fuente en market-watch.md.&#x27; },
+          { id: &#x27;GESPUBLICO&#x27;, name: &#x27;esPublico Gestiona&#x27;, type: &#x27;Proveedor de gestión local&#x27;, note: &#x27;Administración electrónica y expediente; integrar por enlace, embed o API, no sustituir.&#x27;, source: &#x27;Precio no publicado.&#x27; },
+          { id: &#x27;CORUNA&#x27;, name: &#x27;A Coruña — contratos.datos.coruna.eu&#x27;, type: &#x27;Referencia institucional&#x27;, note: &#x27;Referencia UX para explorar un dominio de datos públicos.&#x27;, source: &#x27;Servicio institucional.&#x27; },
+          { id: &#x27;XUNTA&#x27;, name: &#x27;Portal de Transparencia de la Xunta&#x27;, type: &#x27;Referencia institucional&#x27;, note: &#x27;Referencia de información de interés y métricas públicas, sin extrapolar tráfico global.&#x27;, source: &#x27;Servicio institucional.&#x27; },
+          { id: &#x27;HAPPYSCRIBE&#x27;, name: &#x27;HappyScribe&#x27;, type: &#x27;Subtitulado generalista&#x27;, note: &#x27;UX creador: ASR, hablantes, edición, exportación y colaboración.&#x27;, source: &#x27;Precios públicos en market-watch.md.&#x27; },
+          { id: &#x27;AMBERSCRIPT&#x27;, name: &#x27;Amberscript&#x27;, type: &#x27;Subtitulado generalista&#x27;, note: &#x27;Referencia de coste, revisión humana, seguridad y exportaciones.&#x27;, source: &#x27;Precios públicos en market-watch.md.&#x27; },
+          { id: &#x27;SONIX&#x27;, name: &#x27;Sonix&#x27;, type: &#x27;Subtitulado generalista&#x27;, note: &#x27;Referencia de coste de mercado masivo y trabajo por créditos.&#x27;, source: &#x27;Precios públicos en market-watch.md.&#x27; }
+        ],
+        decisions: [
+          { id: &#x27;D-01&#x27;, title: &#x27;Un solo producto y editor para creador e institución.&#x27;, status: &#x27;Adoptada&#x27;, area: &#x27;Producto&#x27;, note: &#x27;Comparten medio, transcript, segmentos, subtítulos y salida.&#x27; },
+          { id: &#x27;D-02&#x27;, title: &#x27;La intención se elige al entrar, pero puede cambiarse.&#x27;, status: &#x27;Adoptada&#x27;, area: &#x27;UX&#x27;, note: &#x27;Configura ayudas sin encerrar al usuario.&#x27; },
+          { id: &#x27;D-03&#x27;, title: &#x27;Transparencia pública es abierta y separada del login.&#x27;, status: &#x27;Adoptada&#x27;, area: &#x27;Transparencia&#x27;, note: &#x27;La ciudadanía no debe ser cliente SaaS para consultar.&#x27; },
+          { id: &#x27;D-04&#x27;, title: &#x27;Búsqueda léxica con minuto y fuentes antes que chat semántico.&#x27;, status: &#x27;Adoptada&#x27;, area: &#x27;Búsqueda&#x27;, note: &#x27;Más auditable, barata y útil para probar demanda.&#x27; },
+          { id: &#x27;D-05&#x27;, title: &#x27;Complementar EidoLocal, Gestiona y las sedes existentes.&#x27;, status: &#x27;Adoptada&#x27;, area: &#x27;Integración&#x27;, note: &#x27;Reducir riesgo del piloto y respetar fuentes administrativas.&#x27; },
+          { id: &#x27;D-06&#x27;, title: &#x27;La revisión guiada por señales reduce materialmente el tiempo humano.&#x27;, status: &#x27;En validación&#x27;, area: &#x27;Producto&#x27;, note: &#x27;Comparar contra editor lineal en tareas cronometradas.&#x27; },
+          { id: &#x27;D-07&#x27;, title: &#x27;Gallego más transparencia audiovisual es una cuña comercial suficiente.&#x27;, status: &#x27;En validación&#x27;, area: &#x27;Negocio&#x27;, note: &#x27;Validar con compradores, volumen y conversión de pilotos.&#x27; },
+          { id: &#x27;D-08&#x27;, title: &#x27;Una diputación puede comprar para varios concellos.&#x27;, status: &#x27;En validación&#x27;, area: &#x27;Negocio&#x27;, note: &#x27;Entrevistas y licitaciones previas determinarán encaje.&#x27; },
+          { id: &#x27;D-09&#x27;, title: &#x27;No construir aún un portal generalista de presupuestos, contratos y expedientes.&#x27;, status: &#x27;Rechazada por ahora&#x27;, area: &#x27;Alcance&#x27;, note: &#x27;Duplica infraestructura y dispersa la tesis.&#x27; },
+          { id: &#x27;D-10&#x27;, title: &#x27;No lanzar un asistente que responda sin evidencia visible.&#x27;, status: &#x27;Rechazada por ahora&#x27;, area: &#x27;Confianza&#x27;, note: &#x27;Exigir citas por fragmento y controles de seguridad.&#x27; }
+        ],
+        documents: [
+          { title: &#x27;Índice del centro de producto&#x27;, path: &#x27;./README.md&#x27;, note: &#x27;Tesis, cadencia y mapa de documentos.&#x27; },
+          { title: &#x27;Refactor de interfaz&#x27;, path: &#x27;./product-refactor.md&#x27;, note: &#x27;Flujos, rutas, editor, búsqueda y modelo de datos.&#x27; },
+          { title: &#x27;Backlog priorizado&#x27;, path: &#x27;./backlog.md&#x27;, note: &#x27;Trabajo P0, P1, P2 y cascada de coste.&#x27; },
+          { title: &#x27;Mercado y competidores&#x27;, path: &#x27;./market-watch.md&#x27;, note: &#x27;Portales, productos comparables, fuentes y cola de investigación.&#x27; },
+          { title: &#x27;Decisiones e hipótesis&#x27;, path: &#x27;./decision-log.md&#x27;, note: &#x27;Decisiones, validaciones y métricas de salud.&#x27; }
+        ]
+      };
+      let state = loadState();
+      let activeView = &#x27;overview&#x27;;
+
+      function clone(value) {
+        return JSON.parse(JSON.stringify(value));
+      }
+
+      function valid(value) {
+        return value &amp;&amp; Array.isArray(value.tasks) &amp;&amp; Array.isArray(value.research) &amp;&amp; Array.isArray(value.market) &amp;&amp; Array.isArray(value.decisions) &amp;&amp; Array.isArray(value.documents);
+      }
+
+      function loadState() {
+        try {
+          const local = localStorage.getItem(storageKey);
+          const parsed = local ? JSON.parse(local) : null;
+          if (valid(parsed)) return parsed;
+          root.querySelector(&#x27;#storage-state&#x27;).textContent = &#x27;Base del repositorio&#x27;;
+        } catch (error) {
+          root.querySelector(&#x27;#storage-state&#x27;).textContent = &#x27;Sesión local&#x27;;
+        }
+        return clone(seed);
+      }
+
+      function persist() {
+        state.updatedAt = new Date().toISOString().slice(0, 10);
+        try {
+          localStorage.setItem(storageKey, JSON.stringify(state));
+          root.querySelector(&#x27;#storage-state&#x27;).textContent = &#x27;Guardado local · &#x27; + state.updatedAt;
+        } catch (error) {
+          root.querySelector(&#x27;#storage-state&#x27;).textContent = &#x27;Sesión local · exporta JSON para conservar&#x27;;
+        }
+      }
+
+      function escapeHtml(value) {
+        return String(value || &#x27;&#x27;).replace(/&amp;/g, &#x27;&amp;amp;&#x27;).replace(/&lt;/g, &#x27;&amp;lt;&#x27;).replace(/&gt;/g, &#x27;&amp;gt;&#x27;).replace(/&quot;/g, &#x27;&amp;quot;&#x27;);
+      }
+
+      function taskMarkup(task) {
+        const doneClass = task.done ? &#x27;state-done&#x27; : &#x27;&#x27;;
+        const checked = task.done ? &#x27; checked&#x27; : &#x27;&#x27;;
+        return &#x27;&lt;article class=&quot;item&quot;&gt;&#x27; +
+          &#x27;&lt;div class=&quot;item-head&quot;&gt;&lt;label class=&quot;form-check&quot;&gt;&lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; data-complete-task=&quot;&#x27; + escapeHtml(task.id) + &#x27;&quot;&#x27; + checked + &#x27;&gt;&lt;span class=&quot;form-check-label &#x27; + doneClass + &#x27;&quot;&gt;&lt;strong&gt;&#x27; + escapeHtml(task.id) + &#x27; · &#x27; + escapeHtml(task.title) + &#x27;&lt;/strong&gt;&lt;/span&gt;&lt;/label&gt;&#x27; +
+          &#x27;&lt;div class=&quot;item-meta&quot;&gt;&lt;span class=&quot;viz-badge&quot;&gt;&#x27; + escapeHtml(task.priority) + &#x27;&lt;/span&gt;&lt;span class=&quot;viz-badge&quot;&gt;&#x27; + escapeHtml(task.lane) + &#x27;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&#x27; +
+          &#x27;&lt;div class=&quot;item-meta&quot;&gt;&lt;span class=&quot;text-muted&quot;&gt;&#x27; + escapeHtml(task.area) + &#x27;&lt;/span&gt;&lt;span class=&quot;text-muted&quot;&gt;·&lt;/span&gt;&lt;span class=&quot;text-muted&quot;&gt;&#x27; + escapeHtml(task.note) + &#x27;&lt;/span&gt;&lt;/div&gt;&lt;/article&gt;&#x27;;
+      }
+
+      function researchMarkup(item) {
+        const checked = item.done ? &#x27; checked&#x27; : &#x27;&#x27;;
+        const doneClass = item.done ? &#x27;state-done&#x27; : &#x27;&#x27;;
+        return &#x27;&lt;article class=&quot;item&quot;&gt;&lt;div class=&quot;item-head&quot;&gt;&lt;label class=&quot;form-check&quot;&gt;&lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; data-complete-research=&quot;&#x27; + escapeHtml(item.id) + &#x27;&quot;&#x27; + checked + &#x27;&gt;&lt;span class=&quot;form-check-label &#x27; + doneClass + &#x27;&quot;&gt;&lt;strong&gt;&#x27; + escapeHtml(item.id) + &#x27; · &#x27; + escapeHtml(item.title) + &#x27;&lt;/strong&gt;&lt;/span&gt;&lt;/label&gt;&lt;span class=&quot;viz-badge&quot;&gt;&#x27; + (item.done ? &#x27;Cerrada&#x27; : &#x27;Pendiente&#x27;) + &#x27;&lt;/span&gt;&lt;/div&gt;&lt;p class=&quot;item-details text-muted&quot;&gt;Método: &#x27; + escapeHtml(item.method) + &#x27;&lt;/p&gt;&lt;p class=&quot;item-details text-muted&quot;&gt;Resultado: &#x27; + escapeHtml(item.outcome) + &#x27;&lt;/p&gt;&lt;/article&gt;&#x27;;
+      }
+
+      function marketMarkup(item) {
+        return &#x27;&lt;article class=&quot;item&quot;&gt;&lt;div class=&quot;item-head&quot;&gt;&lt;strong&gt;&#x27; + escapeHtml(item.name) + &#x27;&lt;/strong&gt;&lt;span class=&quot;viz-badge&quot;&gt;&#x27; + escapeHtml(item.type) + &#x27;&lt;/span&gt;&lt;/div&gt;&lt;p class=&quot;item-details&quot;&gt;&#x27; + escapeHtml(item.note) + &#x27;&lt;/p&gt;&lt;p class=&quot;item-details text-muted&quot;&gt;&#x27; + escapeHtml(item.source) + &#x27;&lt;/p&gt;&lt;/article&gt;&#x27;;
+      }
+
+      function decisionMarkup(item) {
+        return &#x27;&lt;article class=&quot;item&quot;&gt;&lt;div class=&quot;item-head&quot;&gt;&lt;strong&gt;&#x27; + escapeHtml(item.title) + &#x27;&lt;/strong&gt;&lt;span class=&quot;viz-badge&quot;&gt;&#x27; + escapeHtml(item.status) + &#x27;&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;item-meta&quot;&gt;&lt;span class=&quot;text-muted&quot;&gt;&#x27; + escapeHtml(item.area) + &#x27;&lt;/span&gt;&lt;span class=&quot;text-muted&quot;&gt;·&lt;/span&gt;&lt;span class=&quot;text-muted&quot;&gt;&#x27; + escapeHtml(item.note) + &#x27;&lt;/span&gt;&lt;/div&gt;&lt;/article&gt;&#x27;;
+      }
+
+      function documentMarkup(item) {
+        return &#x27;&lt;article class=&quot;card&quot;&gt;&lt;h3&gt;&#x27; + escapeHtml(item.title) + &#x27;&lt;/h3&gt;&lt;p class=&quot;text-muted&quot;&gt;&#x27; + escapeHtml(item.note) + &#x27;&lt;/p&gt;&lt;a class=&quot;btn document-link&quot; href=&quot;&#x27; + escapeHtml(item.path) + &#x27;&quot;&gt;Abrir documento&lt;/a&gt;&lt;/article&gt;&#x27;;
+      }
+
+      function render() {
+        const total = state.tasks.length;
+        const completed = state.tasks.filter(function (task) { return task.done; }).length;
+        const p0 = state.tasks.filter(function (task) { return task.priority === &#x27;P0&#x27; &amp;&amp; !task.done; }).length;
+        const watch = state.research.filter(function (item) { return !item.done; }).length + state.market.length;
+        root.querySelector(&#x27;#task-progress&#x27;).textContent = completed + &#x27;/&#x27; + total;
+        root.querySelector(&#x27;#task-progress-note&#x27;).textContent = total ? Math.round((completed / total) * 100) + &#x27;% completado&#x27; : &#x27;Sin tareas&#x27;;
+        root.querySelector(&#x27;#p0-count&#x27;).textContent = p0;
+        root.querySelector(&#x27;#watch-count&#x27;).textContent = watch;
+        const next = state.tasks.find(function (task) { return !task.done &amp;&amp; task.priority === &#x27;P0&#x27;; }) || state.tasks.find(function (task) { return !task.done; });
+        root.querySelector(&#x27;#next-task&#x27;).textContent = next ? next.id + &#x27; · &#x27; + next.title : &#x27;No hay tareas abiertas.&#x27;;
+        root.querySelector(&#x27;#task-list&#x27;).innerHTML = state.tasks.map(taskMarkup).join(&#x27;&#x27;) || &#x27;&lt;p class=&quot;empty text-muted&quot;&gt;No hay tareas.&lt;/p&gt;&#x27;;
+        root.querySelector(&#x27;#research-list&#x27;).innerHTML = state.research.map(researchMarkup).join(&#x27;&#x27;) || &#x27;&lt;p class=&quot;empty text-muted&quot;&gt;No hay investigaciones.&lt;/p&gt;&#x27;;
+        root.querySelector(&#x27;#market-list&#x27;).innerHTML = state.market.map(marketMarkup).join(&#x27;&#x27;) || &#x27;&lt;p class=&quot;empty text-muted&quot;&gt;No hay referencias.&lt;/p&gt;&#x27;;
+        root.querySelector(&#x27;#decision-list&#x27;).innerHTML = state.decisions.map(decisionMarkup).join(&#x27;&#x27;) || &#x27;&lt;p class=&quot;empty text-muted&quot;&gt;No hay ideas ni decisiones.&lt;/p&gt;&#x27;;
+        root.querySelector(&#x27;#document-list&#x27;).innerHTML = state.documents.map(documentMarkup).join(&#x27;&#x27;);
+        Object.keys({ overview: true, tasks: true, research: true, market: true, decisions: true, documents: true }).forEach(function (name) {
+          root.querySelector(&#x27;#view-&#x27; + name).hidden = name !== activeView;
+        });
+        root.querySelectorAll(&#x27;[data-view]&#x27;).forEach(function (button) {
+          const selected = button.getAttribute(&#x27;data-view&#x27;) === activeView;
+          button.classList.toggle(&#x27;btn-primary&#x27;, selected);
+          button.setAttribute(&#x27;aria-pressed&#x27;, selected ? &#x27;true&#x27; : &#x27;false&#x27;);
+        });
+      }
+
+      function toggleForm(id) {
+        const form = root.querySelector(&#x27;#&#x27; + id);
+        form.classList.toggle(&#x27;is-open&#x27;);
+      }
+
+      function newId(prefix, items) {
+        return prefix + &#x27;-&#x27; + String(items.length + 1).padStart(2, &#x27;0&#x27;);
+      }
+
+      root.addEventListener(&#x27;click&#x27;, function (event) {
+        const viewButton = event.target.closest(&#x27;[data-view]&#x27;);
+        if (viewButton) {
+          activeView = viewButton.getAttribute(&#x27;data-view&#x27;);
+          render();
+          return;
+        }
+        const jumpButton = event.target.closest(&#x27;[data-jump]&#x27;);
+        if (jumpButton) {
+          activeView = jumpButton.getAttribute(&#x27;data-jump&#x27;);
+          render();
+          return;
+        }
+        const toggleButton = event.target.closest(&#x27;[data-toggle-form]&#x27;);
+        if (toggleButton) {
+          toggleForm(toggleButton.getAttribute(&#x27;data-toggle-form&#x27;));
+          return;
+        }
+        if (event.target.id === &#x27;export-data&#x27;) {
+          const blob = new Blob([JSON.stringify(state, null, 2)], { type: &#x27;application/json&#x27; });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement(&#x27;a&#x27;);
+          link.href = url;
+          link.download = &#x27;subtitula-dashboard-data.json&#x27;;
+          link.click();
+          URL.revokeObjectURL(url);
+          return;
+        }
+        if (event.target.id === &#x27;reset-data&#x27;) {
+          if (window.confirm(&#x27;¿Restaurar la base del repositorio? Se perderán los cambios locales.&#x27;)) {
+            state = clone(seed);
+            persist();
+            render();
+          }
+        }
+      });
+
+      root.addEventListener(&#x27;change&#x27;, function (event) {
+        const taskId = event.target.getAttribute(&#x27;data-complete-task&#x27;);
+        const researchId = event.target.getAttribute(&#x27;data-complete-research&#x27;);
+        if (taskId) {
+          const task = state.tasks.find(function (item) { return item.id === taskId; });
+          if (task) task.done = event.target.checked;
+          persist();
+          render();
+        }
+        if (researchId) {
+          const item = state.research.find(function (entry) { return entry.id === researchId; });
+          if (item) item.done = event.target.checked;
+          persist();
+          render();
+        }
+      });
+
+      root.querySelector(&#x27;#task-form&#x27;).addEventListener(&#x27;submit&#x27;, function (event) {
+        event.preventDefault();
+        state.tasks.push({
+          id: newId(&#x27;CUSTOM&#x27;, state.tasks),
+          title: root.querySelector(&#x27;#task-title&#x27;).value.trim(),
+          area: root.querySelector(&#x27;#task-area&#x27;).value.trim() || &#x27;Producto&#x27;,
+          priority: root.querySelector(&#x27;#task-priority&#x27;).value,
+          lane: root.querySelector(&#x27;#task-lane&#x27;).value,
+          note: root.querySelector(&#x27;#task-note&#x27;).value.trim(),
+          done: false
+        });
+        event.target.reset();
+        event.target.classList.remove(&#x27;is-open&#x27;);
+        persist();
+        render();
+      });
+
+      root.querySelector(&#x27;#research-form&#x27;).addEventListener(&#x27;submit&#x27;, function (event) {
+        event.preventDefault();
+        state.research.push({
+          id: newId(&#x27;R&#x27;, state.research),
+          title: root.querySelector(&#x27;#research-title&#x27;).value.trim(),
+          method: root.querySelector(&#x27;#research-method&#x27;).value.trim(),
+          outcome: root.querySelector(&#x27;#research-outcome&#x27;).value.trim(),
+          done: false
+        });
+        event.target.reset();
+        event.target.classList.remove(&#x27;is-open&#x27;);
+        persist();
+        render();
+      });
+
+      root.querySelector(&#x27;#market-form&#x27;).addEventListener(&#x27;submit&#x27;, function (event) {
+        event.preventDefault();
+        state.market.push({
+          id: newId(&#x27;MARKET&#x27;, state.market),
+          name: root.querySelector(&#x27;#market-name&#x27;).value.trim(),
+          type: root.querySelector(&#x27;#market-type&#x27;).value.trim() || &#x27;Referencia&#x27;,
+          note: root.querySelector(&#x27;#market-note&#x27;).value.trim(),
+          source: root.querySelector(&#x27;#market-source&#x27;).value.trim() || &#x27;Por investigar.&#x27;
+        });
+        event.target.reset();
+        event.target.classList.remove(&#x27;is-open&#x27;);
+        persist();
+        render();
+      });
+
+      root.querySelector(&#x27;#decision-form&#x27;).addEventListener(&#x27;submit&#x27;, function (event) {
+        event.preventDefault();
+        state.decisions.push({
+          id: newId(&#x27;D&#x27;, state.decisions),
+          title: root.querySelector(&#x27;#decision-title&#x27;).value.trim(),
+          status: root.querySelector(&#x27;#decision-status&#x27;).value,
+          area: root.querySelector(&#x27;#decision-area&#x27;).value.trim() || &#x27;Producto&#x27;,
+          note: root.querySelector(&#x27;#decision-note&#x27;).value.trim()
+        });
+        event.target.reset();
+        event.target.classList.remove(&#x27;is-open&#x27;);
+        persist();
+        render();
+      });
+
+      root.querySelector(&#x27;#import-data&#x27;).addEventListener(&#x27;change&#x27;, function (event) {
+        const file = event.target.files &amp;&amp; event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function () {
+          try {
+            const imported = JSON.parse(reader.result);
+            if (!valid(imported)) throw new Error(&#x27;Formato no válido&#x27;);
+            state = imported;
+            persist();
+            render();
+          } catch (error) {
+            root.querySelector(&#x27;#storage-state&#x27;).textContent = &#x27;No se pudo importar ese JSON&#x27;;
+          }
+        };
+        reader.readAsText(file);
+        event.target.value = &#x27;&#x27;;
+      });
+
+      render();
+    }());
+  &lt;/script&gt;
+&lt;/div&gt;
+
+&lt;script src=&quot;https://unpkg.com/@floating-ui/core@1.7.3/dist/floating-ui.core.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://unpkg.com/@floating-ui/dom@1.7.4/dist/floating-ui.dom.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  if (window.FloatingUIDOM == null) {
+    return;
+  }
+  const { autoUpdate, computePosition, flip, offset, shift, size } =
+    window.FloatingUIDOM;
+  const tooltipPlacements = new Set([&quot;top&quot;, &quot;right&quot;, &quot;bottom&quot;, &quot;left&quot;]);
+  const tooltipId = `codex-visualization-tooltip-${
+    window.crypto?.randomUUID?.() ?? Date.now().toString(36)
+  }`;
+  const tooltipGap = 5;
+  const hoverDelay = 700;
+  const skipDelay = 300;
+  let activeTrigger = null;
+  let pendingTrigger = null;
+  let tooltip = null;
+  let openTimeout = null;
+  let autoUpdateCleanup = null;
+  let positionRequest = 0;
+  let skipDelayUntil = 0;
+
+  const getTrigger = (target) =&gt;
+    target?.nodeType === Node.ELEMENT_NODE
+      ? target.closest(&quot;[data-tooltip]&quot;)
+      : null;
+  const containsTarget = (trigger, target) =&gt;
+    target?.nodeType != null &amp;&amp; trigger.contains(target);
+  const getContent = (trigger) =&gt;
+    trigger.getAttribute(&quot;data-tooltip&quot;)?.trim() ?? &quot;&quot;;
+  const getPlacement = (trigger) =&gt; {
+    const placement = trigger.getAttribute(&quot;data-tooltip-placement&quot;);
+    return tooltipPlacements.has(placement) ? placement : &quot;top&quot;;
+  };
+  const getTooltip = () =&gt; {
+    if (tooltip == null) {
+      tooltip = document.createElement(&quot;div&quot;);
+      tooltip.id = tooltipId;
+      tooltip.className = &quot;tooltip&quot;;
+      tooltip.setAttribute(&quot;role&quot;, &quot;tooltip&quot;);
+    }
+    return tooltip;
+  };
+  const setDescribedBy = (trigger, described) =&gt; {
+    const ids = new Set(
+      (trigger.getAttribute(&quot;aria-describedby&quot;) ?? &quot;&quot;)
+        .split(/\s+/)
+        .filter(Boolean),
+    );
+    if (described) {
+      ids.add(tooltipId);
+    } else {
+      ids.delete(tooltipId);
+    }
+    if (ids.size === 0) {
+      trigger.removeAttribute(&quot;aria-describedby&quot;);
+    } else {
+      trigger.setAttribute(&quot;aria-describedby&quot;, [...ids].join(&quot; &quot;));
+    }
+  };
+  const clearOpenTimeout = () =&gt; {
+    if (openTimeout != null) {
+      window.clearTimeout(openTimeout);
+      openTimeout = null;
+    }
+    pendingTrigger = null;
+  };
+  const closeTooltip = (activateSkipDelay = true) =&gt; {
+    clearOpenTimeout();
+    positionRequest += 1;
+    autoUpdateCleanup?.();
+    autoUpdateCleanup = null;
+    if (activeTrigger == null) {
+      return;
+    }
+    setDescribedBy(activeTrigger, false);
+    activeTrigger = null;
+    tooltip?.remove();
+    if (activateSkipDelay) {
+      skipDelayUntil = Date.now() + skipDelay;
+    }
+  };
+  const updatePosition = (trigger, floating) =&gt; {
+    const request = ++positionRequest;
+    void computePosition(trigger, floating, {
+      middleware: [
+        offset(tooltipGap),
+        flip({ padding: tooltipGap }),
+        shift({ padding: tooltipGap }),
+        size({
+          padding: tooltipGap,
+          apply({ availableHeight, availableWidth, elements }) {
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-width&quot;,
+              `${Math.max(0, availableWidth)}px`,
+            );
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-height&quot;,
+              `${Math.max(0, availableHeight)}px`,
+            );
+          },
+        }),
+      ],
+      placement: getPlacement(trigger),
+      strategy: &quot;fixed&quot;,
+    })
+      .then(({ x, y }) =&gt; {
+        if (activeTrigger !== trigger || request !== positionRequest) {
+          return;
+        }
+        const scale = window.devicePixelRatio || 1;
+        floating.style.transform = `translate(${Math.round(x * scale) / scale}px, ${Math.round(y * scale) / scale}px)`;
+        floating.style.visibility = &quot;visible&quot;;
+      })
+      .catch(() =&gt; {
+        if (activeTrigger === trigger &amp;&amp; request === positionRequest) {
+          closeTooltip(false);
+        }
+      });
+  };
+  const openTooltip = (trigger) =&gt; {
+    const content = getContent(trigger);
+    if (!trigger.isConnected || content.length === 0) {
+      return;
+    }
+    clearOpenTimeout();
+    if (activeTrigger === trigger) {
+      return;
+    }
+    closeTooltip();
+    const floating = getTooltip();
+    floating.textContent = content;
+    floating.style.visibility = &quot;hidden&quot;;
+    floating.style.transform = &quot;translate(0, 0)&quot;;
+    document.body.appendChild(floating);
+    activeTrigger = trigger;
+    setDescribedBy(trigger, true);
+    autoUpdateCleanup = autoUpdate(trigger, floating, () =&gt; {
+      updatePosition(trigger, floating);
+    });
+  };
+  const requestOpen = (trigger, immediate = false) =&gt; {
+    if (
+      getContent(trigger).length === 0 ||
+      activeTrigger === trigger ||
+      pendingTrigger === trigger
+    ) {
+      return;
+    }
+    clearOpenTimeout();
+    pendingTrigger = trigger;
+    const delay =
+      immediate || activeTrigger != null || Date.now() &lt; skipDelayUntil
+        ? 0
+        : hoverDelay;
+    if (delay === 0) {
+      openTooltip(trigger);
+      return;
+    }
+    openTimeout = window.setTimeout(() =&gt; {
+      openTimeout = null;
+      pendingTrigger = null;
+      openTooltip(trigger);
+    }, delay);
+  };
+  const handlePointerOpen = (event) =&gt; {
+    if (event.pointerType === &quot;touch&quot;) {
+      return;
+    }
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    requestOpen(trigger);
+  };
+  const handleLeave = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handleFocusIn = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (trigger?.matches(&quot;:focus-visible&quot;)) {
+      requestOpen(trigger, true);
+    }
+  };
+  const handleKeyDown = (event) =&gt; {
+    if (event.key === &quot;Escape&quot;) {
+      closeTooltip();
+    }
+  };
+  const handleContextMenu = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const destroy = () =&gt; {
+    closeTooltip(false);
+    document.removeEventListener(&quot;pointerover&quot;, handlePointerOpen);
+    document.removeEventListener(&quot;pointerout&quot;, handleLeave);
+    document.removeEventListener(&quot;focusin&quot;, handleFocusIn);
+    document.removeEventListener(&quot;focusout&quot;, handleLeave);
+    document.removeEventListener(&quot;keydown&quot;, handleKeyDown);
+    document.removeEventListener(&quot;contextmenu&quot;, handleContextMenu);
+    tooltip = null;
+  };
+
+  document.addEventListener(&quot;pointerover&quot;, handlePointerOpen);
+  document.addEventListener(&quot;pointerout&quot;, handleLeave);
+  document.addEventListener(&quot;focusin&quot;, handleFocusIn);
+  document.addEventListener(&quot;focusout&quot;, handleLeave);
+  document.addEventListener(&quot;keydown&quot;, handleKeyDown);
+  document.addEventListener(&quot;contextmenu&quot;, handleContextMenu);
+  window.addEventListener(&quot;pagehide&quot;, destroy, { once: true });
+})();
+&lt;/script&gt;
+&lt;script id=&quot;codex-visualization-lucide&quot; async src=&quot;https://unpkg.com/lucide@1.17.0/dist/umd/lucide.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  const initialize = () =&gt; {
+    globalThis.lucide?.createIcons({ attrs: { width: 16, height: 16 } });
+  };
+  if (globalThis.lucide != null) {
+    initialize();
+    return;
+  }
+  document
+    .getElementById(&quot;codex-visualization-lucide&quot;)
+    ?.addEventListener(&quot;load&quot;, initialize, { once: true });
+})();
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe>
+</body>
+</html>

@@ -1,0 +1,568 @@
+<div id="subtitula-dashboard">
+  <style>
+    #subtitula-dashboard .dashboard-shell { display: grid; gap: 1rem; }
+    #subtitula-dashboard .dashboard-head,
+    #subtitula-dashboard .dashboard-actions,
+    #subtitula-dashboard .item-head,
+    #subtitula-dashboard .item-meta,
+    #subtitula-dashboard .form-actions { display: flex; gap: 0.55rem; flex-wrap: wrap; align-items: center; }
+    #subtitula-dashboard .dashboard-head { justify-content: space-between; }
+    #subtitula-dashboard .dashboard-actions { justify-content: flex-end; }
+    #subtitula-dashboard .nav-row { display: flex; gap: 0.45rem; flex-wrap: wrap; }
+    #subtitula-dashboard .summary-grid,
+    #subtitula-dashboard .content-grid,
+    #subtitula-dashboard .form-grid { display: grid; gap: 0.8rem; }
+    #subtitula-dashboard .summary-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    #subtitula-dashboard .content-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    #subtitula-dashboard .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    #subtitula-dashboard .list { display: grid; gap: 0.65rem; }
+    #subtitula-dashboard .item { display: grid; gap: 0.4rem; padding-block: 0.6rem; border-block-end: 1px solid var(--border); }
+    #subtitula-dashboard .item:last-child { border-block-end: 0; }
+    #subtitula-dashboard .item-head { justify-content: space-between; align-items: start; }
+    #subtitula-dashboard .item-meta { gap: 0.35rem; }
+    #subtitula-dashboard .item-details { margin: 0; }
+    #subtitula-dashboard .form-panel { display: none; }
+    #subtitula-dashboard .form-panel.is-open { display: grid; gap: 0.75rem; }
+    #subtitula-dashboard .wide { grid-column: 1 / -1; }
+    #subtitula-dashboard .empty { margin: 0; }
+    #subtitula-dashboard .document-link { display: inline-flex; align-items: center; }
+    #subtitula-dashboard .state-done { text-decoration: line-through; }
+    @media (max-width: 560px) {
+      #subtitula-dashboard .summary-grid,
+      #subtitula-dashboard .content-grid,
+      #subtitula-dashboard .form-grid { grid-template-columns: 1fr; }
+      #subtitula-dashboard .dashboard-actions { justify-content: flex-start; }
+    }
+  </style>
+
+  <main class="dashboard-shell" aria-live="polite">
+    <header class="dashboard-head">
+      <div>
+        <h2>Centro operativo</h2>
+        <span id="storage-state" class="text-muted">Datos locales</span>
+      </div>
+      <div class="dashboard-actions">
+        <button id="export-data" type="button" class="btn">Exportar JSON</button>
+        <label class="btn" for="import-data">Importar JSON</label>
+        <input id="import-data" type="file" accept="application/json" class="sr-only">
+        <button id="reset-data" type="button" class="btn btn-ghost">Restaurar base</button>
+      </div>
+    </header>
+
+    <nav class="nav-row" aria-label="Secciones del tablero">
+      <button type="button" class="btn btn-primary" data-view="overview" aria-pressed="true">Resumen</button>
+      <button type="button" class="btn" data-view="tasks" aria-pressed="false">Tareas</button>
+      <button type="button" class="btn" data-view="research" aria-pressed="false">Investigación</button>
+      <button type="button" class="btn" data-view="market" aria-pressed="false">Mercado</button>
+      <button type="button" class="btn" data-view="decisions" aria-pressed="false">Ideas y decisiones</button>
+      <button type="button" class="btn" data-view="documents" aria-pressed="false">Documentos</button>
+    </nav>
+
+    <section class="summary-grid" aria-label="Estado">
+      <article class="card viz-stat">
+        <span class="text-muted">Tareas cerradas</span>
+        <strong id="task-progress" class="viz-stat-value">0/0</strong>
+        <span id="task-progress-note" class="text-small text-muted">Sin tareas</span>
+      </article>
+      <article class="card viz-stat">
+        <span class="text-muted">Prioridad P0 abierta</span>
+        <strong id="p0-count" class="viz-stat-value">0</strong>
+        <span class="text-small text-muted">Desbloquea piloto</span>
+      </article>
+      <article class="card viz-stat">
+        <span class="text-muted">Vigilancia activa</span>
+        <strong id="watch-count" class="viz-stat-value">0</strong>
+        <span class="text-small text-muted">Investigación y mercado</span>
+      </article>
+    </section>
+
+    <section id="view-overview" data-panel="overview">
+      <div class="content-grid">
+        <article class="card">
+          <h3>La tesis</h3>
+          <p>Hacer accesible, revisable y encontrable lo que se dijo en el audiovisual público.</p>
+          <div class="item-meta">
+            <span class="viz-badge">Creador</span>
+            <span class="viz-badge">Institución</span>
+            <span class="viz-badge">Transparencia</span>
+          </div>
+        </article>
+        <article class="card">
+          <h3>Siguiente decisión</h3>
+          <p id="next-task">Cargando tarea prioritaria…</p>
+          <button type="button" class="btn" data-jump="tasks">Abrir tareas</button>
+        </article>
+      </div>
+      <article class="card">
+        <h3>Señal de éxito</h3>
+        <p>Número de sesiones públicas en las que una persona llega de una búsqueda a un minuto verificable y un documento relacionado.</p>
+      </article>
+    </section>
+
+    <section id="view-tasks" data-panel="tasks" hidden>
+      <div class="dashboard-head">
+        <div>
+          <h3>Tareas</h3>
+          <span class="text-muted">Marca una tarea para cerrarla. Los cambios se guardan en este navegador.</span>
+        </div>
+        <button type="button" class="btn btn-primary" data-toggle-form="task-form">Añadir tarea</button>
+      </div>
+      <form id="task-form" class="card form-panel" aria-label="Añadir tarea">
+        <div class="form-grid">
+          <label class="wide">
+            <span class="form-label">Tarea</span>
+            <input id="task-title" class="form-control" required>
+          </label>
+          <label>
+            <span class="form-label">Área</span>
+            <input id="task-area" class="form-control" value="Producto">
+          </label>
+          <label>
+            <span class="form-label">Prioridad</span>
+            <select id="task-priority" class="form-select">
+              <option>P0</option>
+              <option selected>P1</option>
+              <option>P2</option>
+            </select>
+          </label>
+          <label>
+            <span class="form-label">Horizonte</span>
+            <select id="task-lane" class="form-select">
+              <option>Ahora</option>
+              <option selected>Siguiente</option>
+              <option>Después</option>
+            </select>
+          </label>
+          <label>
+            <span class="form-label">Nota</span>
+            <input id="task-note" class="form-control" placeholder="Criterio o siguiente paso">
+          </label>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Guardar tarea</button>
+          <button type="button" class="btn" data-toggle-form="task-form">Cancelar</button>
+        </div>
+      </form>
+      <div id="task-list" class="list"></div>
+    </section>
+
+    <section id="view-research" data-panel="research" hidden>
+      <div class="dashboard-head">
+        <div>
+          <h3>Investigación</h3>
+          <span class="text-muted">Preguntas que reducen incertidumbre antes de construir.</span>
+        </div>
+        <button type="button" class="btn btn-primary" data-toggle-form="research-form">Añadir investigación</button>
+      </div>
+      <form id="research-form" class="card form-panel" aria-label="Añadir investigación">
+        <div class="form-grid">
+          <label class="wide">
+            <span class="form-label">Pregunta</span>
+            <input id="research-title" class="form-control" required>
+          </label>
+          <label>
+            <span class="form-label">Método</span>
+            <input id="research-method" class="form-control" placeholder="Entrevista, auditoría, corpus…">
+          </label>
+          <label>
+            <span class="form-label">Resultado esperado</span>
+            <input id="research-outcome" class="form-control" placeholder="Decisión informada">
+          </label>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Guardar investigación</button>
+          <button type="button" class="btn" data-toggle-form="research-form">Cancelar</button>
+        </div>
+      </form>
+      <div id="research-list" class="list"></div>
+    </section>
+
+    <section id="view-market" data-panel="market" hidden>
+      <div class="dashboard-head">
+        <div>
+          <h3>Mercado y competidores</h3>
+          <span class="text-muted">La comparación sirve para descubrir diferenciación, no para copiar funciones.</span>
+        </div>
+        <button type="button" class="btn btn-primary" data-toggle-form="market-form">Añadir referencia</button>
+      </div>
+      <form id="market-form" class="card form-panel" aria-label="Añadir referencia de mercado">
+        <div class="form-grid">
+          <label>
+            <span class="form-label">Organización / producto</span>
+            <input id="market-name" class="form-control" required>
+          </label>
+          <label>
+            <span class="form-label">Tipo</span>
+            <input id="market-type" class="form-control" placeholder="Proveedor, portal, referencia">
+          </label>
+          <label class="wide">
+            <span class="form-label">Qué aporta o qué observar</span>
+            <input id="market-note" class="form-control" required>
+          </label>
+          <label class="wide">
+            <span class="form-label">Fuente o precio</span>
+            <input id="market-source" class="form-control" placeholder="URL, importe público o por investigar">
+          </label>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Guardar referencia</button>
+          <button type="button" class="btn" data-toggle-form="market-form">Cancelar</button>
+        </div>
+      </form>
+      <div id="market-list" class="list"></div>
+    </section>
+
+    <section id="view-decisions" data-panel="decisions" hidden>
+      <div class="dashboard-head">
+        <div>
+          <h3>Ideas y decisiones</h3>
+          <span class="text-muted">Separar lo adoptado de lo que todavía necesita evidencia.</span>
+        </div>
+        <button type="button" class="btn btn-primary" data-toggle-form="decision-form">Añadir idea</button>
+      </div>
+      <form id="decision-form" class="card form-panel" aria-label="Añadir idea o decisión">
+        <div class="form-grid">
+          <label class="wide">
+            <span class="form-label">Idea o decisión</span>
+            <input id="decision-title" class="form-control" required>
+          </label>
+          <label>
+            <span class="form-label">Estado</span>
+            <select id="decision-status" class="form-select">
+              <option>En validación</option>
+              <option>Adoptada</option>
+              <option>Rechazada por ahora</option>
+            </select>
+          </label>
+          <label>
+            <span class="form-label">Área</span>
+            <input id="decision-area" class="form-control" value="Producto">
+          </label>
+          <label class="wide">
+            <span class="form-label">Motivo o evidencia necesaria</span>
+            <input id="decision-note" class="form-control">
+          </label>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Guardar idea</button>
+          <button type="button" class="btn" data-toggle-form="decision-form">Cancelar</button>
+        </div>
+      </form>
+      <div id="decision-list" class="list"></div>
+    </section>
+
+    <section id="view-documents" data-panel="documents" hidden>
+      <h3>Documentos fuente</h3>
+      <div id="document-list" class="content-grid"></div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const root = document.getElementById('subtitula-dashboard');
+      const storageKey = 'subtitula-operating-hub-v1';
+      const seed = {
+        updatedAt: '2026-07-12',
+        tasks: [
+          { id: 'UX-01', title: 'Selector de intención tras login', area: 'UX', priority: 'P0', lane: 'Ahora', note: 'Tres tarjetas, recientes y biblioteca.', done: false },
+          { id: 'UX-02', title: 'Asistente único de subida', area: 'UX', priority: 'P0', lane: 'Ahora', note: 'Creador e institución generan el mismo proyecto.', done: false },
+          { id: 'UX-03', title: 'Editor como superficie única', area: 'UX', priority: 'P0', lane: 'Ahora', note: 'Vídeo, transcript y segmentos sincronizados.', done: false },
+          { id: 'UX-04', title: 'Modo institución', area: 'UX', priority: 'P0', lane: 'Ahora', note: 'Hablantes, señales y documentos.', done: false },
+          { id: 'PUB-01', title: 'Ficha pública de una sesión', area: 'Publicación', priority: 'P0', lane: 'Ahora', note: 'URL estable, vídeo, transcript, índice y documentos.', done: false },
+          { id: 'SRCH-01', title: 'Búsqueda dentro de sesión', area: 'Búsqueda', priority: 'P0', lane: 'Ahora', note: 'Coincidencia y salto al segundo exacto.', done: false },
+          { id: 'DATA-01', title: 'Versionado de transcript y publicación', area: 'Datos', priority: 'P0', lane: 'Ahora', note: 'Publicar una revisión concreta y auditable.', done: false },
+          { id: 'COST-01', title: 'Medición por archivo', area: 'Coste', priority: 'P0', lane: 'Ahora', note: 'Minutos, coste, revisión y calidad.', done: false },
+          { id: 'VAL-01', title: 'Descubrimiento con 5–8 usuarios', area: 'Validación', priority: 'P0', lane: 'Ahora', note: 'Creadores, comunicación, secretaría y ciudadanía.', done: false },
+          { id: 'PIL-01', title: 'Elegir piloto seguro', area: 'Piloto', priority: 'P0', lane: 'Ahora', note: 'Vídeo ya público, sin expedientes internos.', done: false },
+          { id: 'UX-05', title: 'Checklist de publicación', area: 'UX', priority: 'P1', lane: 'Siguiente', note: 'Título, fecha, origen, accesibilidad y responsable.', done: false },
+          { id: 'UX-06', title: 'Asociación al orden del día', area: 'UX', priority: 'P1', lane: 'Siguiente', note: 'Mapear tramos y permitir corrección.', done: false },
+          { id: 'PUB-02', title: 'Portal por entidad', area: 'Publicación', priority: 'P1', lane: 'Siguiente', note: 'Archivo, filtros y embebido o enlace.', done: false },
+          { id: 'SRCH-02', title: 'Búsqueda global léxica', area: 'Búsqueda', priority: 'P1', lane: 'Siguiente', note: 'Entidad, órgano, fecha, hablante y punto del día.', done: false },
+          { id: 'SRCH-03', title: 'Analítica de necesidades ciudadanas', area: 'Búsqueda', priority: 'P1', lane: 'Siguiente', note: 'Consultas sin resultado y clics a evidencia.', done: false },
+          { id: 'COST-02', title: 'Cascada de transcripción', area: 'Coste', priority: 'P1', lane: 'Siguiente', note: 'Escalar solo segmentos con señales de riesgo.', done: false },
+          { id: 'COST-03', title: 'Cascada de traducción', area: 'Coste', priority: 'P1', lane: 'Siguiente', note: 'Traducir tracks publicados o solicitados.', done: false },
+          { id: 'GOV-01', title: 'Paquete de compra y piloto', area: 'Gobierno', priority: 'P1', lane: 'Siguiente', note: 'DPA, seguridad, soporte y salida.', done: false },
+          { id: 'GOV-02', title: 'Brecha ENS, RGPD y accesibilidad', area: 'Gobierno', priority: 'P1', lane: 'Siguiente', note: 'Riesgo y medidas antes de contenido no público.', done: false },
+          { id: 'MARKET-01', title: 'Mapa de implantaciones', area: 'Mercado', priority: 'P1', lane: 'Siguiente', note: '15 concellos: proveedor, vídeo, volumen y portal.', done: false },
+          { id: 'SRCH-04', title: 'Recuperación híbrida o vectorial', area: 'Búsqueda', priority: 'P2', lane: 'Después', note: 'Comparar calidad, latencia y coste contra búsqueda léxica.', done: false },
+          { id: 'SRCH-05', title: 'Preguntas en lenguaje natural con citas', area: 'Búsqueda', priority: 'P2', lane: 'Después', note: 'Solo con evidencia y evaluación humana.', done: false },
+          { id: 'INT-01', title: 'Embed, API o sede electrónica', area: 'Integración', priority: 'P2', lane: 'Después', note: 'Priorizar tras pilotos.', done: false },
+          { id: 'PUB-03', title: 'Archivo histórico', area: 'Publicación', priority: 'P2', lane: 'Después', note: 'Estimar calidad y coste antes de vender.', done: false },
+          { id: 'CRE-01', title: 'Presets sociales y publicación directa', area: 'Creador', priority: 'P2', lane: 'Después', note: 'Solo si elimina un paso doloroso.', done: false },
+          { id: 'BIZ-01', title: 'Oferta provincial', area: 'Negocio', priority: 'P2', lane: 'Después', note: 'Tras operación repetible en varios concellos.', done: false }
+        ],
+        research: [
+          { id: 'M-01', title: '¿Qué portales y proveedores usan 15 concellos?', method: 'Auditoría pública de URLs, sedes, plenos y portal.', outcome: 'Mapa de incumbencia e integraciones.', done: false },
+          { id: 'M-02', title: '¿Quién transmite y archiva plenos, y cuánto volumen genera?', method: 'Muestra del último año por entidad.', outcome: 'Coste, frecuencia y mercado alcanzable.', done: false },
+          { id: 'M-03', title: '¿Qué contratos revelan precio de portal, streaming o subtitulado?', method: 'PLACSP y PcPG por CPV y proveedor.', outcome: 'Rango de compra real.', done: false },
+          { id: 'M-04', title: '¿Qué uso ciudadano existe?', method: 'Solicitudes, analítica compartida, prensa y tests de tarea.', outcome: 'Métrica de utilidad, no visitas vanidosas.', done: false },
+          { id: 'M-05', title: '¿Las alternativas reconocen gallego y con qué calidad?', method: 'Corpus de plenos públicos y revisión humana.', outcome: 'Baseline de WER, nombres y coste.', done: false },
+          { id: 'M-06', title: '¿Qué requisitos de seguridad exigen compradores?', method: 'Entrevistas con contratación, DPD e IT.', outcome: 'Secuencia para ENS, DPA y alojamiento.', done: false }
+        ],
+        market: [
+          { id: 'EIDOLOCAL', name: 'EidoLocal / Portal de Transparencia Local de Galicia', type: 'Infraestructura pública', note: 'Cumplimiento, categorías y enlace a portales externos; oportunidad de complementar con audiovisual navegable.', source: 'Gratuito para entidades locales; fuente en market-watch.md.' },
+          { id: 'GESPUBLICO', name: 'esPublico Gestiona', type: 'Proveedor de gestión local', note: 'Administración electrónica y expediente; integrar por enlace, embed o API, no sustituir.', source: 'Precio no publicado.' },
+          { id: 'CORUNA', name: 'A Coruña — contratos.datos.coruna.eu', type: 'Referencia institucional', note: 'Referencia UX para explorar un dominio de datos públicos.', source: 'Servicio institucional.' },
+          { id: 'XUNTA', name: 'Portal de Transparencia de la Xunta', type: 'Referencia institucional', note: 'Referencia de información de interés y métricas públicas, sin extrapolar tráfico global.', source: 'Servicio institucional.' },
+          { id: 'HAPPYSCRIBE', name: 'HappyScribe', type: 'Subtitulado generalista', note: 'UX creador: ASR, hablantes, edición, exportación y colaboración.', source: 'Precios públicos en market-watch.md.' },
+          { id: 'AMBERSCRIPT', name: 'Amberscript', type: 'Subtitulado generalista', note: 'Referencia de coste, revisión humana, seguridad y exportaciones.', source: 'Precios públicos en market-watch.md.' },
+          { id: 'SONIX', name: 'Sonix', type: 'Subtitulado generalista', note: 'Referencia de coste de mercado masivo y trabajo por créditos.', source: 'Precios públicos en market-watch.md.' }
+        ],
+        decisions: [
+          { id: 'D-01', title: 'Un solo producto y editor para creador e institución.', status: 'Adoptada', area: 'Producto', note: 'Comparten medio, transcript, segmentos, subtítulos y salida.' },
+          { id: 'D-02', title: 'La intención se elige al entrar, pero puede cambiarse.', status: 'Adoptada', area: 'UX', note: 'Configura ayudas sin encerrar al usuario.' },
+          { id: 'D-03', title: 'Transparencia pública es abierta y separada del login.', status: 'Adoptada', area: 'Transparencia', note: 'La ciudadanía no debe ser cliente SaaS para consultar.' },
+          { id: 'D-04', title: 'Búsqueda léxica con minuto y fuentes antes que chat semántico.', status: 'Adoptada', area: 'Búsqueda', note: 'Más auditable, barata y útil para probar demanda.' },
+          { id: 'D-05', title: 'Complementar EidoLocal, Gestiona y las sedes existentes.', status: 'Adoptada', area: 'Integración', note: 'Reducir riesgo del piloto y respetar fuentes administrativas.' },
+          { id: 'D-06', title: 'La revisión guiada por señales reduce materialmente el tiempo humano.', status: 'En validación', area: 'Producto', note: 'Comparar contra editor lineal en tareas cronometradas.' },
+          { id: 'D-07', title: 'Gallego más transparencia audiovisual es una cuña comercial suficiente.', status: 'En validación', area: 'Negocio', note: 'Validar con compradores, volumen y conversión de pilotos.' },
+          { id: 'D-08', title: 'Una diputación puede comprar para varios concellos.', status: 'En validación', area: 'Negocio', note: 'Entrevistas y licitaciones previas determinarán encaje.' },
+          { id: 'D-09', title: 'No construir aún un portal generalista de presupuestos, contratos y expedientes.', status: 'Rechazada por ahora', area: 'Alcance', note: 'Duplica infraestructura y dispersa la tesis.' },
+          { id: 'D-10', title: 'No lanzar un asistente que responda sin evidencia visible.', status: 'Rechazada por ahora', area: 'Confianza', note: 'Exigir citas por fragmento y controles de seguridad.' }
+        ],
+        documents: [
+          { title: 'Índice del centro de producto', path: './README.md', note: 'Tesis, cadencia y mapa de documentos.' },
+          { title: 'Refactor de interfaz', path: './product-refactor.md', note: 'Flujos, rutas, editor, búsqueda y modelo de datos.' },
+          { title: 'Backlog priorizado', path: './backlog.md', note: 'Trabajo P0, P1, P2 y cascada de coste.' },
+          { title: 'Mercado y competidores', path: './market-watch.md', note: 'Portales, productos comparables, fuentes y cola de investigación.' },
+          { title: 'Decisiones e hipótesis', path: './decision-log.md', note: 'Decisiones, validaciones y métricas de salud.' }
+        ]
+      };
+      let state = loadState();
+      let activeView = 'overview';
+
+      function clone(value) {
+        return JSON.parse(JSON.stringify(value));
+      }
+
+      function valid(value) {
+        return value && Array.isArray(value.tasks) && Array.isArray(value.research) && Array.isArray(value.market) && Array.isArray(value.decisions) && Array.isArray(value.documents);
+      }
+
+      function loadState() {
+        try {
+          const local = localStorage.getItem(storageKey);
+          const parsed = local ? JSON.parse(local) : null;
+          if (valid(parsed)) return parsed;
+          root.querySelector('#storage-state').textContent = 'Base del repositorio';
+        } catch (error) {
+          root.querySelector('#storage-state').textContent = 'Sesión local';
+        }
+        return clone(seed);
+      }
+
+      function persist() {
+        state.updatedAt = new Date().toISOString().slice(0, 10);
+        try {
+          localStorage.setItem(storageKey, JSON.stringify(state));
+          root.querySelector('#storage-state').textContent = 'Guardado local · ' + state.updatedAt;
+        } catch (error) {
+          root.querySelector('#storage-state').textContent = 'Sesión local · exporta JSON para conservar';
+        }
+      }
+
+      function escapeHtml(value) {
+        return String(value || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+
+      function taskMarkup(task) {
+        const doneClass = task.done ? 'state-done' : '';
+        const checked = task.done ? ' checked' : '';
+        return '<article class="item">' +
+          '<div class="item-head"><label class="form-check"><input class="form-check-input" type="checkbox" data-complete-task="' + escapeHtml(task.id) + '"' + checked + '><span class="form-check-label ' + doneClass + '"><strong>' + escapeHtml(task.id) + ' · ' + escapeHtml(task.title) + '</strong></span></label>' +
+          '<div class="item-meta"><span class="viz-badge">' + escapeHtml(task.priority) + '</span><span class="viz-badge">' + escapeHtml(task.lane) + '</span></div></div>' +
+          '<div class="item-meta"><span class="text-muted">' + escapeHtml(task.area) + '</span><span class="text-muted">·</span><span class="text-muted">' + escapeHtml(task.note) + '</span></div></article>';
+      }
+
+      function researchMarkup(item) {
+        const checked = item.done ? ' checked' : '';
+        const doneClass = item.done ? 'state-done' : '';
+        return '<article class="item"><div class="item-head"><label class="form-check"><input class="form-check-input" type="checkbox" data-complete-research="' + escapeHtml(item.id) + '"' + checked + '><span class="form-check-label ' + doneClass + '"><strong>' + escapeHtml(item.id) + ' · ' + escapeHtml(item.title) + '</strong></span></label><span class="viz-badge">' + (item.done ? 'Cerrada' : 'Pendiente') + '</span></div><p class="item-details text-muted">Método: ' + escapeHtml(item.method) + '</p><p class="item-details text-muted">Resultado: ' + escapeHtml(item.outcome) + '</p></article>';
+      }
+
+      function marketMarkup(item) {
+        return '<article class="item"><div class="item-head"><strong>' + escapeHtml(item.name) + '</strong><span class="viz-badge">' + escapeHtml(item.type) + '</span></div><p class="item-details">' + escapeHtml(item.note) + '</p><p class="item-details text-muted">' + escapeHtml(item.source) + '</p></article>';
+      }
+
+      function decisionMarkup(item) {
+        return '<article class="item"><div class="item-head"><strong>' + escapeHtml(item.title) + '</strong><span class="viz-badge">' + escapeHtml(item.status) + '</span></div><div class="item-meta"><span class="text-muted">' + escapeHtml(item.area) + '</span><span class="text-muted">·</span><span class="text-muted">' + escapeHtml(item.note) + '</span></div></article>';
+      }
+
+      function documentMarkup(item) {
+        return '<article class="card"><h3>' + escapeHtml(item.title) + '</h3><p class="text-muted">' + escapeHtml(item.note) + '</p><a class="btn document-link" href="' + escapeHtml(item.path) + '">Abrir documento</a></article>';
+      }
+
+      function render() {
+        const total = state.tasks.length;
+        const completed = state.tasks.filter(function (task) { return task.done; }).length;
+        const p0 = state.tasks.filter(function (task) { return task.priority === 'P0' && !task.done; }).length;
+        const watch = state.research.filter(function (item) { return !item.done; }).length + state.market.length;
+        root.querySelector('#task-progress').textContent = completed + '/' + total;
+        root.querySelector('#task-progress-note').textContent = total ? Math.round((completed / total) * 100) + '% completado' : 'Sin tareas';
+        root.querySelector('#p0-count').textContent = p0;
+        root.querySelector('#watch-count').textContent = watch;
+        const next = state.tasks.find(function (task) { return !task.done && task.priority === 'P0'; }) || state.tasks.find(function (task) { return !task.done; });
+        root.querySelector('#next-task').textContent = next ? next.id + ' · ' + next.title : 'No hay tareas abiertas.';
+        root.querySelector('#task-list').innerHTML = state.tasks.map(taskMarkup).join('') || '<p class="empty text-muted">No hay tareas.</p>';
+        root.querySelector('#research-list').innerHTML = state.research.map(researchMarkup).join('') || '<p class="empty text-muted">No hay investigaciones.</p>';
+        root.querySelector('#market-list').innerHTML = state.market.map(marketMarkup).join('') || '<p class="empty text-muted">No hay referencias.</p>';
+        root.querySelector('#decision-list').innerHTML = state.decisions.map(decisionMarkup).join('') || '<p class="empty text-muted">No hay ideas ni decisiones.</p>';
+        root.querySelector('#document-list').innerHTML = state.documents.map(documentMarkup).join('');
+        Object.keys({ overview: true, tasks: true, research: true, market: true, decisions: true, documents: true }).forEach(function (name) {
+          root.querySelector('#view-' + name).hidden = name !== activeView;
+        });
+        root.querySelectorAll('[data-view]').forEach(function (button) {
+          const selected = button.getAttribute('data-view') === activeView;
+          button.classList.toggle('btn-primary', selected);
+          button.setAttribute('aria-pressed', selected ? 'true' : 'false');
+        });
+      }
+
+      function toggleForm(id) {
+        const form = root.querySelector('#' + id);
+        form.classList.toggle('is-open');
+      }
+
+      function newId(prefix, items) {
+        return prefix + '-' + String(items.length + 1).padStart(2, '0');
+      }
+
+      root.addEventListener('click', function (event) {
+        const viewButton = event.target.closest('[data-view]');
+        if (viewButton) {
+          activeView = viewButton.getAttribute('data-view');
+          render();
+          return;
+        }
+        const jumpButton = event.target.closest('[data-jump]');
+        if (jumpButton) {
+          activeView = jumpButton.getAttribute('data-jump');
+          render();
+          return;
+        }
+        const toggleButton = event.target.closest('[data-toggle-form]');
+        if (toggleButton) {
+          toggleForm(toggleButton.getAttribute('data-toggle-form'));
+          return;
+        }
+        if (event.target.id === 'export-data') {
+          const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = 'subtitula-dashboard-data.json';
+          link.click();
+          URL.revokeObjectURL(url);
+          return;
+        }
+        if (event.target.id === 'reset-data') {
+          if (window.confirm('¿Restaurar la base del repositorio? Se perderán los cambios locales.')) {
+            state = clone(seed);
+            persist();
+            render();
+          }
+        }
+      });
+
+      root.addEventListener('change', function (event) {
+        const taskId = event.target.getAttribute('data-complete-task');
+        const researchId = event.target.getAttribute('data-complete-research');
+        if (taskId) {
+          const task = state.tasks.find(function (item) { return item.id === taskId; });
+          if (task) task.done = event.target.checked;
+          persist();
+          render();
+        }
+        if (researchId) {
+          const item = state.research.find(function (entry) { return entry.id === researchId; });
+          if (item) item.done = event.target.checked;
+          persist();
+          render();
+        }
+      });
+
+      root.querySelector('#task-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+        state.tasks.push({
+          id: newId('CUSTOM', state.tasks),
+          title: root.querySelector('#task-title').value.trim(),
+          area: root.querySelector('#task-area').value.trim() || 'Producto',
+          priority: root.querySelector('#task-priority').value,
+          lane: root.querySelector('#task-lane').value,
+          note: root.querySelector('#task-note').value.trim(),
+          done: false
+        });
+        event.target.reset();
+        event.target.classList.remove('is-open');
+        persist();
+        render();
+      });
+
+      root.querySelector('#research-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+        state.research.push({
+          id: newId('R', state.research),
+          title: root.querySelector('#research-title').value.trim(),
+          method: root.querySelector('#research-method').value.trim(),
+          outcome: root.querySelector('#research-outcome').value.trim(),
+          done: false
+        });
+        event.target.reset();
+        event.target.classList.remove('is-open');
+        persist();
+        render();
+      });
+
+      root.querySelector('#market-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+        state.market.push({
+          id: newId('MARKET', state.market),
+          name: root.querySelector('#market-name').value.trim(),
+          type: root.querySelector('#market-type').value.trim() || 'Referencia',
+          note: root.querySelector('#market-note').value.trim(),
+          source: root.querySelector('#market-source').value.trim() || 'Por investigar.'
+        });
+        event.target.reset();
+        event.target.classList.remove('is-open');
+        persist();
+        render();
+      });
+
+      root.querySelector('#decision-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+        state.decisions.push({
+          id: newId('D', state.decisions),
+          title: root.querySelector('#decision-title').value.trim(),
+          status: root.querySelector('#decision-status').value,
+          area: root.querySelector('#decision-area').value.trim() || 'Producto',
+          note: root.querySelector('#decision-note').value.trim()
+        });
+        event.target.reset();
+        event.target.classList.remove('is-open');
+        persist();
+        render();
+      });
+
+      root.querySelector('#import-data').addEventListener('change', function (event) {
+        const file = event.target.files && event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function () {
+          try {
+            const imported = JSON.parse(reader.result);
+            if (!valid(imported)) throw new Error('Formato no válido');
+            state = imported;
+            persist();
+            render();
+          } catch (error) {
+            root.querySelector('#storage-state').textContent = 'No se pudo importar ese JSON';
+          }
+        };
+        reader.readAsText(file);
+        event.target.value = '';
+      });
+
+      render();
+    }());
+  </script>
+</div>

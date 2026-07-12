@@ -1,0 +1,433 @@
+{
+  "updatedAt": "2026-07-12",
+  "tasks": [
+    {
+      "id": "UX-01",
+      "title": "Selector de intención tras login",
+      "area": "UX",
+      "priority": "P0",
+      "lane": "Ahora",
+      "note": "Tres tarjetas, recientes y biblioteca.",
+      "done": false
+    },
+    {
+      "id": "UX-02",
+      "title": "Asistente único de subida",
+      "area": "UX",
+      "priority": "P0",
+      "lane": "Ahora",
+      "note": "Creador e institución generan el mismo proyecto.",
+      "done": false
+    },
+    {
+      "id": "UX-03",
+      "title": "Editor como superficie única",
+      "area": "UX",
+      "priority": "P0",
+      "lane": "Ahora",
+      "note": "Vídeo, transcript y segmentos sincronizados.",
+      "done": false
+    },
+    {
+      "id": "UX-04",
+      "title": "Modo institución",
+      "area": "UX",
+      "priority": "P0",
+      "lane": "Ahora",
+      "note": "Hablantes, señales y documentos.",
+      "done": false
+    },
+    {
+      "id": "PUB-01",
+      "title": "Ficha pública de una sesión",
+      "area": "Publicación",
+      "priority": "P0",
+      "lane": "Ahora",
+      "note": "URL estable, vídeo, transcript, índice y documentos.",
+      "done": false
+    },
+    {
+      "id": "SRCH-01",
+      "title": "Búsqueda dentro de sesión",
+      "area": "Búsqueda",
+      "priority": "P0",
+      "lane": "Ahora",
+      "note": "Coincidencia y salto al segundo exacto.",
+      "done": false
+    },
+    {
+      "id": "DATA-01",
+      "title": "Versionado de transcript y publicación",
+      "area": "Datos",
+      "priority": "P0",
+      "lane": "Ahora",
+      "note": "Publicar una revisión concreta y auditable.",
+      "done": false
+    },
+    {
+      "id": "COST-01",
+      "title": "Medición por archivo",
+      "area": "Coste",
+      "priority": "P0",
+      "lane": "Ahora",
+      "note": "Minutos, coste, revisión y calidad.",
+      "done": false
+    },
+    {
+      "id": "VAL-01",
+      "title": "Descubrimiento con 5–8 usuarios",
+      "area": "Validación",
+      "priority": "P0",
+      "lane": "Ahora",
+      "note": "Creadores, comunicación, secretaría y ciudadanía.",
+      "done": false
+    },
+    {
+      "id": "PIL-01",
+      "title": "Elegir piloto seguro",
+      "area": "Piloto",
+      "priority": "P0",
+      "lane": "Ahora",
+      "note": "Vídeo ya público, sin expedientes internos.",
+      "done": false
+    },
+    {
+      "id": "UX-05",
+      "title": "Checklist de publicación",
+      "area": "UX",
+      "priority": "P1",
+      "lane": "Siguiente",
+      "note": "Título, fecha, origen, accesibilidad y responsable.",
+      "done": false
+    },
+    {
+      "id": "UX-06",
+      "title": "Asociación al orden del día",
+      "area": "UX",
+      "priority": "P1",
+      "lane": "Siguiente",
+      "note": "Mapear tramos y permitir corrección.",
+      "done": false
+    },
+    {
+      "id": "PUB-02",
+      "title": "Portal por entidad",
+      "area": "Publicación",
+      "priority": "P1",
+      "lane": "Siguiente",
+      "note": "Archivo, filtros y embebido o enlace.",
+      "done": false
+    },
+    {
+      "id": "SRCH-02",
+      "title": "Búsqueda global léxica",
+      "area": "Búsqueda",
+      "priority": "P1",
+      "lane": "Siguiente",
+      "note": "Entidad, órgano, fecha, hablante y punto del día.",
+      "done": false
+    },
+    {
+      "id": "SRCH-03",
+      "title": "Analítica de necesidades ciudadanas",
+      "area": "Búsqueda",
+      "priority": "P1",
+      "lane": "Siguiente",
+      "note": "Consultas sin resultado y clics a evidencia.",
+      "done": false
+    },
+    {
+      "id": "COST-02",
+      "title": "Cascada de transcripción",
+      "area": "Coste",
+      "priority": "P1",
+      "lane": "Siguiente",
+      "note": "Escalar solo segmentos con señales de riesgo.",
+      "done": false
+    },
+    {
+      "id": "COST-03",
+      "title": "Cascada de traducción",
+      "area": "Coste",
+      "priority": "P1",
+      "lane": "Siguiente",
+      "note": "Traducir tracks publicados o solicitados.",
+      "done": false
+    },
+    {
+      "id": "GOV-01",
+      "title": "Paquete de compra y piloto",
+      "area": "Gobierno",
+      "priority": "P1",
+      "lane": "Siguiente",
+      "note": "DPA, seguridad, soporte y salida.",
+      "done": false
+    },
+    {
+      "id": "GOV-02",
+      "title": "Brecha ENS, RGPD y accesibilidad",
+      "area": "Gobierno",
+      "priority": "P1",
+      "lane": "Siguiente",
+      "note": "Riesgo y medidas antes de contenido no público.",
+      "done": false
+    },
+    {
+      "id": "MARKET-01",
+      "title": "Mapa de implantaciones",
+      "area": "Mercado",
+      "priority": "P1",
+      "lane": "Siguiente",
+      "note": "15 concellos: proveedor, vídeo, volumen y portal.",
+      "done": false
+    },
+    {
+      "id": "SRCH-04",
+      "title": "Recuperación híbrida o vectorial",
+      "area": "Búsqueda",
+      "priority": "P2",
+      "lane": "Después",
+      "note": "Comparar calidad, latencia y coste contra búsqueda léxica.",
+      "done": false
+    },
+    {
+      "id": "SRCH-05",
+      "title": "Preguntas en lenguaje natural con citas",
+      "area": "Búsqueda",
+      "priority": "P2",
+      "lane": "Después",
+      "note": "Solo con evidencia y evaluación humana.",
+      "done": false
+    },
+    {
+      "id": "INT-01",
+      "title": "Embed, API o sede electrónica",
+      "area": "Integración",
+      "priority": "P2",
+      "lane": "Después",
+      "note": "Priorizar tras pilotos.",
+      "done": false
+    },
+    {
+      "id": "PUB-03",
+      "title": "Archivo histórico",
+      "area": "Publicación",
+      "priority": "P2",
+      "lane": "Después",
+      "note": "Estimar calidad y coste antes de vender.",
+      "done": false
+    },
+    {
+      "id": "CRE-01",
+      "title": "Presets sociales y publicación directa",
+      "area": "Creador",
+      "priority": "P2",
+      "lane": "Después",
+      "note": "Solo si elimina un paso doloroso.",
+      "done": false
+    },
+    {
+      "id": "BIZ-01",
+      "title": "Oferta provincial",
+      "area": "Negocio",
+      "priority": "P2",
+      "lane": "Después",
+      "note": "Tras operación repetible en varios concellos.",
+      "done": false
+    }
+  ],
+  "research": [
+    {
+      "id": "M-01",
+      "title": "¿Qué portales y proveedores usan 15 concellos?",
+      "method": "Auditoría pública de URLs, sedes, plenos y portal.",
+      "outcome": "Mapa de incumbencia e integraciones.",
+      "done": false
+    },
+    {
+      "id": "M-02",
+      "title": "¿Quién transmite y archiva plenos, y cuánto volumen genera?",
+      "method": "Muestra del último año por entidad.",
+      "outcome": "Coste, frecuencia y mercado alcanzable.",
+      "done": false
+    },
+    {
+      "id": "M-03",
+      "title": "¿Qué contratos revelan precio de portal, streaming o subtitulado?",
+      "method": "PLACSP y PcPG por CPV y proveedor.",
+      "outcome": "Rango de compra real.",
+      "done": false
+    },
+    {
+      "id": "M-04",
+      "title": "¿Qué uso ciudadano existe?",
+      "method": "Solicitudes, analítica compartida, prensa y tests de tarea.",
+      "outcome": "Métrica de utilidad, no visitas vanidosas.",
+      "done": false
+    },
+    {
+      "id": "M-05",
+      "title": "¿Las alternativas reconocen gallego y con qué calidad?",
+      "method": "Corpus de plenos públicos y revisión humana.",
+      "outcome": "Baseline de WER, nombres y coste.",
+      "done": false
+    },
+    {
+      "id": "M-06",
+      "title": "¿Qué requisitos de seguridad exigen compradores?",
+      "method": "Entrevistas con contratación, DPD e IT.",
+      "outcome": "Secuencia para ENS, DPA y alojamiento.",
+      "done": false
+    }
+  ],
+  "market": [
+    {
+      "id": "EIDOLOCAL",
+      "name": "EidoLocal / Portal de Transparencia Local de Galicia",
+      "type": "Infraestructura pública",
+      "note": "Cumplimiento, categorías y enlace a portales externos; oportunidad de complementar con audiovisual navegable.",
+      "source": "Gratuito para entidades locales; fuente en market-watch.md."
+    },
+    {
+      "id": "GESPUBLICO",
+      "name": "esPublico Gestiona",
+      "type": "Proveedor de gestión local",
+      "note": "Administración electrónica y expediente; integrar por enlace, embed o API, no sustituir.",
+      "source": "Precio no publicado."
+    },
+    {
+      "id": "CORUNA",
+      "name": "A Coruña — contratos.datos.coruna.eu",
+      "type": "Referencia institucional",
+      "note": "Referencia UX para explorar un dominio de datos públicos.",
+      "source": "Servicio institucional."
+    },
+    {
+      "id": "XUNTA",
+      "name": "Portal de Transparencia de la Xunta",
+      "type": "Referencia institucional",
+      "note": "Referencia de información de interés y métricas públicas, sin extrapolar tráfico global.",
+      "source": "Servicio institucional."
+    },
+    {
+      "id": "HAPPYSCRIBE",
+      "name": "HappyScribe",
+      "type": "Subtitulado generalista",
+      "note": "UX creador: ASR, hablantes, edición, exportación y colaboración.",
+      "source": "Precios públicos en market-watch.md."
+    },
+    {
+      "id": "AMBERSCRIPT",
+      "name": "Amberscript",
+      "type": "Subtitulado generalista",
+      "note": "Referencia de coste, revisión humana, seguridad y exportaciones.",
+      "source": "Precios públicos en market-watch.md."
+    },
+    {
+      "id": "SONIX",
+      "name": "Sonix",
+      "type": "Subtitulado generalista",
+      "note": "Referencia de coste de mercado masivo y trabajo por créditos.",
+      "source": "Precios públicos en market-watch.md."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D-01",
+      "title": "Un solo producto y editor para creador e institución.",
+      "status": "Adoptada",
+      "area": "Producto",
+      "note": "Comparten medio, transcript, segmentos, subtítulos y salida."
+    },
+    {
+      "id": "D-02",
+      "title": "La intención se elige al entrar, pero puede cambiarse.",
+      "status": "Adoptada",
+      "area": "UX",
+      "note": "Configura ayudas sin encerrar al usuario."
+    },
+    {
+      "id": "D-03",
+      "title": "Transparencia pública es abierta y separada del login.",
+      "status": "Adoptada",
+      "area": "Transparencia",
+      "note": "La ciudadanía no debe ser cliente SaaS para consultar."
+    },
+    {
+      "id": "D-04",
+      "title": "Búsqueda léxica con minuto y fuentes antes que chat semántico.",
+      "status": "Adoptada",
+      "area": "Búsqueda",
+      "note": "Más auditable, barata y útil para probar demanda."
+    },
+    {
+      "id": "D-05",
+      "title": "Complementar EidoLocal, Gestiona y las sedes existentes.",
+      "status": "Adoptada",
+      "area": "Integración",
+      "note": "Reducir riesgo del piloto y respetar fuentes administrativas."
+    },
+    {
+      "id": "D-06",
+      "title": "La revisión guiada por señales reduce materialmente el tiempo humano.",
+      "status": "En validación",
+      "area": "Producto",
+      "note": "Comparar contra editor lineal en tareas cronometradas."
+    },
+    {
+      "id": "D-07",
+      "title": "Gallego más transparencia audiovisual es una cuña comercial suficiente.",
+      "status": "En validación",
+      "area": "Negocio",
+      "note": "Validar con compradores, volumen y conversión de pilotos."
+    },
+    {
+      "id": "D-08",
+      "title": "Una diputación puede comprar para varios concellos.",
+      "status": "En validación",
+      "area": "Negocio",
+      "note": "Entrevistas y licitaciones previas determinarán encaje."
+    },
+    {
+      "id": "D-09",
+      "title": "No construir aún un portal generalista de presupuestos, contratos y expedientes.",
+      "status": "Rechazada por ahora",
+      "area": "Alcance",
+      "note": "Duplica infraestructura y dispersa la tesis."
+    },
+    {
+      "id": "D-10",
+      "title": "No lanzar un asistente que responda sin evidencia visible.",
+      "status": "Rechazada por ahora",
+      "area": "Confianza",
+      "note": "Exigir citas por fragmento y controles de seguridad."
+    }
+  ],
+  "documents": [
+    {
+      "title": "Índice del centro de producto",
+      "path": "./README.md",
+      "note": "Tesis, cadencia y mapa de documentos."
+    },
+    {
+      "title": "Refactor de interfaz",
+      "path": "./product-refactor.md",
+      "note": "Flujos, rutas, editor, búsqueda y modelo de datos."
+    },
+    {
+      "title": "Backlog priorizado",
+      "path": "./backlog.md",
+      "note": "Trabajo P0, P1, P2 y cascada de coste."
+    },
+    {
+      "title": "Mercado y competidores",
+      "path": "./market-watch.md",
+      "note": "Portales, productos comparables, fuentes y cola de investigación."
+    },
+    {
+      "title": "Decisiones e hipótesis",
+      "path": "./decision-log.md",
+      "note": "Decisiones, validaciones y métricas de salud."
+    }
+  ]
+}
