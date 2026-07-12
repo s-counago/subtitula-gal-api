@@ -37,7 +37,6 @@ server:
   servlet:
     session:
       cookie:
-        name: SUBTITULA_SESSION
         http-only: true
         same-site: lax
 
