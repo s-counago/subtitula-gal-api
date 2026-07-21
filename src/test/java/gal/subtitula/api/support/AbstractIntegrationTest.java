@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 public abstract class AbstractIntegrationTest {
 
     public static final PostgreSQLContainer<?> POSTGRES =
-            new PostgreSQLContainer<>("postgres:16");
+            new PostgreSQLContainer<>("postgres:17");
 
     static {
         POSTGRES.start();

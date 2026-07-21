@@ -1,0 +1,44 @@
+# Shared by both dev and prod through Spring profile groups. Environment
+# variables select different resources; this file and the application image do
+# not change between deployments.
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: ${DB_POOL_MAXIMUM_SIZE:5}
+      minimum-idle: ${DB_POOL_MINIMUM_IDLE:0}
+      connection-timeout: ${DB_POOL_CONNECTION_TIMEOUT_MS:10000}
+  mail:
+    host: ${SMTP_HOST:smtp.mx.cloudflare.net}
+    port: ${SMTP_PORT:465}
+    username: ${SMTP_USERNAME:api_token}
+    # Empty is valid while EMAIL_DELIVERY_REQUIRED=false. Production sets that
+    # flag true, and RequiredEmailConfigurationValidator then requires SMTP,
+    # an onboarded sender and this password.
+    password: ${SMTP_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: ${SMTP_SSL_ENABLED:true}
+          starttls:
+            enable: ${SMTP_STARTTLS_ENABLED:false}
+
+server:
+  servlet:
+    session:
+      cookie:
+        secure: true
+
+app:
+  cors:
+    allowed-origins: ${CORS_ORIGINS}
+  frontend:
+    base-url: ${FRONTEND_URL}
+  email:
+    from: ${APP_EMAIL_FROM:}
+  elevenlabs:
+    api-key: ${ELEVENLABS_API_KEY}

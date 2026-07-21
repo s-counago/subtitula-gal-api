@@ -38,9 +38,8 @@ Convención: **P0** desbloquea el primer piloto; **P1** aumenta el valor del pil
 | GOV-02 | P1 | Pendiente | Brecha ENS/RGPD/accesibilidad | Inventario de tratamientos, análisis de riesgo y plan de medidas antes de procesar contenido no público. |
 | MARKET-01 | P1 | Pendiente | Mapa de implantaciones | Para 15 concellos: proveedor de sede/transparencia, vídeo de plenos, volumen, URL, buscabilidad y contacto público. |
 | INF-04 | P1 | En código | CI, ramas y gate de despliegue | `develop` verifica y queda asociado a development; producción se prepara tras merge a `master`/`main`, pero ningún proveedor se activa aún. |
-| INF-05 | P1 | Pendiente | Hosting de API y PostgreSQL | Decidir cómputo persistente, base de datos, backups, retención de archivos y coste máximo. |
-| INF-06 | P1 | Pendiente | Cloudflare DNS y túnel nombrado | Crear subdominios dev/prod y ruta estable cuando la zona y el hosting estén listos. |
-| INF-07 | P1 | Pendiente | Correo SES separado | Sandbox/allow-list dev y dominio autenticado/credenciales mínimas en producción. |
+| INF-05 | P1 | Pendiente | Provisionar PlanetScale PostgreSQL dev desde Cloudflare | Crear rama/rol dev sobre PostgreSQL 17; validar Flyway, restauración, latencia y conexión JDBC/TLS directa. Prod queda en el anexo. |
+| INF-06 | P1 | Pendiente | Hosted dev en Cloudflare | Desplegar Next.js y Spring en `workers.dev`; API construida una vez, email deshabilitado de forma explícita y E2E remoto sin secretos production. |
 
 ## Después — solo tras comprobar necesidad
 
@@ -52,6 +51,7 @@ Convención: **P0** desbloquea el primer piloto; **P1** aumenta el valor del pil
 | PUB-03 | P2 | Pendiente | Archivo histórico | Paquete cerrado para digitalizar plenos antiguos; estimar calidad y coste por hora antes de venderlo. |
 | CRE-01 | P2 | Pendiente | Presets sociales y publicación directa | Construir cuando creadores confirmen que reduce su paso manual más doloroso. |
 | BIZ-01 | P2 | Pendiente | Oferta provincial | Validar con una diputación tras demostrar operación repetible en varios concellos. |
+| INF-07 | P2 | Pendiente | Anexo dominio, correo y producción | Comprar/incorporar dominio, Cloudflare Email Service, Google público y PlanetScale prod HA solo cuando exista fecha de lanzamiento. |
 
 ## Diseño de la cascada de coste
 
@@ -73,4 +73,3 @@ Métricas de salida: coste por minuto publicado, porcentaje de minutos escalados
 - ¿Qué minuto de revisión ahorra el marcador de dudas frente a un editor genérico?
 - ¿Una persona encuentra una decisión antes de pedir información? Medirlo con tareas reales.
 - ¿Qué presupuestos y vías de compra usan las entidades objetivo? No diseñar precio para encajar artificialmente en un umbral contractual.
-

@@ -47,7 +47,7 @@ class ResendVerificationMailFailureTest {
         @Primary
         EmailSender throwingEmailSender() {
             return (to, subject, body) -> {
-                throw new RuntimeException("ses down");
+                throw new RuntimeException("email provider down");
             };
         }
     }

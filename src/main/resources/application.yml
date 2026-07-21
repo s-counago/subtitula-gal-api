@@ -1,6 +1,17 @@
 spring:
   application:
     name: subtitula-api
+  profiles:
+    # dev and prod are labels for different runtime secrets/URLs. Both inherit
+    # the exact same hosted configuration and run the same application image.
+    group:
+      dev: hosted
+      prod: hosted
+  # Safe default for local/tests. Hosted development can explicitly disable
+  # delivery until a sender domain exists; production keeps SMTP fail-fast.
+  mail:
+    host: ${SMTP_HOST:localhost}
+    port: ${SMTP_PORT:1025}
   security:
     oauth2:
       client:
@@ -30,7 +41,7 @@ spring:
       max-request-size: 500MB
 
 server:
-  # App runs behind a TLS-terminating reverse proxy (Nginx/ALB) in prod: honour
+  # App runs behind a TLS-terminating Cloudflare Worker: honour
   # X-Forwarded-* so getRemoteAddr()/isSecure() reflect the real client, not the proxy.
   # This makes per-IP rate limiting effective and lets the Secure session cookie be set.
   forward-headers-strategy: framework
@@ -45,6 +56,10 @@ app:
     allowed-origins: ${CORS_ORIGINS:http://localhost:3000}
   frontend:
     base-url: ${FRONTEND_URL:http://localhost:3000}
+  email:
+    provider: ${EMAIL_PROVIDER:smtp}
+    delivery-required: ${EMAIL_DELIVERY_REQUIRED:false}
+    from: ${APP_EMAIL_FROM:no-reply@subtitula.gal}
   elevenlabs:
     base-url: https://api.elevenlabs.io
     api-key: ${ELEVENLABS_API_KEY:}

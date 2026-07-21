@@ -1,8 +1,23 @@
 services:
   db:
-    image: postgres:16
+    image: postgres:17
     environment:
       POSTGRES_DB: subtitula
       POSTGRES_USER: subtitula
       POSTGRES_PASSWORD: subtitula
     ports: ["5432:5432"]
+    volumes:
+      - postgres17-data:/var/lib/postgresql/data
+
+  mailpit:
+    image: axllent/mailpit:v1.27
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    environment:
+      MP_MAX_MESSAGES: 500
+
+volumes:
+  # PostgreSQL data directories cannot cross major versions without an
+  # intentional dump/restore or pg_upgrade, so encode the major in the name.
+  postgres17-data:

@@ -21,6 +21,9 @@ La entrada comercial es la accesibilidad y el ahorro operativo; el valor públic
 - [Registro de decisiones](decision-log.md): hipótesis que ya orientan el producto y las que aún necesitan prueba.
 - [Infraestructura y entornos](infrastructure.md): servicios, secretos, costes y orden de activación para dev/prod.
 - [Contrato operativo de entornos](../operations/environment-contract.md): ramas, GitHub Environments, URLs y requisitos para desplegar.
+- [Arquitectura Cloudflare-first](../operations/cloudflare-architecture.md): cómputo, base de datos, correo, almacenamiento y orden de migración.
+- [Configuración de secretos](../operations/secrets-setup.md): runbook paso a paso para obtener, custodiar, instalar y rotar cada valor de local, dev y producción.
+- [Anexo de lanzamiento](../operations/custom-domain-launch-annex.md): dominio propio, correo hospedado, Google público y producción cuando el piloto lo justifique.
 - [Tablero operativo](dashboard.html): vista navegable de tareas, investigación, mercado, decisiones y documentos.
 - [Instantánea de datos del tablero](dashboard-data.json): fichero intercambiable para conservar cambios entre ordenadores.
 - [Fuente editable del tablero](dashboard.fragment.html): fragmento del que se genera el tablero estático.

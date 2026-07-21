@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * Verifies that registration succeeds (201 + SESSION cookie) even when
- * the EmailSender throws — i.e. a transient SES failure must not roll back
+ * the EmailSender throws — i.e. a transient provider failure must not roll back
  * an already-committed registration or hide the session from the client.
  *
  * Uses its own Spring context (throwing EmailSender) and its own Postgres
@@ -48,7 +48,7 @@ class RegisterEmailFailureTest {
         @Primary
         EmailSender throwingEmailSender() {
             return (to, subject, body) -> {
-                throw new RuntimeException("ses down");
+                throw new RuntimeException("email provider down");
             };
         }
     }

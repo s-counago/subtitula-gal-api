@@ -16,7 +16,12 @@ Output:
 | 2026-07-12 | Rechazada por ahora | Construir un portal generalista de presupuestos, contratos y expedientes. | Duplica infraestructura existente y dispersa la tesis. | Solo reconsiderar si sesiones/documentos demuestran una necesidad clara y acceso fiable a datos. |
 | 2026-07-12 | Rechazada por ahora | Un asistente que responda sin mostrar evidencia. | Riesgo de error, sesgo y falta de confianza pública. | Nunca lanzar sin evaluación, citas por fragmento y controles de seguridad. |
 | 2026-07-13 | Adoptada | Desarrollo y producción son entornos aislados, no solo ramas. | Evita probar sobre datos, credenciales o presupuesto reales; permite medir costes por entorno. | Dos bases, dos clientes OAuth, dos claves de transcripción y dos GitHub Environments configurados. |
-| 2026-07-13 | Adoptada | Cloudflare será borde/DNS/túnel, no el host implícito de la API Spring. | La API y PostgreSQL requieren un proveedor de cómputo/persistencia que aún no se ha elegido. | Despliegue remoto de dev con URLs estables, CORS y OAuth funcionando de extremo a extremo. |
+| 2026-07-18 | Adoptada | Arquitectura Cloudflare-first: frontend en Workers, Spring en Containers, Email Service y futuro R2. | Reduce proveedores y factura sin reescribir el API actual; Containers puede ejecutar su imagen OCI. | Despliegue remoto de dev, medidas de cold start/memoria y E2E con URLs estables. |
+| 2026-07-18 | Revertida | D1 sería la única base hospedada y PostgreSQL quedaría local. | D1 exigiría sustituir JPA/JDBC/Flyway/Spring Session y mantener una persistencia distinta de local; el coste de desarrollo y depuración supera la simplificación de proveedor. | Solo reconsiderar si el backend abandona Spring/JDBC o una carga futura vive enteramente en Workers. |
+| 2026-07-18 | Adoptada | PlanetScale PostgreSQL, provisionado y facturado mediante Cloudflare, será la base hospedada. | Mantiene PostgreSQL estándar y el mismo código JPA/JDBC/Flyway/Spring Session en los tres entornos; dev y prod quedan aislados. PlanetScale opera el servicio aunque aparezca en la factura Cloudflare. | Ramas/roles separados, Flyway, restauración, latencia regional y E2E remoto validados. |
+| 2026-07-18 | Adoptada | La API se construye una vez y producción promueve el mismo digest probado en dev. | Evita diferencias de código o empaquetado entre entornos; solo cambian perfiles y secretos runtime. | CI registra digest, E2E dev lo aprueba y el despliegue prod referencia exactamente ese digest. |
+| 2026-07-18 | Adoptada | Cloudflare Email Service será el único correo hospedado; Mailpit seguirá local. | Se prefiere una propuesta clara y fail-fast a mantener fallbacks prematuros. | SPF/DKIM/DMARC, entregabilidad, cuotas y Activity log validados al activar el anexo de lanzamiento. |
+| 2026-07-18 | Adoptada | Hosted dev usará los hostnames gratuitos `workers.dev`; dominio propio, correo hospedado y producción pública forman un anexo de lanzamiento. | Evita pagar el dominio antes de validar el producto sin introducir otro proveedor ni código por entorno. | E2E dev estable; al lanzar, Custom Domains y OAuth/email funcionan cambiando configuración, no código. |
 
 ## North-star y métricas de salud
 
@@ -31,4 +36,3 @@ Output:
 | Negocio responsable | renovación de piloto, coste de soporte por entidad, margen por sesión sin recortar revisión necesaria |
 
 No usar visitas al portal como única métrica de éxito: la transparencia se consulta a menudo por necesidad puntual. La medida relevante es si, cuando surge esa necesidad, la respuesta se encuentra y se puede comprobar.
-

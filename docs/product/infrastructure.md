@@ -1,54 +1,58 @@
 # Infraestructura y entornos
 
-**Estado:** preparado en código, sin proveedor de hosting ni secretos configurados · **Actualizado:** 13 de julio de 2026.
+**Estado:** hosted dev en `workers.dev`; dominio/producción pública en anexo · **Actualizado:** 18 de julio de 2026.
 
 ## Regla de base
 
-`develop` es desarrollo; `master` (frontend) y `main` (API) son producción. Una PR abierta nunca publica producción: al aprobarse y fusionarse, el `push` resultante a la rama de producción será el disparador de despliegue cuando el proveedor esté configurado.
+La API tiene una sola implementación y un artefacto OCI. Dev despliega un digest y producción promociona el mismo digest. Local, dev y prod usan PostgreSQL 17, JPA/JDBC, Flyway, Spring Session y ElevenLabs; solo cambian perfiles, URLs, credenciales y límites.
 
-Desarrollo y producción deben tener datos, credenciales y límites de gasto independientes. Compartir una clave de transcripción, una base de datos o un cliente OAuth elimina la utilidad del entorno de desarrollo.
+`develop` representa development; `master` (frontend) y `main` (API) representan production. Los workflows todavía no despliegan y `DEPLOY_ENABLED=false` sigue siendo obligatorio.
 
-## Inventario de servicios
+## Fases
 
-| Servicio | Desarrollo | Producción | Estado y siguiente paso |
+| Servicio | Local | Hosted dev ahora | Producción futura |
 |---|---|---|---|
-| GitHub | `develop`, CI y GitHub Environment `development` | `master`/`main`, CI y Environment `production` | Workflows preparados y despliegue bloqueado hasta elegir proveedor. Crear los dos Environments en cada repositorio. |
-| Next.js | `NEXT_PUBLIC_API_URL=http(s)://api.dev…` o localhost | `NEXT_PUBLIC_API_URL=https://api.subtitula.gal` | Plantilla preparada. Esta variable es pública: nunca alojar secretos en `NEXT_PUBLIC_*`. |
-| API Spring | Perfil `dev`, `CORS_ORIGINS`/`FRONTEND_URL` de dev | Perfil `prod`, cookie Secure y origen/remitente obligatorios | Perfiles y plantilla `.env.example` preparados. Falta host de cómputo. |
-| PostgreSQL | Instancia/base aislada con datos de prueba | Instancia/base aislada con backup y restauración probada | Falta seleccionar/provisionar proveedor. Nunca copiar producción a dev. |
-| Google OAuth | Cliente OAuth **web** de dev y usuarios de prueba | Cliente OAuth **web** de producción | Falta acceso a consola y dominios estables. Son `GOOGLE_CLIENT_ID` y `GOOGLE_CLIENT_SECRET`, no una API key. |
-| ElevenLabs Scribe | Clave distinta con cuota dura | Clave de servicio con alertas y coste por archivo | Código actualizado a `scribe_v2`; falta crear clave dev y validar corpus gallego. |
-| Amazon SES | Sandbox/allow-list de correos propios | Dominio, DKIM/SPF/DMARC y acceso de producción | Falta verificar identidades y crear IAM con mínimo privilegio. |
-| Cloudflare | Futuro `app.dev.subtitula.gal` + `api.dev.subtitula.gal` | Futuro `app.subtitula.gal` + `api.subtitula.gal` | Sin cambios en Cloudflare todavía. Cuando toque: DNS y túnel nombrado, no Quick Tunnel para OAuth. |
-| Observabilidad, backups y archivos | Límites y limpieza de datos de prueba | Retención, alertas, backups y borrado acordados | Pendiente de elegir hosting/almacenamiento. No registrar vídeos, tokens o transcripciones completas en logs. |
+| Next.js | `localhost:3000` | `subtitula-web-dev.<account>.workers.dev` | dominio propio, misma fuente |
+| Spring | `localhost:8080` | `subtitula-api-dev.<account>.workers.dev` | dominio propio, mismo digest |
+| PostgreSQL | Docker 17 | PlanetScale dev | PlanetScale prod HA |
+| Google | OAuth Web localhost | callback `workers.dev` si Google lo acepta en Testing | cliente y dominio verificados |
+| ElevenLabs | clave Free/local | clave dev con cuota | clave production con alertas |
+| Email | Mailpit E2E; UI habilitada | `EMAIL_PROVIDER=disabled`, fallo visible; UI de email oculta | Cloudflare Email Service |
+| Objetos | temporal | R2 dev cuando se implemente | R2 prod |
 
-## Datos y variables a preparar
+`workers.dev` elimina la compra y zona DNS como prerrequisito. Cloudflare no lo considera host de producción crítica, y no podemos usarlo como dominio remitente. El [anexo de lanzamiento](../operations/custom-domain-launch-annex.md) agrupa dominio propio, correo, Google público y producción HA.
 
-No enviar estas claves por chat ni guardarlas en el repositorio. La API incluye [.env.example](../../.env.example), que se copia localmente a `.env` y queda ignorado por Git.
+## Configuración
 
-| Grupo | Variables | Lugar futuro |
-|---|---|---|
-| Base de datos | `DB_URL`, `DB_USER`, `DB_PASSWORD` | Secretos `development` y `production` del host/API |
-| OAuth | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Secretos de la API por entorno |
-| Frontend/API | `NEXT_PUBLIC_API_URL`, `CORS_ORIGINS`, `FRONTEND_URL` | Variable pública del frontend; variables de configuración de API |
-| Transcripción | `ELEVENLABS_API_KEY`, `ELEVENLABS_MODEL_ID=scribe_v2`, `ELEVENLABS_LANGUAGE_HINT=glg` | Secreto de la API por entorno |
-| Correo | `APP_EMAIL_FROM`, `AWS_REGION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | Secreto de la API por entorno |
-| Despliegue | `DEPLOY_ENABLED=false` | Variable de GitHub Environment; solo cambiar tras implementar y revisar el proveedor |
+| Grupo | Contrato |
+|---|---|
+| Perfil | `local`, `dev` o `prod`; dev/prod comparten `hosted` |
+| Datos | `DB_URL`, `DB_USER`, `DB_PASSWORD`, `DB_POOL_*`; misma API PostgreSQL |
+| OAuth | clientes/secrets aislados; callback exacto |
+| Hosts | `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_SITE_URL`, `CORS_ORIGINS`, `FRONTEND_URL` |
+| Transcripción | `ELEVENLABS_API_KEY`, `scribe_v2`, `glg`, cuota por entorno |
+| Correo | local SMTP/Mailpit + flag frontend `true`; dev provider/required `disabled`/`false` + flag frontend `false`; prod SMTP/required + flag `true` |
+| Deploy | Account ID como variable, token mínimo como secret, `DEPLOY_ENABLED` como gate |
 
-## Orden de activación
+No enviar secretos por chat ni guardarlos en el repo. Las instrucciones ejecutables están en [Configuración de secretos](../operations/secrets-setup.md).
 
-1. Crear los GitHub Environments `development` y `production` en ambos repositorios, con `DEPLOY_ENABLED=false`.
-2. Elegir hosting para la API Spring y PostgreSQL; Cloudflare quedará como DNS/borde/túnel, no sustituye ese cómputo.
-3. Crear y desplegar la base de desarrollo; probar Flyway y crear datos de prueba.
-4. Registrar dos clientes OAuth de Google con callbacks finales. Localmente puede usarse `http://localhost:8080/login/oauth2/code/google`; remoto necesita HTTPS y coincidencia exacta.
-5. Crear la clave de ElevenLabs de desarrollo con cuota; ejecutar la prueba de gallego contra `scribe_v2`.
-6. Configurar SES de desarrollo; después el dominio de producción y autenticación DNS.
-7. Cuando exista hosting, configurar Cloudflare DNS/túneles nombrados y las variables de URL. Solo entonces implementar los comandos de despliegue y activar `DEPLOY_ENABLED`.
+## Orden actual
 
-## Guardarraíles de coste y datos
+1. Elegir el subdominio de cuenta `workers.dev` y activar Workers Paid.
+2. Provisionar únicamente PlanetScale dev y su rol.
+3. Crear claves Google/ElevenLabs no productivas y tokens Cloudflare de development.
+4. Implementar manifests y desplegar frontend/API dev con email deshabilitado.
+5. Validar Flyway, sesión/cookies, CORS, cold start, memoria, transcripción y coste.
+6. Mantener producción sin provisionar hasta que exista dominio/fecha de piloto.
+7. Ejecutar el anexo y promover el mismo digest aprobado.
 
-- Un límite de consumo de ElevenLabs por clave y una métrica de coste/minuto dentro de Subtitula.
-- Una base de datos de dev distinta y sin datos personales o institucionales reales.
-- SES dev restringido a una allow-list de propiedad del equipo.
-- Presupuesto/alerta de gasto en cada proveedor antes de permitir carga pública de vídeo.
-- Backups y proceso de borrado definido antes del primer piloto institucional.
+## Coste
+
+| Ámbito | Base mensual aproximada antes de IVA/overages |
+|---|---:|
+| Local | USD 0 |
+| Hosted dev | USD 10: Workers Paid 5 + PlanetScale dev 5 |
+| Incremento al lanzar prod | USD 15 de PlanetScale HA + coste del dominio |
+| Dev + prod tras lanzamiento | USD 25 + dominio |
+
+No incluye consumo por encima de cuotas de Containers, Workers, R2, ElevenLabs o correo. El hostname `workers.dev` no añade coste.

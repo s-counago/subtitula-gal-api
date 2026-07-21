@@ -154,7 +154,7 @@ La búsqueda global empieza con texto completo, filtros por entidad/órgano/fech
 
 ## Búsqueda: orden técnico recomendado
 
-**MVP — búsqueda léxica con evidencia.** Indexar transcripciones revisadas y publicadas en PostgreSQL Full Text Search para gallego y castellano, complementado con coincidencia tolerante a errores para nombres con pg_trgm. Guardar segmento, inicio, fin, hablante, sesión, orden del día y revisión.
+**MVP — búsqueda léxica con evidencia.** Indexar transcripciones revisadas y publicadas con PostgreSQL Full Text Search, complementado con `pg_trgm` para nombres y errores tipográficos. Guardar segmento, inicio, fin, hablante, sesión, orden del día y revisión; validar índices y ranking con el corpus real antes de añadir otra infraestructura.
 
 **Después — búsqueda híbrida.** Añadir embeddings por fragmento y combinar recuperación semántica con el resultado léxico. Toda respuesta generativa debe devolver los segmentos citados, minuto, vídeo y documento; si no hay evidencia, debe decir que no la encontró. Medir si mejora éxito de búsqueda antes de asumir coste permanente.
 
@@ -189,5 +189,3 @@ Estados mínimos de proyecto: borrador → subido → procesando → requiere re
 5. **Corte E: búsqueda híbrida.** Solo con corpus suficiente y métricas comparativas favorables.
 
 Cada corte debe poder desplegarse sin migrar forzosamente los proyectos previos; un proyecto antiguo puede abrirse en el editor común con modo creador hasta que su dueño lo cambie.
-
-

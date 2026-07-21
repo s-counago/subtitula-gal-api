@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-13",
+  "updatedAt": "2026-07-18",
   "tasks": [
     {
       "id": "UX-01",
@@ -273,29 +273,29 @@
     },
     {
       "id": "INF-05",
-      "title": "Elegir hosting de API y base de datos",
+      "title": "Provisionar PlanetScale PostgreSQL desde Cloudflare",
       "area": "Infraestructura",
       "priority": "P1",
       "lane": "Siguiente",
-      "note": "Cloudflare será borde/DNS/túnel; Spring necesita cómputo y Postgres persistente.",
+      "note": "Crear rama/rol dev ahora; PostgreSQL 17 con JPA/JDBC/Flyway/Spring Session. Prod HA queda en el anexo.",
       "done": false
     },
     {
       "id": "INF-06",
-      "title": "Configurar Cloudflare con subdominios y túnel nombrado",
+      "title": "Desplegar frontend y API en Cloudflare",
       "area": "Infraestructura",
       "priority": "P1",
       "lane": "Siguiente",
-      "note": "app.dev/api.dev y app/api; no usar Quick Tunnel para OAuth persistente.",
+      "note": "Next.js y Spring en workers.dev; email falla sin bloquear y la UI de verificación/recovery queda oculta por flag.",
       "done": false
     },
     {
       "id": "INF-07",
-      "title": "Preparar SES de desarrollo y producción",
+      "title": "Incorporar Cloudflare Email Service",
       "area": "Infraestructura",
-      "priority": "P1",
-      "lane": "Siguiente",
-      "note": "Identidades, DKIM/SPF/DMARC y sandbox/allow-list de desarrollo.",
+      "priority": "P2",
+      "lane": "Después",
+      "note": "Anexo: comprar/incorporar dominio, Email Service, Google público y PlanetScale prod HA al fijar lanzamiento.",
       "done": false
     },
     {
@@ -354,7 +354,7 @@
     {
       "id": "INF-R-01",
       "title": "¿Qué coste y límites sostienen el entorno de desarrollo?",
-      "method": "Comparar hosting, Postgres, transcripción y correo con límites por servicio.",
+      "method": "Medir Containers, PlanetScale PostgreSQL, R2, transcripción y correo con límites por servicio.",
       "outcome": "Techo de gasto mensual y plan de apagado.",
       "done": false
     }
@@ -497,31 +497,31 @@
       "id": "FRONTEND",
       "name": "Frontend Next.js",
       "status": "Preparado",
-      "development": "NEXT_PUBLIC_API_URL apunta a api.dev o localhost.",
-      "production": "NEXT_PUBLIC_API_URL apunta a api.subtitula.gal.",
+      "development": "NEXT_PUBLIC_API_URL y SITE_URL apuntan a localhost o a los Workers dev.",
+      "production": "Misma fuente; Custom Domain y URLs se activan en el anexo.",
       "secrets": "No usa secretos de servidor; esta variable es pública.",
       "guard": "No incluir claves en NEXT_PUBLIC_*.",
-      "next": "Definir host del frontend cuando se seleccione proveedor."
+      "next": "Desplegar subtitula-web-dev.<account>.workers.dev."
     },
     {
       "id": "API",
       "name": "API Spring Boot",
       "status": "Preparado",
-      "development": "Perfil dev, CORS/FRONTEND_URL de desarrollo y cookie no Secure en localhost.",
-      "production": "Perfil prod: cookie Secure y origins/email obligatorios.",
-      "secrets": "DB_*, GOOGLE_CLIENT_*, ELEVENLABS_API_KEY, AWS_*.",
-      "guard": "El perfil prod falla si faltan URL/orígenes/remitente.",
-      "next": "Elegir host de cómputo y registrar sus secretos por entorno."
+      "development": "Perfil local no Secure en localhost; perfil dev Secure en HTTPS hospedado.",
+      "production": "Perfil prod: cookie Secure y SMTP obligatorio tras activar el anexo.",
+      "secrets": "Dev: DB_*, GOOGLE_CLIENT_* y ELEVENLABS_API_KEY; sin SMTP_PASSWORD.",
+      "guard": "Dev y prod comparten configuración hosted; prod promueve el mismo digest validado en dev.",
+      "next": "Validar imagen, memoria, cold start y JDBC directo en Cloudflare Containers."
     },
     {
       "id": "POSTGRES",
-      "name": "PostgreSQL",
-      "status": "Pendiente de proveedor",
-      "development": "Instancia o base separada, solo datos de prueba.",
-      "production": "Instancia/base separada, backups y recuperación comprobada.",
-      "secrets": "DB_URL, DB_USER, DB_PASSWORD.",
-      "guard": "Nunca restaurar una copia productiva en dev.",
-      "next": "Provisionar dev y decidir política de backup de producción."
+      "name": "PlanetScale PostgreSQL vía Cloudflare",
+      "status": "Elegido; provisionado pendiente",
+      "development": "Rama y rol dev aislados, PostgreSQL 17 y datos sintéticos.",
+      "production": "Rama y rol prod aislados con HA mínimo.",
+      "secrets": "DB_URL, DB_USER y DB_PASSWORD propios de cada entorno.",
+      "guard": "Mismo motor, migraciones y código; nunca copiar datos reales a dev ni alojar PostgreSQL en el Container.",
+      "next": "Crear rama/rol dev; la rama prod HA se provisiona en el anexo."
     },
     {
       "id": "GOOGLE",
@@ -531,7 +531,7 @@
       "production": "Cliente OAuth web prod y consent screen publicado cuando corresponda.",
       "secrets": "GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET.",
       "guard": "Redirect URI exacta; no es una API key.",
-      "next": "Crear los dos clientes al disponer de dominios estables."
+      "next": "Crear localhost y probar el callback workers.dev en modo Testing; prod queda en el anexo."
     },
     {
       "id": "ELEVENLABS",
@@ -544,24 +544,24 @@
       "next": "Crear clave dev limitada y validar gallego con Scribe v2."
     },
     {
-      "id": "SES",
-      "name": "Amazon SES",
-      "status": "Pendiente de credenciales",
-      "development": "Sandbox/allow-list para no enviar a personas reales.",
-      "production": "Dominio verificado, DKIM/SPF/DMARC y acceso de producción.",
-      "secrets": "AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, APP_EMAIL_FROM.",
-      "guard": "Credenciales IAM con mínimo privilegio.",
-      "next": "Verificar identidad y decidir el remitente de desarrollo."
+      "id": "EMAIL",
+      "name": "Cloudflare Email Service",
+      "status": "Pospuesto al anexo de lanzamiento",
+      "development": "EMAIL_PROVIDER=disabled; el fallo no bloquea registro y NEXT_PUBLIC_EMAIL_DELIVERY_ENABLED=false oculta la UI. E2E en Mailpit local.",
+      "production": "Dominio incorporado y token/remitente propio; sin proveedor alternativo.",
+      "secrets": "Ninguno en dev; APP_EMAIL_FROM y SMTP_PASSWORD solo tras comprar dominio.",
+      "guard": "Tokens separados, mínimo privilegio y no reutilizar el token de despliegue.",
+      "next": "Activar junto con Custom Domain y producción, no antes."
     },
     {
       "id": "CLOUDFLARE",
-      "name": "Cloudflare: DNS y Tunnel",
-      "status": "Diseño preparado",
-      "development": "Futuro app.dev.subtitula.gal y api.dev.subtitula.gal con túnel nombrado.",
-      "production": "Futuro app.subtitula.gal y api.subtitula.gal.",
-      "secrets": "Token/credenciales de Cloudflare, solo cuando se configure.",
-      "guard": "Quick Tunnel sirve para UX puntual, no para OAuth ni despliegue persistente.",
-      "next": "Confirmar zona DNS y crear túnel nombrado cuando toque."
+      "name": "Cloudflare: Workers, Containers, Email, R2 y facturación PlanetScale",
+      "status": "Dirección seleccionada; sin desplegar",
+      "development": "subtitula-web-dev y subtitula-api-dev en workers.dev; puede escalar a cero.",
+      "production": "Custom Domains, PlanetScale HA y correo se activan en el anexo.",
+      "secrets": "Account ID, token de despliegue y secretos runtime por entorno.",
+      "guard": "El Container es efímero; no alojar Postgres ni archivos duraderos en su disco.",
+      "next": "Elegir subdominio workers.dev, activar plan y desplegar dev; no hace falta zona."
     },
     {
       "id": "OBSERVABILITY",

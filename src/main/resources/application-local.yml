@@ -1,0 +1,25 @@
+# Local end-to-end development uses Docker Compose Postgres and Mailpit.
+# External credentials are only needed for Google Sign-In and transcription.
+spring:
+  jpa:
+    show-sql: true
+  mail:
+    host: ${SMTP_HOST:localhost}
+    port: ${SMTP_PORT:1025}
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+
+server:
+  servlet:
+    session:
+      cookie:
+        secure: false
+
+app:
+  email:
+    provider: smtp
+    from: ${APP_EMAIL_FROM:no-reply@subtitula.local}
