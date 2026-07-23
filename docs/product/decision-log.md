@@ -22,6 +22,7 @@ Output:
 | 2026-07-18 | Adoptada | La API se construye una vez y producción promueve el mismo digest probado en dev. | Evita diferencias de código o empaquetado entre entornos; solo cambian perfiles y secretos runtime. | CI registra digest, E2E dev lo aprueba y el despliegue prod referencia exactamente ese digest. |
 | 2026-07-18 | Adoptada | Cloudflare Email Service será el único correo hospedado; Mailpit seguirá local. | Se prefiere una propuesta clara y fail-fast a mantener fallbacks prematuros. | SPF/DKIM/DMARC, entregabilidad, cuotas y Activity log validados al activar el anexo de lanzamiento. |
 | 2026-07-18 | Adoptada | Hosted dev usará los hostnames gratuitos `workers.dev`; dominio propio, correo hospedado y producción pública forman un anexo de lanzamiento. | Evita pagar el dominio antes de validar el producto sin introducir otro proveedor ni código por entorno. | E2E dev estable; al lanzar, Custom Domains y OAuth/email funcionan cambiando configuración, no código. |
+| 2026-07-23 | Adoptada | La única rama PlanetScale actual, `development`, se usa exclusivamente para hosted dev; producción no se provisiona hasta el lanzamiento. | Cada rama PostgreSQL ejecuta un cluster facturable. Mantener solo PS-5 dev evita pagar producción antes de necesitarla sin mezclar datos o credenciales. | E2E dev validado; al lanzar se crea una rama/base HA `production` aislada y se promociona el mismo digest, no los datos dev. |
 
 ## North-star y métricas de salud
 

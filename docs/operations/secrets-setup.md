@@ -1,6 +1,6 @@
 # Guía paso a paso de configuración y secretos
 
-**Estado:** runbook para local y hosted dev pre-dominio · **Actualizado:** 18 de julio de 2026.
+**Estado:** runbook para local y hosted dev pre-dominio · **Actualizado:** 23 de julio de 2026.
 
 Esta es la fuente de verdad para obtener y colocar cada valor. El dominio propio, SMTP hospedado y producción pública están pospuestos al [anexo de lanzamiento](custom-domain-launch-annex.md).
 
@@ -11,17 +11,17 @@ Nunca pegues secretos reales en Git, documentación, incidencias, logs, `NEXT_PU
 | Destino | URL | Datos | Email | Coste fijo aproximado |
 |---|---|---|---|---:|
 | Local | `localhost` | PostgreSQL 17 Docker | Mailpit | USD 0 |
-| Development | dos URLs `workers.dev` | PlanetScale PostgreSQL dev | deshabilitado; fallo visible | USD 10/mes |
+| Development | dos URLs `workers.dev` | PlanetScale PostgreSQL dev provisionado | deshabilitado; fallo visible | USD 10/mes |
 | Production | no provisionado | no provisionado | no provisionado | USD 0 hasta el anexo |
 
 Cloudflare da un hostname, no un dominio transferible. La forma es `<worker-name>.<account-subdomain>.workers.dev`. Usaremos:
 
 ```text
-https://subtitula-web-dev.<account-subdomain>.workers.dev
-https://subtitula-api-dev.<account-subdomain>.workers.dev
+https://subtitula-web-dev.s-counago00.workers.dev
+https://subtitula-api-dev.s-counago00.workers.dev
 ```
 
-Sustituye `<account-subdomain>` por el valor real en todos los pasos.
+El subdominio real de esta cuenta es `s-counago00`.
 
 ## 2. Dónde vive cada tipo de dato
 
@@ -34,7 +34,7 @@ Sustituye `<account-subdomain>` por el valor real en todos los pasos.
 | Variables de CI/build | GitHub Environment Variables |
 | Copia de recuperación | gestor de contraseñas |
 
-GitHub no necesita recibir secretos de DB, Google, ElevenLabs o correo. El Worker los pasa al Container como variables; nunca entran en la imagen OCI.
+En operación normal GitHub no recibe secretos de DB, Google, ElevenLabs o correo. Para el primer despliegue, un Bitwarden Send de una sola lectura y las credenciales DB recién reseteadas pueden pasar por secretos `BOOTSTRAP_*` del GitHub Environment. El workflow los instala en Worker Secrets y se borran inmediatamente de GitHub; nunca entran en la imagen OCI.
 
 ## 3. Inventario actual
 
@@ -65,7 +65,7 @@ Mailpit no usa usuario, contraseña ni API key.
 | `DB_POOL_MAXIMUM_SIZE` | no | `5` inicialmente | Wrangler var |
 | `DB_POOL_MINIMUM_IDLE` | no | `0` | Wrangler var |
 | `DB_POOL_CONNECTION_TIMEOUT_MS` | no | `10000` | Wrangler var |
-| `GOOGLE_CLIENT_ID` | no | cliente Web dev, si Google acepta el callback | Wrangler var |
+| `GOOGLE_CLIENT_ID` | no | cliente Web dev, instalado pero UI pospuesta | Worker Secret |
 | `GOOGLE_CLIENT_SECRET` | sí | secreto cliente dev | Worker Secret |
 | `ELEVENLABS_API_KEY` | sí | clave dev limitada | Worker Secret |
 | `ELEVENLABS_MODEL_ID` | no | `scribe_v2` | Wrangler var |
@@ -79,9 +79,10 @@ No configures `APP_EMAIL_FROM`, `SMTP_HOST`, `SMTP_USERNAME` ni `SMTP_PASSWORD` 
 
 | Nombre | Local | Development |
 |---|---|---|
-| `NEXT_PUBLIC_API_URL` | `http://localhost:8080` | `https://subtitula-api-dev.<account-subdomain>.workers.dev` |
-| `NEXT_PUBLIC_SITE_URL` | `http://localhost:3000` | `https://subtitula-web-dev.<account-subdomain>.workers.dev` |
+| `NEXT_PUBLIC_API_URL` | `http://localhost:8080` | `/backend` |
+| `NEXT_PUBLIC_SITE_URL` | `http://localhost:3000` | `https://subtitula-web-dev.s-counago00.workers.dev` |
 | `NEXT_PUBLIC_EMAIL_DELIVERY_ENABLED` | `true` | `false` |
+| `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED` | `true` | `false` |
 
 Son valores públicos incluidos en el bundle. Nunca pongas secretos en variables `NEXT_PUBLIC_*`.
 
@@ -91,15 +92,15 @@ Son valores públicos incluidos en el bundle. Nunca pongas secretos en variables
 |---|---|---|
 | `CLOUDFLARE_ACCOUNT_ID` | no | GitHub Environment Variable |
 | `CLOUDFLARE_API_TOKEN` | sí | GitHub Environment Secret, distinto por repo |
-| `DEPLOY_ENABLED` | no | GitHub Environment Variable; `false` hasta implementar manifests |
-| las dos `NEXT_PUBLIC_*` | no | GitHub Environment Variables del frontend |
+| `DEPLOY_ENABLED` | no | GitHub Environment Variable; `true` tras instalar bootstrap |
+| las cuatro `NEXT_PUBLIC_*` | no | GitHub Environment Variables del frontend |
 
 ## 4. Cloudflare: cuenta, hostname y tokens
 
 ### 4.1 Crear la cuenta y elegir hostname
 
 1. Entra en [Cloudflare Dashboard](https://dash.cloudflare.com) y activa MFA/passkey.
-2. Abre **Workers & Pages**. Si la cuenta aún no tiene subdominio, Cloudflare pedirá elegir `<account-subdomain>.workers.dev`.
+2. Abre **Workers & Pages**. El subdominio configurado es `s-counago00.workers.dev`.
 3. Elige un nombre neutro de cuenta, no una credencial ni un dato personal. Cambiarlo después cambia todas las URLs.
 4. Reserva los nombres Worker `subtitula-web-dev` y `subtitula-api-dev` al crear sus manifests/despliegues.
 5. Copia el **Account ID** desde la portada de cuenta. Es identificador, no secreto.
@@ -127,19 +128,30 @@ No uses la Global API Key. Los tokens de producción se crearán más tarde, no 
 
 ## 5. PlanetScale PostgreSQL dev mediante Cloudflare
 
-1. En Cloudflare Dashboard abre la integración **PlanetScale Postgres & MySQL**.
-2. Crea PostgreSQL en una región europea próxima a Containers y registra la región exacta.
-3. Crea proyecto/base `subtitula` y solo la rama/cluster `development`, single-node, sin datos reales.
-4. En PlanetScale, **Connect** o **Settings → Roles → New role**.
-5. Crea `subtitula_app_dev`; no uses el rol `postgres` de la plataforma.
-6. Copia host, database, username y password una vez al gestor.
-7. Construye `DB_URL` con los valores exactos de Connect:
+Estado confirmado el 23 de julio de 2026:
+
+- base `subtitula`, facturada por Cloudflare;
+- rama predeterminada `development`;
+- PostgreSQL PS-5 single-node, cero réplicas;
+- `gcp-europe-west1` (St. Ghislain, Bélgica);
+- rol de rama `subtitula_app_dev`;
+- producción no provisionada.
+
+PlanetScale exige que la rama predeterminada sea técnicamente production-capable. Aquí eso no significa entorno `prod`: la rama está reservada por contrato para `dev`, datos sintéticos y pruebas. Crear una segunda rama aislada ahora añadiría otro cluster facturable.
+
+El password de creación de `subtitula_app_dev` se descartó deliberadamente porque Bitwarden no estaba disponible. Para terminar las credenciales dev:
+
+1. En PlanetScale abre `subtitula` → rama `development` → **Roles**.
+2. Resetea el password de `subtitula_app_dev`.
+3. Copia host, database, username y el nuevo password directamente a Bitwarden; no uses archivo temporal, chat o logs.
+4. Instala `DB_URL`, `DB_USER` y `DB_PASSWORD` como Worker Secrets cuando exista el manifest del API Worker.
+5. Construye `DB_URL` con los valores exactos de Connect:
 
 ```text
 jdbc:postgresql://<HOST>:5432/<DATABASE>?sslmode=verify-full&sslfactory=org.postgresql.ssl.DefaultJavaSSLFactory
 ```
 
-Usamos conexión directa 5432 inicialmente. Flyway corre dentro de la misma imagen, así que el rol necesita permisos para las migraciones actuales. Probar el certificado y hostname desde la imagen Linux/Java real antes de activar CI.
+Usamos conexión directa 5432 inicialmente. Flyway corre dentro de la misma imagen, así que el rol dev hereda temporalmente privilegios suficientes para las migraciones actuales. Tras separar un migrador, reducir el rol de runtime. Probar el certificado y hostname desde la imagen Linux/Java real antes de activar CI.
 
 ## 6. Google OAuth
 
@@ -157,18 +169,13 @@ http://localhost:8080/login/oauth2/code/google
 
 6. Guarda `GOOGLE_CLIENT_ID` y `GOOGLE_CLIENT_SECRET` en el gestor y después en `.env` local.
 
-### 6.2 Hosted dev: validación explícita
+### 6.2 Hosted dev: pospuesto de forma explícita
 
 1. En el mismo proyecto nonprod crea otro Web client, `subtitula-development`.
-2. Añade exactamente:
-
-```text
-https://subtitula-api-dev.<account-subdomain>.workers.dev/login/oauth2/code/google
-```
-
-3. Mantén Audience en Testing y añade únicamente cuentas de prueba.
-4. Instala el ID como Wrangler var y el secret como Worker Secret.
-5. Prueba login desde la URL real. Google exige HTTPS, coincidencia exacta y puede exigir propiedad de dominio para branding/publicación. No podemos verificar `workers.dev`; si la consola rechaza el dominio, marca Google OAuth remoto como pospuesto y usa password auth en dev. No inventes un redirect proxy.
+2. Mantén Audience en Testing y añade únicamente cuentas de prueba.
+3. Instala ID y secret como Worker Secrets para no repetir la entrega.
+4. Construye hosted dev con `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=false`.
+5. No habilites el botón hasta que el inicio y callback OAuth atraviesen el gateway same-origin `/backend` y el E2E confirme la cookie de sesión. Password auth es el flujo hosted dev soportado.
 
 El cliente production, branding público y verificación de dominio pertenecen al anexo.
 
@@ -214,7 +221,7 @@ Verifica `http://localhost:3000`, `/ping`, password auth, Google, email de verif
 
 ## 9. Configuración de Cloudflare development
 
-Este paso se ejecutará cuando existan los manifests Wrangler y el Worker que controla el Container.
+Los manifests Wrangler/OpenNext y los workflows ya existen.
 
 ### Variables API versionadas
 
@@ -225,11 +232,10 @@ EMAIL_DELIVERY_REQUIRED=false
 DB_POOL_MAXIMUM_SIZE=5
 DB_POOL_MINIMUM_IDLE=0
 DB_POOL_CONNECTION_TIMEOUT_MS=10000
-GOOGLE_CLIENT_ID=<id-dev-si-se-usa>
 ELEVENLABS_MODEL_ID=scribe_v2
 ELEVENLABS_LANGUAGE_HINT=glg
-CORS_ORIGINS=https://subtitula-web-dev.<account-subdomain>.workers.dev
-FRONTEND_URL=https://subtitula-web-dev.<account-subdomain>.workers.dev
+CORS_ORIGINS=https://subtitula-web-dev.s-counago00.workers.dev
+FRONTEND_URL=https://subtitula-web-dev.s-counago00.workers.dev
 ```
 
 ### Worker Secrets API
@@ -240,19 +246,21 @@ Tras `npx wrangler login`, Wrangler pide cada valor sin incluirlo en el comando:
 npx wrangler secret put DB_URL --env development
 npx wrangler secret put DB_USER --env development
 npx wrangler secret put DB_PASSWORD --env development
+npx wrangler secret put GOOGLE_CLIENT_ID --env development
 npx wrangler secret put GOOGLE_CLIENT_SECRET --env development
 npx wrangler secret put ELEVENLABS_API_KEY --env development
 npx wrangler secret list --env development
 ```
 
-Omite las dos variables Google si el callback remoto quedó pospuesto. No crees `SMTP_PASSWORD`.
+Aunque Google esté oculto, sus credenciales dev pueden quedar instaladas para la futura activación. No crees `SMTP_PASSWORD`.
 
 ### Variables de build frontend
 
 ```text
-NEXT_PUBLIC_API_URL=https://subtitula-api-dev.<account-subdomain>.workers.dev
-NEXT_PUBLIC_SITE_URL=https://subtitula-web-dev.<account-subdomain>.workers.dev
+NEXT_PUBLIC_API_URL=/backend
+NEXT_PUBLIC_SITE_URL=https://subtitula-web-dev.s-counago00.workers.dev
 NEXT_PUBLIC_EMAIL_DELIVERY_ENABLED=false
+NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=false
 ```
 
 Con ese flag, la demo no muestra el banner de verificación ni ofrece recuperación de contraseña por correo. El backend sigue creando la cuenta y la sesión inmediatamente; cualquier intento directo de envío falla dentro del adaptador deshabilitado, el controlador lo registra y la respuesta funcional continúa. Ninguna función de proyectos/transcripción comprueba `emailVerified`, por lo que el usuario de prueba puede utilizar la aplicación completa.
@@ -262,10 +270,11 @@ Con ese flag, la demo no muestra el banner de verificación ni ofrece recuperaci
 En cada repo: **Settings → Environments → New environment → development**.
 
 1. Restringe deployments a `develop`.
-2. Variables en ambos: `CLOUDFLARE_ACCOUNT_ID`, `DEPLOY_ENABLED=false`.
+2. Variables en ambos: `CLOUDFLARE_ACCOUNT_ID`; usa `DEPLOY_ENABLED=false` durante bootstrap y `true` al desplegar.
 3. Secret en cada repo: su propio `CLOUDFLARE_API_TOKEN`.
-4. En frontend añade las tres variables `NEXT_PUBLIC_*` exactas, incluida `NEXT_PUBLIC_EMAIL_DELIVERY_ENABLED=false`.
-5. No habilites deploy: los workflows siguen siendo placeholders hasta crear manifests y comandos reales.
+4. En frontend añade las cuatro variables `NEXT_PUBLIC_*` exactas.
+5. En el primer API deploy añade temporalmente `BOOTSTRAP_BITWARDEN_SEND_URL`, `BOOTSTRAP_DB_URL`, `BOOTSTRAP_DB_USER` y `BOOTSTRAP_DB_PASSWORD` como Environment Secrets. Tras una ejecución correcta, bórralos; los valores runtime quedan en Cloudflare.
+6. El workflow descarga una versión nativa y checksum-pinned de Bitwarden CLI. No instales `@bitwarden/cli` desde npm.
 
 No adoptes secrets globales como fallback. Si el plan de GitHub del repo privado no ofrece Environment Secrets, habilita un plan compatible antes de desplegar.
 
@@ -277,7 +286,7 @@ No adoptes secrets globales como fallback. Si el plan de GitHub del repo privado
 - [ ] Un intento de email deja un warning explícito; nunca afirma entrega.
 - [ ] La UI no muestra verificación ni recuperación por email con `NEXT_PUBLIC_EMAIL_DELIVERY_ENABLED=false`.
 - [ ] Registro/login por contraseña, sesión, CORS, CSRF y logout funcionan en navegador real.
-- [ ] Google funciona o queda documentado como pospuesto por propiedad de dominio.
+- [ ] Google está oculto con `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=false`; local sigue funcionando.
 - [ ] Flyway, CRUD y sesiones usan únicamente PlanetScale dev.
 - [ ] ElevenLabs usa la clave/cuota dev.
 - [ ] Sitemap y robots contienen `NEXT_PUBLIC_SITE_URL`, no el dominio futuro.
@@ -286,6 +295,8 @@ No adoptes secrets globales como fallback. Si el plan de GitHub del repo privado
 ## 12. Producción y correo
 
 No crees todavía DB HA, tokens production, zona DNS, remitentes SMTP ni secretos vacíos “para reservar”. Cuando exista un dominio razonable y una fecha de lanzamiento, sigue [Anexo de lanzamiento: dominio propio y correo](custom-domain-launch-annex.md). Cloudflare Email Service seguirá siendo el único correo hospedado; no se añadirá AWS/SES/Mailtrap como fallback.
+
+La tarea de lanzamiento debe crear una rama/base HA aislada `production`, su rol `subtitula_app_prod`, credenciales distintas y Worker Secrets `prod`. No se promocionan datos ni passwords de `development`; solo el mismo digest de aplicación y las migraciones Flyway versionadas.
 
 ## 13. Rotación
 

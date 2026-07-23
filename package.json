@@ -1,0 +1,20 @@
+{
+  "name": "subtitula-api-cloudflare",
+  "private": true,
+  "scripts": {
+    "cf-typegen": "wrangler types --env development",
+    "deploy:dev": "wrangler deploy --env development",
+    "deploy:dev:dry-run": "wrangler deploy --env development --dry-run",
+    "install:dev-secrets": "node .github/scripts/install-dev-secrets.mjs",
+    "typecheck:worker": "tsc --noEmit -p tsconfig.worker.json"
+  },
+  "dependencies": {
+    "@cloudflare/containers": "latest"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "latest",
+    "@types/node": "latest",
+    "typescript": "^5.9.3",
+    "wrangler": "latest"
+  }
+}

@@ -38,7 +38,7 @@ Convención: **P0** desbloquea el primer piloto; **P1** aumenta el valor del pil
 | GOV-02 | P1 | Pendiente | Brecha ENS/RGPD/accesibilidad | Inventario de tratamientos, análisis de riesgo y plan de medidas antes de procesar contenido no público. |
 | MARKET-01 | P1 | Pendiente | Mapa de implantaciones | Para 15 concellos: proveedor de sede/transparencia, vídeo de plenos, volumen, URL, buscabilidad y contacto público. |
 | INF-04 | P1 | En código | CI, ramas y gate de despliegue | `develop` verifica y queda asociado a development; producción se prepara tras merge a `master`/`main`, pero ningún proveedor se activa aún. |
-| INF-05 | P1 | Pendiente | Provisionar PlanetScale PostgreSQL dev desde Cloudflare | Crear rama/rol dev sobre PostgreSQL 17; validar Flyway, restauración, latencia y conexión JDBC/TLS directa. Prod queda en el anexo. |
+| INF-05 | P1 | En curso | Provisionar PlanetScale PostgreSQL dev desde Cloudflare | Base `subtitula`, rama `development`, PS-5 Bélgica y rol dev creados. Falta resetear el password directo a Bitwarden/Worker Secrets y validar Flyway, restauración, latencia y JDBC/TLS. Prod queda en el anexo. |
 | INF-06 | P1 | Pendiente | Hosted dev en Cloudflare | Desplegar Next.js y Spring en `workers.dev`; API construida una vez, email deshabilitado de forma explícita y E2E remoto sin secretos production. |
 
 ## Después — solo tras comprobar necesidad

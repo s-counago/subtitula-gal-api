@@ -1,0 +1,69 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "subtitula-api",
+  "main": "src/worker/index.ts",
+  "compatibility_date": "2026-07-23",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "observability": {
+    "enabled": true,
+    "logs": {
+      "head_sampling_rate": 1
+    }
+  },
+  "containers": [
+    {
+      "class_name": "SubtitulaApiContainer",
+      "image": "./Dockerfile",
+      "instance_type": "basic",
+      "max_instances": 1
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "API_CONTAINER",
+        "class_name": "SubtitulaApiContainer"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["SubtitulaApiContainer"]
+    }
+  ],
+  "env": {
+    "development": {
+      "name": "subtitula-api-dev",
+      "vars": {
+        "SPRING_PROFILES_ACTIVE": "dev",
+        "EMAIL_PROVIDER": "disabled",
+        "EMAIL_DELIVERY_REQUIRED": "false",
+        "DB_POOL_MAXIMUM_SIZE": "5",
+        "DB_POOL_MINIMUM_IDLE": "0",
+        "DB_POOL_CONNECTION_TIMEOUT_MS": "10000",
+        "ELEVENLABS_MODEL_ID": "scribe_v2",
+        "ELEVENLABS_LANGUAGE_HINT": "glg",
+        "CORS_ORIGINS": "https://subtitula-web-dev.s-counago00.workers.dev",
+        "FRONTEND_URL": "https://subtitula-web-dev.s-counago00.workers.dev"
+      },
+      "containers": [
+        {
+          "class_name": "SubtitulaApiContainer",
+          "image": "./Dockerfile",
+          "instance_type": "basic",
+          "max_instances": 1
+        }
+      ],
+      "durable_objects": {
+        "bindings": [
+          {
+            "name": "API_CONTAINER",
+            "class_name": "SubtitulaApiContainer"
+          }
+        ]
+      }
+    }
+  }
+}

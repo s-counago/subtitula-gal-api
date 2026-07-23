@@ -1,0 +1,11 @@
+.git
+.github
+.idea
+.superpowers
+docs
+target
+node_modules
+.env
+.env.*
+*.iml
+*.log

@@ -1,6 +1,6 @@
 # Repository guide
 
-This is the Spring Boot API repository. Its sibling frontend is `../subtitula-gal`; the workspace parent is not a Git repository. `develop` represents hosted development and `main` represents production. Deployment workflows currently run CI and select a GitHub Environment, but contain no real deployment command.
+This is the Spring Boot API repository. Its sibling frontend is `../subtitula-gal`; the workspace parent is not a Git repository. `develop` represents hosted development and `main` represents production. The `develop` workflow deploys the API Worker and Spring Container when the GitHub development variable `DEPLOY_ENABLED` is `true`; production remains gated.
 
 The canonical local launcher lives in the frontend repository: use `..\subtitula-gal\start-up.ps1` on native Windows, or `../subtitula-gal/start-up.sh` on Linux/WSL 2. Docker Desktop is required for PostgreSQL, Mailpit, and Testcontainers. Keep `mvnw` and shell scripts on LF line endings.
 
@@ -12,9 +12,17 @@ Configuration contracts:
 
 `dev` and `prod` are profile labels that both activate the shared `hosted` profile from `application.yml`. Keep all hosted behavior in `application-hosted.yml`; the only differences between deployments are runtime environment variables and secrets. Do not branch Java code or configuration files by environment. CI/CD must promote the same immutable image digest from dev to production.
 
+Current hosted data state: PlanetScale database `subtitula`, default branch `development`, PS-5 single-node in `gcp-europe-west1` (Belgium), billed through Cloudflare. PlanetScale must keep the default branch technically production-capable, but the application reserves it exclusively for development and synthetic data. Role `subtitula_app_dev` exists; its initial one-time password was deliberately discarded. Reset the role password straight into Bitwarden and Cloudflare Worker Secrets when the Worker manifest exists—never into Git, logs, chat, or a temporary file. Production is deliberately absent and must later use a separate HA branch/database and role.
+
+The verified Windows CLI is `%LOCALAPPDATA%\Programs\PlanetScaleCLI\pscale.exe`. `pscale role get/reset` requires the opaque ID from `role list`, not `subtitula_app_dev`; suppress command output unless it is being transferred directly into the approved secret stores because create/reset responses contain the password.
+
 Copy `.env.example` to the ignored `.env` for local credentials. Never commit or paste secrets into docs, issues, chats, or workflows. Google credentials are for an OAuth Web application, not a generic API key. ElevenLabs needs a real restricted/free-tier key for transcription. Mailpit needs no key and sends no real email.
 
 Cloudflare assigns each Worker `<worker-name>.<account-subdomain>.workers.dev`; no DNS zone or purchased domain is needed for hosted dev. The future custom domain and Cloudflare Email Service onboarding are documented in `docs/operations/custom-domain-launch-annex.md`. Never use `workers.dev` as `APP_EMAIL_FROM`: Cloudflare does not let accounts onboard that shared domain for sending.
+
+`workers.dev` is on the Public Suffix List, so the frontend and API worker hostnames are different browser sites. Hosted frontend traffic therefore uses the same-origin `/backend/*` gateway and strips that prefix before forwarding to Spring; Spring routes themselves remain rooted at `/ping`, `/register`, etc. Build hosted dev with `NEXT_PUBLIC_API_URL=/backend`. Keep the gateway streaming request/response bodies and preserving `Set-Cookie`. Google OAuth is temporarily hidden in hosted dev (`NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=false`) until its callback also traverses that gateway; local Google OAuth remains enabled.
+
+The first API deployment may receive a one-view Bitwarden Send and the freshly reset PlanetScale password through short-lived GitHub Environment bootstrap secrets. The workflow uploads them to Cloudflare Worker Secrets, after which all `BOOTSTRAP_*` secrets must be deleted from GitHub. Never install Bitwarden CLI from npm; use the checksummed native release pinned in the workflow. Docker is required both for tests and for Wrangler to build the Container image.
 
 Email verification is non-blocking: registration creates the session before attempting mail, all send failures are caught/logged, and no API feature checks `emailVerified`. Hosted dev intentionally leaves users unverified; its frontend must set `NEXT_PUBLIC_EMAIL_DELIVERY_ENABLED=false` so it does not promise undeliverable verification or reset messages.
 

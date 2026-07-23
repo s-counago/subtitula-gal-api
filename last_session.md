@@ -1,11 +1,10 @@
 # Last session
 
-- Standardized one codebase across local/dev/prod: PostgreSQL 17 locally and PlanetScale PostgreSQL hosted; Next.js Workers + Spring Containers.
-- Local E2E uses Docker PostgreSQL, Mailpit, Google OAuth and ElevenLabs.
-- Hosted dev will use free `workers.dev` URLs. Domain, production HA and Cloudflare Email Service are deferred.
-- Dev email is non-blocking and hidden in the UI; local keeps email E2E enabled through Mailpit.
-- Updated environment/secrets docs, `AGENTS.md`, dashboard, frontend flags and tests. Deployment workflows remain disabled placeholders.
+- PlanetScale `subtitula` is Cloudflare-billed: branch `development`, PS-5 single-node Belgium, role `subtitula_app_dev`.
+- The role’s initial password was discarded; reset it directly into Bitwarden/Worker Secrets before deployment.
+- Production DB/domain/email remain deliberately unprovisioned.
+- Dev deployment tokens and Google/ElevenLabs local+dev credentials are already in Bitwarden.
 
 ## Next step
 
-Implement Wrangler/OpenNext and Container manifests, provision only PlanetScale dev plus the secrets in `docs/operations/secrets-setup.md`, then deploy and run the hosted E2E checklist before setting `DEPLOY_ENABLED=true`.
+Implement Wrangler/OpenNext + Container manifests, reset/install the dev DB secret, deploy dev and run hosted E2E. Create isolated HA production only at launch.

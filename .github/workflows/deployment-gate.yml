@@ -1,4 +1,4 @@
-name: API deployment gate
+name: Deploy API
 
 on:
   push:
@@ -8,36 +8,61 @@ on:
 permissions:
   contents: read
 
-# Placeholder by design: the Spring API needs a compute host and database, and
-# Cloudflare is currently only the future DNS/tunnel edge. This maps branches to
-# GitHub Environments without treating an open pull request as production.
+concurrency:
+  group: api-deploy-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   development:
-    if: github.ref == 'refs/heads/develop'
+    if: github.ref == 'refs/heads/develop' && vars.DEPLOY_ENABLED == 'true'
     runs-on: ubuntu-latest
     environment: development
+    env:
+      CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
     steps:
-      - name: Report deployment status
-        env:
-          DEPLOY_ENABLED: ${{ vars.DEPLOY_ENABLED }}
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: ./mvnw -B test
+      - run: npm run cf-typegen
+      - run: npm run typecheck:worker
+      - run: npm run deploy:dev
+      - name: Install verified Bitwarden CLI
         run: |
-          if [ "$DEPLOY_ENABLED" = "true" ]; then
-            echo "::error::Deployment is not implemented yet. Configure the provider before enabling it."
-            exit 1
-          fi
-          echo "Development deployment is intentionally disabled until hosting is configured."
+          curl --fail --silent --show-error --location \
+            https://github.com/bitwarden/clients/releases/download/cli-v2026.6.0/bw-linux-2026.6.0.zip \
+            --output /tmp/bw.zip
+          echo "392549496c712ab86bfbd6c27302df9fd2c431cfc7a47e26941ac3e3893f4d27  /tmp/bw.zip" \
+            | sha256sum --check --strict
+          unzip -q /tmp/bw.zip -d /tmp
+          chmod 0700 /tmp/bw
+      - name: Install first-deploy runtime secrets
+        env:
+          BITWARDEN_CLI_PATH: /tmp/bw
+          BOOTSTRAP_BITWARDEN_SEND_URL: ${{ secrets.BOOTSTRAP_BITWARDEN_SEND_URL }}
+          BOOTSTRAP_DB_PASSWORD: ${{ secrets.BOOTSTRAP_DB_PASSWORD }}
+          BOOTSTRAP_DB_URL: ${{ secrets.BOOTSTRAP_DB_URL }}
+          BOOTSTRAP_DB_USER: ${{ secrets.BOOTSTRAP_DB_USER }}
+        run: npm run install:dev-secrets
+      - name: Wait for the Spring container
+        run: |
+          curl --fail --show-error --silent \
+            --retry 59 --retry-delay 10 --retry-all-errors \
+            --connect-timeout 10 --max-time 20 \
+            https://subtitula-api-dev.s-counago00.workers.dev/ping
 
   production:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - name: Report deployment status
-        env:
-          DEPLOY_ENABLED: ${{ vars.DEPLOY_ENABLED }}
-        run: |
-          if [ "$DEPLOY_ENABLED" = "true" ]; then
-            echo "::error::Deployment is not implemented yet. Configure the provider before enabling it."
-            exit 1
-          fi
-          echo "Production deployment is intentionally disabled until hosting is configured."
+      - run: echo "Production remains gated by the custom-domain launch annex."

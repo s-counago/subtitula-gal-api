@@ -1,6 +1,6 @@
 # Arquitectura Cloudflare-first con PostgreSQL
 
-**Estado:** dirección seleccionada; hosted dev aún no provisionado · **Actualizado:** 18 de julio de 2026.
+**Estado:** base dev provisionada; manifests y CI/CD hosted implementados · **Actualizado:** 23 de julio de 2026.
 
 La aplicación conserva PostgreSQL y la integración nativa de Spring. PlanetScale opera la base, provisionada y facturada mediante Cloudflare. El frontend vive en Workers/OpenNext y Spring en Containers. No se ejecuta PostgreSQL dentro de un Container: su disco es efímero.
 
@@ -14,8 +14,8 @@ El modo temporal `EMAIL_PROVIDER=disabled` no entrega ni simula email: lanza un 
 
 | Capa | Local | Dev ahora | Producción tras anexo |
 |---|---|---|---|
-| Frontend | `localhost:3000` | `subtitula-web-dev.<account>.workers.dev` | dominio propio en Worker/OpenNext |
-| API | `localhost:8080` | `subtitula-api-dev.<account>.workers.dev` → Container WEUR | dominio propio → misma imagen Container |
+| Frontend | `localhost:3000` | `subtitula-web-dev.s-counago00.workers.dev` + gateway `/backend` | dominio propio en Worker/OpenNext |
+| API | `localhost:8080` | `subtitula-api-dev.s-counago00.workers.dev` → Container | dominio propio → misma imagen Container |
 | Datos | Docker PostgreSQL 17 | PlanetScale PostgreSQL dev | PlanetScale PostgreSQL prod HA |
 | Email | Mailpit, no entrega | deshabilitado y fallo visible | Cloudflare Email Service |
 | Objetos | filesystem temporal | R2 dev cuando se implemente | R2 prod |
@@ -29,17 +29,19 @@ Cloudflare incluye un subdominio por cuenta y asigna una URL HTTPS a cada Worker
 
 Cloudflare lo clasifica como sitio gratuito para proyectos personales/no críticos y recomienda rutas o Custom Domains para producción. Por eso sirve como alojamiento de pruebas y demo, mientras la compra del dominio, el correo real y la salida pública quedan juntos en el [anexo de lanzamiento](custom-domain-launch-annex.md).
 
-Cambiar a dominio propio no requiere una rama ni código alternativo: se añaden Custom Domains y se sustituyen las URLs/configuración OAuth. `NEXT_PUBLIC_SITE_URL` evita que sitemap y robots lleven un host hardcodeado.
+Como `workers.dev` figura en la Public Suffix List, los dos Workers no pueden compartir cookies directamente. El frontend ofrece `/backend/*` en su propio origen y reenvía al API Worker, preservando cuerpos, cookies, CSRF y respuestas. Cambiar a dominio propio no requiere una rama ni código alternativo: se añaden Custom Domains y se sustituyen URLs/configuración OAuth. `NEXT_PUBLIC_SITE_URL` evita hardcodear el host.
 
 ## PostgreSQL y PlanetScale
 
 Spring conecta directamente mediante JDBC/TLS al PostgreSQL estándar de PlanetScale. Se mantienen pgJDBC, Hikari, JPA, Flyway, sesiones JDBC, SQL PostgreSQL, `pg_dump`/`pg_restore` y Testcontainers.
 
-- dev: rama `subtitula-dev`, single-node, datos sintéticos y rol exclusivo;
-- prod: rama `subtitula-prod`, HA mínimo, rol y backups propios; se crea al activar el anexo;
+- dev: base `subtitula`, rama predeterminada `development`, PS-5 single-node en `gcp-europe-west1`, datos sintéticos y rol `subtitula_app_dev`;
+- prod: rama/base `production`, HA mínimo, rol y backups propios; no existe y se crea al activar el anexo;
 - Hikari empieza con pool pequeño; PgBouncer se evaluará después de probar el Container real.
 
 Hyperdrive no se usa: su connection string es un binding del runtime Workers, no un endpoint JDBC para la JVM del Container.
+
+PlanetScale mantiene la rama predeterminada marcada técnicamente como production-capable. El nombre `development`, las credenciales y el contrato de despliegue son los que determinan su uso real. No se añade otra rama permanente hasta el lanzamiento para evitar pagar un segundo cluster antes de necesitar producción.
 
 ## Correo y archivos
 

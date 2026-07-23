@@ -1,4 +1,6 @@
 target/
+node_modules/
+.wrangler/
 !.mvn/wrapper/maven-wrapper.jar
 .idea/
 *.iml

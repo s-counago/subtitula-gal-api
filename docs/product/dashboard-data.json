@@ -277,7 +277,7 @@
       "area": "Infraestructura",
       "priority": "P1",
       "lane": "Siguiente",
-      "note": "Crear rama/rol dev ahora; PostgreSQL 17 con JPA/JDBC/Flyway/Spring Session. Prod HA queda en el anexo.",
+      "note": "Base subtitula, rama development PS-5 Bélgica y rol dev creados. Falta resetear el password directo a Bitwarden/Worker Secrets y validar JDBC/Flyway. Prod HA queda en el anexo.",
       "done": false
     },
     {
@@ -516,12 +516,12 @@
     {
       "id": "POSTGRES",
       "name": "PlanetScale PostgreSQL vía Cloudflare",
-      "status": "Elegido; provisionado pendiente",
-      "development": "Rama y rol dev aislados, PostgreSQL 17 y datos sintéticos.",
-      "production": "Rama y rol prod aislados con HA mínimo.",
+      "status": "Dev provisionado; credencial pendiente",
+      "development": "Base subtitula, rama development PS-5 en Bélgica y rol subtitula_app_dev; solo datos sintéticos.",
+      "production": "No provisionada; crear rama/base y rol HA aislados al lanzar.",
       "secrets": "DB_URL, DB_USER y DB_PASSWORD propios de cada entorno.",
       "guard": "Mismo motor, migraciones y código; nunca copiar datos reales a dev ni alojar PostgreSQL en el Container.",
-      "next": "Crear rama/rol dev; la rama prod HA se provisiona en el anexo."
+      "next": "Resetear el password dev directo a Bitwarden/Worker Secrets y validar JDBC/Flyway; prod HA se provisiona en el anexo."
     },
     {
       "id": "GOOGLE",
