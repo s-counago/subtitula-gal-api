@@ -1,6 +1,6 @@
 # Infraestructura y entornos
 
-**Estado:** hosted dev desplegado y validado en `workers.dev`; dominio/producción pública en anexo · **Actualizado:** 23 de julio de 2026.
+**Estado:** hosted dev desplegado; contraseña y Google validados en `workers.dev`; dominio/producción pública en anexo · **Actualizado:** 23 de julio de 2026.
 
 ## Regla de base
 
@@ -15,7 +15,7 @@ La API tiene una sola implementación y un artefacto OCI. Dev despliega un diges
 | Next.js | `localhost:3000` | `subtitula-web-dev.<account>.workers.dev` | dominio propio, misma fuente |
 | Spring | `localhost:8080` | `subtitula-api-dev.<account>.workers.dev` | dominio propio, mismo digest |
 | PostgreSQL | Docker 17 | PlanetScale dev | PlanetScale prod HA |
-| Google | OAuth Web localhost | credencial instalada, UI oculta hasta enrutar callback por gateway | cliente y dominio verificados |
+| Google | OAuth Web localhost | cliente dev y callback same-origin por `/backend`; UI habilitada | cliente y dominio verificados |
 | ElevenLabs | clave Free/local | clave dev con cuota | clave production con alertas |
 | Email | Mailpit E2E; UI habilitada | `EMAIL_PROVIDER=disabled`, fallo visible; UI de email oculta | Cloudflare Email Service |
 | Objetos | temporal | R2 dev cuando se implemente | R2 prod |
@@ -42,7 +42,7 @@ No enviar secretos por chat ni guardarlos en el repo. Las instrucciones ejecutab
 2. Hecho: frontend/API dev desplegados; Flyway, JDBC/TLS, CORS, cookies, CSRF, registro, logout y login validados.
 3. Hecho: E2E local con PostgreSQL 17 y correo capturado en Mailpit.
 4. Pendiente: ejecutar una transcripción dev real y medir latencia, memoria/cuota y coste.
-5. Pendiente: enrutar/probar Google OAuth por el gateway antes de mostrarlo en hosted dev.
+5. Hecho: Google OAuth se enruta por el gateway y se muestra en hosted dev.
 6. Mantener producción sin provisionar hasta que exista dominio/fecha de piloto; entonces ejecutar el anexo y promover el digest aprobado.
 
 ## Coste

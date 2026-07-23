@@ -46,6 +46,7 @@ En operación normal GitHub no recibe secretos de DB, Google, ElevenLabs o corre
 | `DB_*` | local | valores de `.env.example`/Compose |
 | `GOOGLE_CLIENT_ID` | no | cliente Web local de Google |
 | `GOOGLE_CLIENT_SECRET` | sí | secreto del cliente Web local |
+| `GOOGLE_REDIRECT_URI` | no | `http://localhost:8080/login/oauth2/code/google` |
 | `ELEVENLABS_API_KEY` | sí | clave local limitada a STT |
 | `APP_EMAIL_FROM` | no | `no-reply@subtitula.local` |
 | `SMTP_HOST` / `SMTP_PORT` | no | `localhost` / `1025` |
@@ -65,8 +66,9 @@ Mailpit no usa usuario, contraseña ni API key.
 | `DB_POOL_MAXIMUM_SIZE` | no | `5` inicialmente | Wrangler var |
 | `DB_POOL_MINIMUM_IDLE` | no | `0` | Wrangler var |
 | `DB_POOL_CONNECTION_TIMEOUT_MS` | no | `10000` | Wrangler var |
-| `GOOGLE_CLIENT_ID` | no | cliente Web dev, instalado pero UI pospuesta | Worker Secret |
+| `GOOGLE_CLIENT_ID` | no | cliente Web dev | Worker Secret |
 | `GOOGLE_CLIENT_SECRET` | sí | secreto cliente dev | Worker Secret |
+| `GOOGLE_REDIRECT_URI` | no | callback `/backend` exacto del frontend dev | Wrangler var |
 | `ELEVENLABS_API_KEY` | sí | clave dev limitada | Worker Secret |
 | `ELEVENLABS_MODEL_ID` | no | `scribe_v2` | Wrangler var |
 | `ELEVENLABS_LANGUAGE_HINT` | no | `glg` | Wrangler var |
@@ -82,7 +84,7 @@ No configures `APP_EMAIL_FROM`, `SMTP_HOST`, `SMTP_USERNAME` ni `SMTP_PASSWORD` 
 | `NEXT_PUBLIC_API_URL` | `http://localhost:8080` | `/backend` |
 | `NEXT_PUBLIC_SITE_URL` | `http://localhost:3000` | `https://subtitula-web-dev.s-counago00.workers.dev` |
 | `NEXT_PUBLIC_EMAIL_DELIVERY_ENABLED` | `true` | `false` |
-| `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED` | `true` | `false` |
+| `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED` | `true` | `true` |
 
 Son valores públicos incluidos en el bundle. Nunca pongas secretos en variables `NEXT_PUBLIC_*`.
 
@@ -160,7 +162,7 @@ Usamos conexión directa 5432 inicialmente. Flyway corre dentro de la misma imag
 1. En [Google Cloud Console](https://console.cloud.google.com), crea `subtitula-nonprod`.
 2. **Google Auth Platform → Branding/Audience/Data Access**: External, modo Testing, scopes `openid`, `email`, `profile`; añade solo tus cuentas de prueba.
 3. **Clients → Create Client → Web application**.
-4. Nombre `subtitula-local`.
+4. Nombre recomendado `subtitula-local-current`.
 5. Authorized Redirect URI exacta:
 
 ```text
@@ -169,13 +171,21 @@ http://localhost:8080/login/oauth2/code/google
 
 6. Guarda `GOOGLE_CLIENT_ID` y `GOOGLE_CLIENT_SECRET` en el gestor y después en `.env` local.
 
-### 6.2 Hosted dev: pospuesto de forma explícita
+### 6.2 Hosted dev: activo a través del gateway
 
-1. En el mismo proyecto nonprod crea otro Web client, `subtitula-development`.
+1. En el mismo proyecto nonprod crea otro Web client, `subtitula-development-current`.
 2. Mantén Audience en Testing y añade únicamente cuentas de prueba.
-3. Instala ID y secret como Worker Secrets para no repetir la entrega.
-4. Construye hosted dev con `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=false`.
-5. No habilites el botón hasta que el inicio y callback OAuth atraviesen el gateway same-origin `/backend` y el E2E confirme la cookie de sesión. Password auth es el flujo hosted dev soportado.
+3. Añade como Authorized Redirect URI exacta:
+
+```text
+https://subtitula-web-dev.s-counago00.workers.dev/backend/login/oauth2/code/google
+```
+
+4. Instala ID y secret como Worker Secrets para no repetir la entrega.
+5. Configura `GOOGLE_REDIRECT_URI` con esa misma URI y construye hosted dev con `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true`.
+6. El inicio y callback atraviesan `/backend`; el service binding conserva una sesión same-origin.
+
+Los nombres de cliente son etiquetas. La consola actual conserva varios `subtitula-local` y `subtitula-development` históricos creados durante rotaciones; no afectan al runtime. Los IDs instalados seleccionan los dos `*-current`. Antes de borrar un duplicado, compara su client ID con `.env` local o con el origen conocido del secreto instalado; nunca intentes extraer un Worker Secret.
 
 El cliente production, branding público y verificación de dominio pertenecen al anexo.
 
@@ -236,6 +246,7 @@ ELEVENLABS_MODEL_ID=scribe_v2
 ELEVENLABS_LANGUAGE_HINT=glg
 CORS_ORIGINS=https://subtitula-web-dev.s-counago00.workers.dev
 FRONTEND_URL=https://subtitula-web-dev.s-counago00.workers.dev
+GOOGLE_REDIRECT_URI=https://subtitula-web-dev.s-counago00.workers.dev/backend/login/oauth2/code/google
 ```
 
 ### Worker Secrets API
@@ -252,7 +263,7 @@ npx wrangler secret put ELEVENLABS_API_KEY --env development
 npx wrangler secret list --env development
 ```
 
-Aunque Google esté oculto, sus credenciales dev pueden quedar instaladas para la futura activación. No crees `SMTP_PASSWORD`.
+Google está habilitado y sus credenciales dev permanecen únicamente en Worker Secrets. No crees `SMTP_PASSWORD`.
 
 ### Variables de build frontend
 
@@ -260,7 +271,7 @@ Aunque Google esté oculto, sus credenciales dev pueden quedar instaladas para l
 NEXT_PUBLIC_API_URL=/backend
 NEXT_PUBLIC_SITE_URL=https://subtitula-web-dev.s-counago00.workers.dev
 NEXT_PUBLIC_EMAIL_DELIVERY_ENABLED=false
-NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=false
+NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true
 ```
 
 Con ese flag, la demo no muestra el banner de verificación ni ofrece recuperación de contraseña por correo. El backend sigue creando la cuenta y la sesión inmediatamente; cualquier intento directo de envío falla dentro del adaptador deshabilitado, el controlador lo registra y la respuesta funcional continúa. Ninguna función de proyectos/transcripción comprueba `emailVerified`, por lo que el usuario de prueba puede utilizar la aplicación completa.
@@ -288,7 +299,7 @@ No adoptes secrets globales como fallback. Si el plan de GitHub del repo privado
 - [ ] Un intento de email deja un warning explícito; nunca afirma entrega.
 - [ ] La UI no muestra verificación ni recuperación por email con `NEXT_PUBLIC_EMAIL_DELIVERY_ENABLED=false`.
 - [ ] Registro/login por contraseña, sesión, CORS, CSRF y logout funcionan en navegador real.
-- [ ] Google está oculto con `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=false`; local sigue funcionando.
+- [x] Google inicia y vuelve por `/backend`, crea/reutiliza la sesión y aterriza en la aplicación con `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true`.
 - [ ] Flyway, CRUD y sesiones usan únicamente PlanetScale dev.
 - [ ] ElevenLabs usa la clave/cuota dev.
 - [ ] Sitemap y robots contienen `NEXT_PUBLIC_SITE_URL`, no el dominio futuro.

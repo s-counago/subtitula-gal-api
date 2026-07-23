@@ -1,6 +1,6 @@
 # Arquitectura Cloudflare-first con PostgreSQL
 
-**Estado:** hosted dev desplegado y E2E de autenticación validado · **Actualizado:** 23 de julio de 2026.
+**Estado:** hosted dev desplegado; E2E de contraseña y Google validados · **Actualizado:** 23 de julio de 2026.
 
 La aplicación conserva PostgreSQL y la integración nativa de Spring. PlanetScale opera la base, provisionada y facturada mediante Cloudflare. El frontend vive en Workers/OpenNext y Spring en Containers. No se ejecuta PostgreSQL dentro de un Container: su disco es efímero.
 
@@ -29,7 +29,7 @@ Cloudflare incluye un subdominio por cuenta y asigna una URL HTTPS a cada Worker
 
 Cloudflare lo clasifica como sitio gratuito para proyectos personales/no críticos y recomienda rutas o Custom Domains para producción. Por eso sirve como alojamiento de pruebas y demo, mientras la compra del dominio, el correo real y la salida pública quedan juntos en el [anexo de lanzamiento](custom-domain-launch-annex.md).
 
-Como `workers.dev` figura en la Public Suffix List, los dos Workers no pueden compartir cookies directamente. El frontend ofrece `/backend/*` en su propio origen y reenvía al API Worker mediante el service binding `API_SERVICE`, preservando cuerpos, cookies, CSRF y respuestas. Un `fetch()` público entre Workers de la misma zona produce el error 1042; el binding es parte obligatoria del manifest. Cambiar a dominio propio no requiere una rama ni código alternativo: se añaden Custom Domains y se sustituyen URLs/configuración OAuth. `NEXT_PUBLIC_SITE_URL` evita hardcodear el host.
+Como `workers.dev` figura en la Public Suffix List, los dos Workers no pueden compartir cookies directamente. El frontend ofrece `/backend/*` en su propio origen y reenvía al API Worker mediante el service binding `API_SERVICE`, preservando cuerpos, cookies, CSRF y respuestas. Google inicia en `/backend/oauth2/authorization/google` y vuelve al callback público `/backend/login/oauth2/code/google`; `GOOGLE_REDIRECT_URI` cambia ese host/ruta por entorno sin cambiar código. Un `fetch()` público entre Workers de la misma zona produce el error 1042; el binding es parte obligatoria del manifest. Cambiar a dominio propio no requiere una rama ni código alternativo: se añaden Custom Domains y se sustituyen URLs/configuración OAuth. `NEXT_PUBLIC_SITE_URL` evita hardcodear el host.
 
 El Container puede escalar a cero. En la validación inicial, `/ping` tardó unos 24 segundos en frío y menos de un segundo en caliente a través del gateway. Los health checks admiten esta ventana de forma acotada.
 

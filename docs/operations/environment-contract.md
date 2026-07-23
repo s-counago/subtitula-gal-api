@@ -24,7 +24,7 @@ La única excepción temporal es de transporte de correo, elegida por variable y
 
 No existe fallback hospedado.
 
-El frontend de dev se construye con `NEXT_PUBLIC_API_URL=/backend`, `NEXT_PUBLIC_EMAIL_DELIVERY_ENABLED=false` y `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=false`. Oculta temporalmente Google, verificación y recuperación por correo; registro/login por contraseña y el resto de la aplicación siguen disponibles. Local y el futuro prod habilitan ambas capacidades.
+El frontend de dev se construye con `NEXT_PUBLIC_API_URL=/backend`, `NEXT_PUBLIC_EMAIL_DELIVERY_ENABLED=false` y `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true`. Oculta temporalmente verificación y recuperación por correo, pero habilita contraseña, Google y el resto de la aplicación. Local habilita ambas capacidades; el futuro prod también las habilitará después de incorporar dominio y correo.
 
 ## URLs de la fase actual
 
@@ -33,7 +33,7 @@ Al crear una cuenta de Workers, Cloudflare asigna `<account-subdomain>.workers.d
 | Entorno | Frontend | API | Callback OAuth de Google |
 |---|---|---|---|
 | Local | `http://localhost:3000` | `http://localhost:8080` | `http://localhost:8080/login/oauth2/code/google` |
-| Desarrollo remoto | `https://subtitula-web-dev.s-counago00.workers.dev` | `https://subtitula-api-dev.s-counago00.workers.dev` | pospuesto; la UI Google está oculta |
+| Desarrollo remoto | `https://subtitula-web-dev.s-counago00.workers.dev` | `https://subtitula-api-dev.s-counago00.workers.dev` | `https://subtitula-web-dev.s-counago00.workers.dev/backend/login/oauth2/code/google` |
 | Producción real | Definida en el [anexo de lanzamiento](custom-domain-launch-annex.md) | Definida en el anexo | Definida en el anexo |
 
 Los Workers son `subtitula-web-dev` y `subtitula-api-dev`. Como `workers.dev` está en la Public Suffix List, sus dos hostnames son sitios distintos para cookies. El navegador llama al gateway same-origin `/backend/*` del frontend; este elimina `/backend` y reenvía al API Worker mediante el service binding `API_SERVICE`. No se usa `fetch()` público entre Workers de la misma zona porque Cloudflare lo rechaza con error 1042. Las rutas Spring siguen siendo `/ping`, `/register`, etc. y no ganan un prefijo `/api`.
@@ -64,7 +64,7 @@ PlanetScale clasifica obligatoriamente la rama predeterminada como production-ca
 
 ## Google OAuth durante la fase `workers.dev`
 
-Google funciona localmente. En hosted dev queda explícitamente pospuesto y oculto porque el callback actual terminaría en el hostname del API, fuera de la sesión same-origin del frontend. Se habilitará cuando el callback se enrute y pruebe a través del gateway o al activar el dominio propio. El secreto dev puede permanecer instalado, pero `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=false` evita prometer un flujo incompleto.
+Google funciona localmente y en hosted dev. La misma configuración Spring lee `GOOGLE_REDIRECT_URI`: local usa el callback directo del API y hosted dev usa `/backend/login/oauth2/code/google` en el origen del frontend. El gateway elimina `/backend` al reenviar, pero conserva la cookie y el estado OAuth en el origen del navegador. El cliente de Google debe autorizar esa URI de forma exacta. El E2E real de hosted dev completó consentimiento, callback, creación de sesión y llegada autenticada a `/projects`.
 
 ## Validación de development
 
@@ -73,7 +73,7 @@ Google funciona localmente. En hosted dev queda explícitamente pospuesto y ocul
 3. Hecho: `DEPLOY_ENABLED=true`; credenciales runtime instaladas en Cloudflare y bootstrap eliminado de GitHub.
 4. Hecho: registro y entrega local capturada por Mailpit.
 5. Pendiente: probar carga/transcripción real y registrar latencia/cuota/coste.
-6. Mantener `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=false` hasta implementar/probar el callback same-origin.
+6. Hecho: inicio y callback de Google atraviesan el gateway same-origin; `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true`.
 
 ## Qué se pospone
 
@@ -81,6 +81,6 @@ Google funciona localmente. En hosted dev queda explícitamente pospuesto y ocul
 - hosts de producción y DNS;
 - onboarding del remitente de Cloudflare Email Service, SMTP token y entregabilidad;
 - PlanetScale production HA y despliegue público de producción;
-- publicación/verificación final de Google OAuth.
+- publicación, branding y verificación de dominio final de Google OAuth para producción.
 
 Todos esos pasos están agrupados en [Anexo de lanzamiento: dominio propio y correo](custom-domain-launch-annex.md). La topología seleccionada está en [Arquitectura Cloudflare-first](cloudflare-architecture.md) y los valores exactos en [Configuración de secretos](secrets-setup.md).
