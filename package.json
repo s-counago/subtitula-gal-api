@@ -6,6 +6,7 @@
     "deploy:dev": "wrangler deploy --env development",
     "deploy:dev:dry-run": "wrangler deploy --env development --dry-run",
     "install:dev-secrets": "node .github/scripts/install-dev-secrets.mjs",
+    "install:local-secrets": "node .github/scripts/install-local-secrets.mjs",
     "test:bootstrap": "node --test .github/scripts/parse-secret-send.test.mjs",
     "typecheck:worker": "tsc --noEmit -p tsconfig.worker.json"
   },

@@ -2,24 +2,38 @@ import { spawnSync } from "node:child_process";
 import { parseSecretSend } from "./parse-secret-send.mjs";
 
 const sendUrl = process.env.BOOTSTRAP_BITWARDEN_SEND_URL;
-if (!sendUrl) {
+const inlinePayload = process.env.BOOTSTRAP_SERVICE_SECRETS_JSON;
+if (!sendUrl && !inlinePayload) {
   console.log("No bootstrap secret payload; existing Worker secrets were preserved.");
   process.exit(0);
 }
 
-const bitwardenCli = process.env.BITWARDEN_CLI_PATH;
-if (!bitwardenCli) throw new Error("BITWARDEN_CLI_PATH is missing.");
+let sendText = inlinePayload;
+if (!sendText) {
+  const bitwardenCli = process.env.BITWARDEN_CLI_PATH;
+  if (!bitwardenCli) throw new Error("BITWARDEN_CLI_PATH is missing.");
 
-const received = spawnSync(bitwardenCli, ["receive", sendUrl], {
-  encoding: "utf8",
-  env: process.env,
-  maxBuffer: 1024 * 1024,
-});
-if (received.status !== 0 || !received.stdout) {
-  throw new Error("Bitwarden Send could not be received.");
+  const configured = spawnSync(
+    bitwardenCli,
+    ["config", "server", "https://vault.bitwarden.eu"],
+    { encoding: "utf8", env: process.env },
+  );
+  if (configured.status !== 0) {
+    throw new Error("Bitwarden CLI could not select the EU vault.");
+  }
+
+  const received = spawnSync(bitwardenCli, ["receive", sendUrl], {
+    encoding: "utf8",
+    env: process.env,
+    maxBuffer: 1024 * 1024,
+  });
+  if (received.status !== 0 || !received.stdout) {
+    throw new Error("Bitwarden Send could not be received.");
+  }
+  sendText = received.stdout;
 }
 
-const supplied = parseSecretSend(received.stdout);
+const supplied = parseSecretSend(sendText);
 
 const requiredSendKeys = [
   "GOOGLE_CLIENT_ID_DEV",

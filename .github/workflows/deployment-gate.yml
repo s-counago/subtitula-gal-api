@@ -53,6 +53,7 @@ jobs:
           BOOTSTRAP_DB_PASSWORD: ${{ secrets.BOOTSTRAP_DB_PASSWORD }}
           BOOTSTRAP_DB_URL: ${{ secrets.BOOTSTRAP_DB_URL }}
           BOOTSTRAP_DB_USER: ${{ secrets.BOOTSTRAP_DB_USER }}
+          BOOTSTRAP_SERVICE_SECRETS_JSON: ${{ secrets.BOOTSTRAP_SERVICE_SECRETS_JSON }}
         run: npm run install:dev-secrets
       - name: Wait for the Spring container
         run: |

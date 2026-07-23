@@ -273,8 +273,8 @@ En cada repo: **Settings → Environments → New environment → development**.
 2. Variable de Environment en ambos: `CLOUDFLARE_ACCOUNT_ID`. Variable de repositorio: `DEPLOY_ENABLED=false` durante bootstrap y `true` al desplegar. GitHub no carga variables del Environment antes de evaluar el `if:` del job.
 3. Secret en cada repo: su propio `CLOUDFLARE_API_TOKEN`.
 4. En frontend añade las cuatro variables `NEXT_PUBLIC_*` exactas.
-5. En el primer API deploy añade temporalmente `BOOTSTRAP_BITWARDEN_SEND_URL`, `BOOTSTRAP_DB_URL`, `BOOTSTRAP_DB_USER` y `BOOTSTRAP_DB_PASSWORD` como Environment Secrets. El Send debe contener un objeto JSON con `GOOGLE_CLIENT_ID_DEV`, `GOOGLE_CLIENT_SECRET_DEV` y `ELEVENLABS_API_KEY_DEV` como propiedades string. Tras una ejecución correcta, bórralos; los valores runtime quedan en Cloudflare.
-6. El workflow descarga una versión nativa y checksum-pinned de Bitwarden CLI. No instales `@bitwarden/cli` desde npm.
+5. En el primer API deploy añade temporalmente `BOOTSTRAP_DB_URL`, `BOOTSTRAP_DB_USER`, `BOOTSTRAP_DB_PASSWORD` y `BOOTSTRAP_SERVICE_SECRETS_JSON` como Environment Secrets. El JSON contiene únicamente `GOOGLE_CLIENT_ID_DEV`, `GOOGLE_CLIENT_SECRET_DEV` y `ELEVENLABS_API_KEY_DEV`. Tras una ejecución correcta, bórralos; los valores runtime quedan en Cloudflare.
+6. Si excepcionalmente se entrega el Send directamente a CI como `BOOTSTRAP_BITWARDEN_SEND_URL`, el workflow configura primero `https://vault.bitwarden.eu`. Descarga una versión nativa y checksum-pinned de Bitwarden CLI; no instales `@bitwarden/cli` desde npm.
 
 No adoptes secrets globales como fallback. Si el plan de GitHub del repo privado no ofrece Environment Secrets, habilita un plan compatible antes de desplegar.
 
