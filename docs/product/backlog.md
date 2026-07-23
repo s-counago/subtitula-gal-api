@@ -20,7 +20,7 @@ Convención: **P0** desbloquea el primer piloto; **P1** aumenta el valor del pil
 | VAL-01 | P0 | Pendiente | Descubrimiento con 5–8 usuarios | Entrevistas separadas: 2 creadores, 2 comunicación, 2 secretaría y 2 usuarios de información pública. Grabar tareas, no solo opiniones. |
 | PIL-01 | P0 | Pendiente | Elegir piloto seguro | Una entidad publica vídeo ya público y no integra expedientes internos. Definir responsable, periodo, propiedad de datos y criterios de salida. |
 | INF-01 | P0 | Pendiente | Google OAuth separado | Dos clientes OAuth web —dev/prod— con callback exacto; no confundir con API key. |
-| INF-02 | P0 | Pendiente | Base de datos de desarrollo aislada | Esquema/Flyway igual que producción, datos sintéticos y sin secretos/datos reales compartidos. |
+| INF-02 | P0 | Hecho | Base de datos de desarrollo aislada | PlanetScale dev aislado; Flyway/JDBC/TLS validados con datos sintéticos y sin credenciales production. |
 | INF-03 | P0 | En código | Migración y validación Scribe v2 | El código usa `scribe_v2`; falta clave dev limitada, corpus gallego y medición de coste/calidad. |
 
 ## Siguiente — hacer que sea valioso para institución y ciudadanía
@@ -37,9 +37,9 @@ Convención: **P0** desbloquea el primer piloto; **P1** aumenta el valor del pil
 | GOV-01 | P1 | Pendiente | Paquete de compra/piloto | DPA, ubicación de datos, subencargados, seguridad, soporte, salida/exportación y explicación de IA. |
 | GOV-02 | P1 | Pendiente | Brecha ENS/RGPD/accesibilidad | Inventario de tratamientos, análisis de riesgo y plan de medidas antes de procesar contenido no público. |
 | MARKET-01 | P1 | Pendiente | Mapa de implantaciones | Para 15 concellos: proveedor de sede/transparencia, vídeo de plenos, volumen, URL, buscabilidad y contacto público. |
-| INF-04 | P1 | En código | CI, ramas y gate de despliegue | `develop` verifica y queda asociado a development; producción se prepara tras merge a `master`/`main`, pero ningún proveedor se activa aún. |
-| INF-05 | P1 | En curso | Provisionar PlanetScale PostgreSQL dev desde Cloudflare | Base `subtitula`, rama `development`, PS-5 Bélgica y rol dev creados. Falta resetear el password directo a Bitwarden/Worker Secrets y validar Flyway, restauración, latencia y JDBC/TLS. Prod queda en el anexo. |
-| INF-06 | P1 | Pendiente | Hosted dev en Cloudflare | Desplegar Next.js y Spring en `workers.dev`; API construida una vez, email deshabilitado de forma explícita y E2E remoto sin secretos production. |
+| INF-04 | P1 | Hecho | CI, ramas y gate de despliegue | Push a `develop` verifica y despliega frontend/API; producción permanece bloqueada en `master`/`main`. |
+| INF-05 | P1 | En curso | Provisionar PlanetScale PostgreSQL dev desde Cloudflare | Base/rol dev y Worker Secrets activos; Flyway y JDBC/TLS validados. Falta ensayar restauración y registrar métricas sostenidas. Prod queda en el anexo. |
+| INF-06 | P1 | Hecho | Hosted dev en Cloudflare | Next/OpenNext y Spring Container están en `workers.dev`; password auth, sesión, CSRF y gateway E2E validados con email explícitamente deshabilitado. |
 
 ## Después — solo tras comprobar necesidad
 

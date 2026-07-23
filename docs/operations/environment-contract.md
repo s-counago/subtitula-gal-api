@@ -36,7 +36,7 @@ Al crear una cuenta de Workers, Cloudflare asigna `<account-subdomain>.workers.d
 | Desarrollo remoto | `https://subtitula-web-dev.s-counago00.workers.dev` | `https://subtitula-api-dev.s-counago00.workers.dev` | pospuesto; la UI Google está oculta |
 | Producción real | Definida en el [anexo de lanzamiento](custom-domain-launch-annex.md) | Definida en el anexo | Definida en el anexo |
 
-Los Workers son `subtitula-web-dev` y `subtitula-api-dev`. Como `workers.dev` está en la Public Suffix List, sus dos hostnames son sitios distintos para cookies. El navegador llama al gateway same-origin `/backend/*` del frontend; este elimina `/backend` y reenvía al API Worker. Las rutas Spring siguen siendo `/ping`, `/register`, etc. y no ganan un prefijo `/api`.
+Los Workers son `subtitula-web-dev` y `subtitula-api-dev`. Como `workers.dev` está en la Public Suffix List, sus dos hostnames son sitios distintos para cookies. El navegador llama al gateway same-origin `/backend/*` del frontend; este elimina `/backend` y reenvía al API Worker mediante el service binding `API_SERVICE`. No se usa `fetch()` público entre Workers de la misma zona porque Cloudflare lo rechaza con error 1042. Las rutas Spring siguen siendo `/ping`, `/register`, etc. y no ganan un prefijo `/api`.
 
 `workers.dev` es adecuado para desarrollo y una demo pre-lanzamiento, no para producción crítica. La configuración de producción y sus credenciales siguen aisladas, pero no se provisiona la base HA ni se habilita el despliegue hasta activar el dominio del anexo. Si se necesita un ensayo de promoción antes, se pueden reservar temporalmente `subtitula-web-prod` y `subtitula-api-prod` bajo el mismo `workers.dev`, sin tratarlos como lanzamiento público.
 
@@ -60,22 +60,20 @@ La base `subtitula` ya está provisionada y facturada mediante Cloudflare:
 - rol de rama `subtitula_app_dev`;
 - sin rama, rol ni credenciales de producción.
 
-PlanetScale clasifica obligatoriamente la rama predeterminada como production-capable, pero el contrato de la aplicación la reserva exclusivamente para `dev`, datos sintéticos y pruebas. El password inicial del rol se descartó deliberadamente: antes del primer despliegue se debe resetear y guardar directamente en Bitwarden y Worker Secrets.
+PlanetScale clasifica obligatoriamente la rama predeterminada como production-capable, pero el contrato de la aplicación la reserva exclusivamente para `dev`, datos sintéticos y pruebas. El password inicial del rol se descartó y después se reseteó directamente al bootstrap protegido. El valor runtime está en Cloudflare Worker Secrets y las copias bootstrap de GitHub ya se borraron; no hay copia humana recuperable en Bitwarden salvo que se vuelva a resetear.
 
 ## Google OAuth durante la fase `workers.dev`
 
 Google funciona localmente. En hosted dev queda explícitamente pospuesto y oculto porque el callback actual terminaría en el hostname del API, fuera de la sesión same-origin del frontend. Se habilitará cuando el callback se enrute y pruebe a través del gateway o al activar el dominio propio. El secreto dev puede permanecer instalado, pero `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=false` evita prometer un flujo incompleto.
 
-## Antes de activar development
+## Validación de development
 
-1. Confirmar el subdominio `workers.dev` de la cuenta y reservar ambos nombres Worker.
-2. Configurar `SPRING_PROFILES_ACTIVE=dev`, `EMAIL_PROVIDER=disabled` y `EMAIL_DELIVERY_REQUIRED=false`.
-3. Construir el frontend con `NEXT_PUBLIC_API_URL=/backend` y el site URL exacto.
-4. Probar el gateway same-origin, cookie/sesión y CSRF en un navegador real.
-5. Resetear el password de `subtitula_app_dev` directamente en Bitwarden/Worker Secrets y validar la rama `development`; no crear producción.
+1. Hecho: subdominio, Workers, perfil `dev`, provider de email deshabilitado y frontend `/backend`.
+2. Hecho: PlanetScale, Flyway/JDBC/TLS, gateway, CSRF, cookie/sesión, registro, logout y login hospedados.
+3. Hecho: `DEPLOY_ENABLED=true`; credenciales runtime instaladas en Cloudflare y bootstrap eliminado de GitHub.
+4. Hecho: registro y entrega local capturada por Mailpit.
+5. Pendiente: probar carga/transcripción real y registrar latencia/cuota/coste.
 6. Mantener `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=false` hasta implementar/probar el callback same-origin.
-7. Probar registro, login por contraseña, carga, transcripción, sesión y logout. Probar verificación/reset de email localmente con Mailpit.
-8. Activar `DEPLOY_ENABLED=true` únicamente después de instalar las credenciales bootstrap; borrarlas de GitHub al terminar el primer despliegue.
 
 ## Qué se pospone
 

@@ -278,6 +278,8 @@ En cada repo: **Settings → Environments → New environment → development**.
 
 No adoptes secrets globales como fallback. Si el plan de GitHub del repo privado no ofrece Environment Secrets, habilita un plan compatible antes de desplegar.
 
+**Estado actual (23-07-2026):** el bootstrap de development terminó correctamente. Los seis valores runtime están en Cloudflare Worker Secrets; `BOOTSTRAP_DB_URL`, `BOOTSTRAP_DB_USER`, `BOOTSTRAP_DB_PASSWORD` y `BOOTSTRAP_SERVICE_SECRETS_JSON` se borraron de GitHub. En el Environment solo debe quedar `CLOUDFLARE_API_TOKEN`. No vuelvas a crear secretos `BOOTSTRAP_*` salvo una rotación deliberada.
+
 ## 11. Verificación hosted dev
 
 - [ ] Ambas URLs HTTPS responden y corresponden al Worker correcto.

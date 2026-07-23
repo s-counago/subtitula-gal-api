@@ -1,10 +1,10 @@
 # Last session
 
-- PlanetScale `subtitula` is Cloudflare-billed: branch `development`, PS-5 single-node Belgium, role `subtitula_app_dev`.
-- The role’s initial password was discarded; reset it directly into Bitwarden/Worker Secrets before deployment.
-- Production DB/domain/email remain deliberately unprovisioned.
-- Dev deployment tokens and Google/ElevenLabs local+dev credentials are already in Bitwarden.
+- Dev API and frontend are deployed on Cloudflare; PlanetScale/Flyway/JDBC and password auth/session/CSRF passed hosted E2E.
+- The frontend `/backend` gateway uses a Cloudflare service binding; public same-zone fetch caused error 1042.
+- Local PostgreSQL + Mailpit registration mail passed E2E. Local ignored env files contain Google/ElevenLabs credentials.
+- Runtime dev secrets are in Cloudflare; all one-time GitHub bootstrap secrets were deleted. Production remains gated.
 
 ## Next step
 
-Implement Wrangler/OpenNext + Container manifests, reset/install the dev DB secret, deploy dev and run hosted E2E. Create isolated HA production only at launch.
+Run one real dev transcription and record ElevenLabs cost/latency; then route Google OAuth through `/backend`.

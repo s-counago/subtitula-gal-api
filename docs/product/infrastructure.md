@@ -1,12 +1,12 @@
 # Infraestructura y entornos
 
-**Estado:** hosted dev en `workers.dev`; dominio/producción pública en anexo · **Actualizado:** 18 de julio de 2026.
+**Estado:** hosted dev desplegado y validado en `workers.dev`; dominio/producción pública en anexo · **Actualizado:** 23 de julio de 2026.
 
 ## Regla de base
 
 La API tiene una sola implementación y un artefacto OCI. Dev despliega un digest y producción promociona el mismo digest. Local, dev y prod usan PostgreSQL 17, JPA/JDBC, Flyway, Spring Session y ElevenLabs; solo cambian perfiles, URLs, credenciales y límites.
 
-`develop` representa development; `master` (frontend) y `main` (API) representan production. Los workflows todavía no despliegan y `DEPLOY_ENABLED=false` sigue siendo obligatorio.
+`develop` representa development; `master` (frontend) y `main` (API) representan production. Los workflows de `develop` verifican y despliegan automáticamente porque la variable de repositorio `DEPLOY_ENABLED=true`; producción continúa bloqueada por el anexo.
 
 ## Fases
 
@@ -15,7 +15,7 @@ La API tiene una sola implementación y un artefacto OCI. Dev despliega un diges
 | Next.js | `localhost:3000` | `subtitula-web-dev.<account>.workers.dev` | dominio propio, misma fuente |
 | Spring | `localhost:8080` | `subtitula-api-dev.<account>.workers.dev` | dominio propio, mismo digest |
 | PostgreSQL | Docker 17 | PlanetScale dev | PlanetScale prod HA |
-| Google | OAuth Web localhost | callback `workers.dev` si Google lo acepta en Testing | cliente y dominio verificados |
+| Google | OAuth Web localhost | credencial instalada, UI oculta hasta enrutar callback por gateway | cliente y dominio verificados |
 | ElevenLabs | clave Free/local | clave dev con cuota | clave production con alertas |
 | Email | Mailpit E2E; UI habilitada | `EMAIL_PROVIDER=disabled`, fallo visible; UI de email oculta | Cloudflare Email Service |
 | Objetos | temporal | R2 dev cuando se implemente | R2 prod |
@@ -36,15 +36,14 @@ La API tiene una sola implementación y un artefacto OCI. Dev despliega un diges
 
 No enviar secretos por chat ni guardarlos en el repo. Las instrucciones ejecutables están en [Configuración de secretos](../operations/secrets-setup.md).
 
-## Orden actual
+## Estado y orden actual
 
-1. Elegir el subdominio de cuenta `workers.dev` y activar Workers Paid.
-2. Provisionar únicamente PlanetScale dev y su rol.
-3. Crear claves Google/ElevenLabs no productivas y tokens Cloudflare de development.
-4. Implementar manifests y desplegar frontend/API dev con email deshabilitado.
-5. Validar Flyway, sesión/cookies, CORS, cold start, memoria, transcripción y coste.
-6. Mantener producción sin provisionar hasta que exista dominio/fecha de piloto.
-7. Ejecutar el anexo y promover el mismo digest aprobado.
+1. Hecho: Workers Paid, PlanetScale dev, credenciales no productivas, manifests y CI/CD.
+2. Hecho: frontend/API dev desplegados; Flyway, JDBC/TLS, CORS, cookies, CSRF, registro, logout y login validados.
+3. Hecho: E2E local con PostgreSQL 17 y correo capturado en Mailpit.
+4. Pendiente: ejecutar una transcripción dev real y medir latencia, memoria/cuota y coste.
+5. Pendiente: enrutar/probar Google OAuth por el gateway antes de mostrarlo en hosted dev.
+6. Mantener producción sin provisionar hasta que exista dominio/fecha de piloto; entonces ejecutar el anexo y promover el digest aprobado.
 
 ## Coste
 
