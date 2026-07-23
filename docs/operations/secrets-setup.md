@@ -92,7 +92,7 @@ Son valores públicos incluidos en el bundle. Nunca pongas secretos en variables
 |---|---|---|
 | `CLOUDFLARE_ACCOUNT_ID` | no | GitHub Environment Variable |
 | `CLOUDFLARE_API_TOKEN` | sí | GitHub Environment Secret, distinto por repo |
-| `DEPLOY_ENABLED` | no | GitHub Environment Variable; `true` tras instalar bootstrap |
+| `DEPLOY_ENABLED` | no | GitHub repository variable; el job-level `if` se evalúa antes del Environment |
 | las cuatro `NEXT_PUBLIC_*` | no | GitHub Environment Variables del frontend |
 
 ## 4. Cloudflare: cuenta, hostname y tokens
@@ -270,10 +270,10 @@ Con ese flag, la demo no muestra el banner de verificación ni ofrece recuperaci
 En cada repo: **Settings → Environments → New environment → development**.
 
 1. Restringe deployments a `develop`.
-2. Variables en ambos: `CLOUDFLARE_ACCOUNT_ID`; usa `DEPLOY_ENABLED=false` durante bootstrap y `true` al desplegar.
+2. Variable de Environment en ambos: `CLOUDFLARE_ACCOUNT_ID`. Variable de repositorio: `DEPLOY_ENABLED=false` durante bootstrap y `true` al desplegar. GitHub no carga variables del Environment antes de evaluar el `if:` del job.
 3. Secret en cada repo: su propio `CLOUDFLARE_API_TOKEN`.
 4. En frontend añade las cuatro variables `NEXT_PUBLIC_*` exactas.
-5. En el primer API deploy añade temporalmente `BOOTSTRAP_BITWARDEN_SEND_URL`, `BOOTSTRAP_DB_URL`, `BOOTSTRAP_DB_USER` y `BOOTSTRAP_DB_PASSWORD` como Environment Secrets. Tras una ejecución correcta, bórralos; los valores runtime quedan en Cloudflare.
+5. En el primer API deploy añade temporalmente `BOOTSTRAP_BITWARDEN_SEND_URL`, `BOOTSTRAP_DB_URL`, `BOOTSTRAP_DB_USER` y `BOOTSTRAP_DB_PASSWORD` como Environment Secrets. El Send debe contener un objeto JSON con `GOOGLE_CLIENT_ID_DEV`, `GOOGLE_CLIENT_SECRET_DEV` y `ELEVENLABS_API_KEY_DEV` como propiedades string. Tras una ejecución correcta, bórralos; los valores runtime quedan en Cloudflare.
 6. El workflow descarga una versión nativa y checksum-pinned de Bitwarden CLI. No instales `@bitwarden/cli` desde npm.
 
 No adoptes secrets globales como fallback. Si el plan de GitHub del repo privado no ofrece Environment Secrets, habilita un plan compatible antes de desplegar.

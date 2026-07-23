@@ -19,10 +19,28 @@ if (received.status !== 0 || !received.stdout) {
 }
 
 const supplied = new Map();
-for (const line of received.stdout.split(/\r?\n/)) {
-  const separator = line.indexOf("=");
-  if (separator <= 0) continue;
-  supplied.set(line.slice(0, separator).trim(), line.slice(separator + 1).trim());
+const sendText = received.stdout.trim();
+
+try {
+  const parsed = JSON.parse(sendText);
+  if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+    for (const [key, value] of Object.entries(parsed)) {
+      if (typeof value === "string") supplied.set(key.trim(), value.trim());
+    }
+  }
+} catch {
+  // Human-readable Sends may use dotenv or YAML-style separators.
+}
+
+if (supplied.size === 0) {
+  for (const line of sendText.split(/\r?\n/)) {
+    const match = line.match(
+      /^\s*(?:[-*]\s*)?(?:export\s+)?([A-Z][A-Z0-9_]*)\s*(?:=|:)\s*(.*?)\s*$/,
+    );
+    if (!match) continue;
+    const value = match[2].replace(/^(["'])(.*)\1$/, "$2").trim();
+    supplied.set(match[1], value);
+  }
 }
 
 const requiredSendKeys = [

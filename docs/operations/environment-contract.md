@@ -10,7 +10,7 @@ feature/* ──PR──> develop ──push──> development
                     └──PR aprobada──> master (frontend) / main (API) ──push──> production
 ```
 
-Los workflows de `develop` ejecutan CI y despliegan con Wrangler/OpenNext y Cloudflare Containers cuando `DEPLOY_ENABLED=true`. Mientras no sea exactamente `true`, no tocan servicios externos. Los workflows de producción siguen bloqueados por el anexo de lanzamiento.
+Los workflows de `develop` ejecutan CI y despliegan con Wrangler/OpenNext y Cloudflare Containers cuando la variable de repositorio `DEPLOY_ENABLED=true`. Debe ser de repositorio porque GitHub evalúa el `if:` del job antes de cargar su Environment. Mientras no sea exactamente `true`, no tocan servicios externos. Los workflows de producción siguen bloqueados por el anexo de lanzamiento.
 
 ## Invariante de artefacto
 
