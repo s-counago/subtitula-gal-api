@@ -1,6 +1,17 @@
 import { Container, getContainer } from "@cloudflare/containers";
 
-export class SubtitulaApiContainer extends Container<Env> {
+interface RuntimeSecrets {
+  DB_URL: string;
+  DB_USER: string;
+  DB_PASSWORD: string;
+  GOOGLE_CLIENT_ID: string;
+  GOOGLE_CLIENT_SECRET: string;
+  ELEVENLABS_API_KEY: string;
+}
+
+type WorkerEnv = Env & RuntimeSecrets;
+
+export class SubtitulaApiContainer extends Container<WorkerEnv> {
   defaultPort = 8080;
   requiredPorts = [8080];
   pingEndpoint = "/ping";
@@ -48,8 +59,8 @@ export class SubtitulaApiContainer extends Container<Env> {
 }
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: WorkerEnv): Promise<Response> {
     const container = getContainer(env.API_CONTAINER, "development-singleton");
     return container.fetch(request);
   },
-} satisfies ExportedHandler<Env>;
+} satisfies ExportedHandler<WorkerEnv>;
