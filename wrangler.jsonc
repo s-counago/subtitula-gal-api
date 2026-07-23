@@ -46,7 +46,8 @@
         "ELEVENLABS_MODEL_ID": "scribe_v2",
         "ELEVENLABS_LANGUAGE_HINT": "glg",
         "CORS_ORIGINS": "https://subtitula-web-dev.s-counago00.workers.dev",
-        "FRONTEND_URL": "https://subtitula-web-dev.s-counago00.workers.dev"
+        "FRONTEND_URL": "https://subtitula-web-dev.s-counago00.workers.dev",
+        "GOOGLE_REDIRECT_URI": "https://subtitula-web-dev.s-counago00.workers.dev/backend/login/oauth2/code/google"
       },
       "containers": [
         {
