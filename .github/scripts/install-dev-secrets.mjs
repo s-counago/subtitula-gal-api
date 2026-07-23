@@ -1,4 +1,5 @@
 import { spawnSync } from "node:child_process";
+import { parseSecretSend } from "./parse-secret-send.mjs";
 
 const sendUrl = process.env.BOOTSTRAP_BITWARDEN_SEND_URL;
 if (!sendUrl) {
@@ -18,30 +19,7 @@ if (received.status !== 0 || !received.stdout) {
   throw new Error("Bitwarden Send could not be received.");
 }
 
-const supplied = new Map();
-const sendText = received.stdout.trim();
-
-try {
-  const parsed = JSON.parse(sendText);
-  if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
-    for (const [key, value] of Object.entries(parsed)) {
-      if (typeof value === "string") supplied.set(key.trim(), value.trim());
-    }
-  }
-} catch {
-  // Human-readable Sends may use dotenv or YAML-style separators.
-}
-
-if (supplied.size === 0) {
-  for (const line of sendText.split(/\r?\n/)) {
-    const match = line.match(
-      /^\s*(?:[-*]\s*)?(?:export\s+)?([A-Z][A-Z0-9_]*)\s*(?:=|:)\s*(.*?)\s*$/,
-    );
-    if (!match) continue;
-    const value = match[2].replace(/^(["'])(.*)\1$/, "$2").trim();
-    supplied.set(match[1], value);
-  }
-}
+const supplied = parseSecretSend(received.stdout);
 
 const requiredSendKeys = [
   "GOOGLE_CLIENT_ID_DEV",

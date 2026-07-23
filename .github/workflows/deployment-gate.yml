@@ -32,6 +32,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - run: npm run test:bootstrap
       - run: ./mvnw -B test
       - run: npm run cf-typegen
       - run: npm run typecheck:worker
