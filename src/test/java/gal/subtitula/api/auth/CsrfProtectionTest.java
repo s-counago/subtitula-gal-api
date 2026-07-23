@@ -4,6 +4,7 @@ import gal.subtitula.api.support.AbstractIntegrationTest;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -20,6 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * the login probe isn't throttled by shared rate-limit buckets.
  */
 @TestPropertySource(properties = "app.ratelimit.capacity=1000")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 class CsrfProtectionTest extends AbstractIntegrationTest {
 
     @Test

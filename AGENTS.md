@@ -26,6 +26,8 @@ The first API deployment may receive a one-view Bitwarden Send and the freshly r
 
 GitHub evaluates a job-level `if:` before loading its named Environment, so an Environment variable cannot gate that job. `DEPLOY_ENABLED` is intentionally a non-secret repository variable; Cloudflare tokens, bootstrap values, and runtime credentials remain Environment/Worker secrets.
 
+Linux Surefire orders integration-test classes differently from Windows. Security tests that intentionally share the same `@TestPropertySource` can otherwise reuse a mutated cached Spring context; the CSRF cookie contract test is deliberately dirtied before its class. Preserve that isolation unless the shared-context mutation is removed and both full-suite orders are verified.
+
 Email verification is non-blocking: registration creates the session before attempting mail, all send failures are caught/logged, and no API feature checks `emailVerified`. Hosted dev intentionally leaves users unverified; its frontend must set `NEXT_PUBLIC_EMAIL_DELIVERY_ENABLED=false` so it does not promise undeliverable verification or reset messages.
 
 The local database uses the explicitly versioned Compose volume `postgres17-data`. A PostgreSQL data directory cannot be reused across major versions without `pg_upgrade`; do not attach an old PostgreSQL 16 anonymous volume to 17 or delete an old volume until its data has been intentionally dumped/preserved. Local launchers must use bounded readiness checks and surface Compose/application logs when a service fails.
