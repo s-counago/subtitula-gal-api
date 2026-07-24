@@ -35,6 +35,16 @@ public class Project {
     @Column(columnDefinition = "jsonb")
     private JsonNode style;
 
+    // Base caption placement; per-segment style/placement overrides. Free-form
+    // JSON validated on the client (parseBox/parseSegments).
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "base_box", columnDefinition = "jsonb")
+    private JsonNode baseBox;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private JsonNode segments;
+
     @Column(name = "speed_factor", nullable = false)
     private double speedFactor;
 
@@ -80,6 +90,10 @@ public class Project {
     public void setWords(List<Word> w) { this.words = w == null ? List.of() : w; }
     public JsonNode getStyle() { return style; }
     public void setStyle(JsonNode s) { this.style = s; }
+    public JsonNode getBaseBox() { return baseBox; }
+    public void setBaseBox(JsonNode b) { this.baseBox = b; }
+    public JsonNode getSegments() { return segments; }
+    public void setSegments(JsonNode s) { this.segments = s; }
     public double getSpeedFactor() { return speedFactor; }
     public void setSpeedFactor(double f) { this.speedFactor = f; }
     public String getWorkflowMode() { return workflowMode; }

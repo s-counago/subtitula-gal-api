@@ -65,6 +65,8 @@ public class ProjectService {
         if (req.words() != null) p.setWords(req.words());
         if (req.style() != null) p.setStyle(req.style());
         if (req.speedFactor() != null) p.setSpeedFactor(req.speedFactor());
+        if (req.baseBox() != null) p.setBaseBox(req.baseBox());
+        if (req.segments() != null) p.setSegments(req.segments());
         return projects.save(p);
     }
 

@@ -31,12 +31,19 @@ class MutateProjectTest extends AbstractIntegrationTest {
                 .content("""
                     {"name":"Renamed","speedFactor":2.0,
                      "style":{"preset":"boxed"},
+                     "baseBox":{"xPct":50,"yPct":92,"widthPct":85,"align":"center"},
+                     "segments":[{"startSec":3.5,"style":{"color":"#ff0000"},
+                                  "box":{"xPct":20,"yPct":30,"widthPct":40,"align":"left"}}],
                      "words":[{"text":"Ola","start":0.0,"end":0.3,"type":"word"}]}
                     """))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.name").value("Renamed"))
             .andExpect(jsonPath("$.speedFactor").value(2.0))
             .andExpect(jsonPath("$.style.preset").value("boxed"))
+            .andExpect(jsonPath("$.baseBox.widthPct").value(85))
+            .andExpect(jsonPath("$.segments.length()").value(1))
+            .andExpect(jsonPath("$.segments[0].startSec").value(3.5))
+            .andExpect(jsonPath("$.segments[0].box.align").value("left"))
             .andExpect(jsonPath("$.words.length()").value(1))
             .andExpect(jsonPath("$.words[0].text").value("Ola"));
     }
