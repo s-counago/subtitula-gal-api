@@ -49,6 +49,58 @@ class MutateProjectTest extends AbstractIntegrationTest {
     }
 
     @Test
+    void approvalIsRecordedOnceAndFreezesTheContent() throws Exception {
+        Cookie a = registerAndSession("approver@example.com");
+        String id = createProject(a);
+
+        mockMvc.perform(get("/projects/" + id).cookie(a))
+            .andExpect(jsonPath("$.approvedAt").doesNotExist());
+
+        mockMvc.perform(patch("/projects/" + id).with(csrf()).cookie(a)
+                .contentType(MediaType.APPLICATION_JSON).content("{\"approved\":true}"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.approvedAt").isNotEmpty());
+
+        // Read the stored instant back: Postgres keeps microseconds, so only a
+        // round-tripped value is comparable to a later round-tripped one.
+        MvcResult stored = mockMvc.perform(get("/projects/" + id).cookie(a))
+            .andExpect(status().isOk()).andReturn();
+        String firstInstant = com.jayway.jsonpath.JsonPath.read(
+            stored.getResponse().getContentAsString(), "$.approvedAt");
+
+        // Content is now fixed — a new version is required to change it.
+        mockMvc.perform(patch("/projects/" + id).with(csrf()).cookie(a)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"words\":[{\"text\":\"Novo\",\"start\":0.0,\"end\":0.3,\"type\":\"word\"}]}"))
+            .andExpect(status().isConflict())
+            .andExpect(jsonPath("$.error").value("project_approved"));
+
+        // Approving again must not move the recorded instant; renaming still works.
+        mockMvc.perform(patch("/projects/" + id).with(csrf()).cookie(a)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"approved\":true,\"name\":\"Pleno de xuño\"}"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.name").value("Pleno de xuño"));
+
+        mockMvc.perform(get("/projects/" + id).cookie(a))
+            .andExpect(jsonPath("$.approvedAt").value(firstInstant))
+            .andExpect(jsonPath("$.name").value("Pleno de xuño"));
+    }
+
+    @Test
+    void listExposesApprovalSoTheDashboardCanShowStatus() throws Exception {
+        Cookie a = registerAndSession("dashboard@example.com");
+        String id = createProject(a);
+        mockMvc.perform(patch("/projects/" + id).with(csrf()).cookie(a)
+                .contentType(MediaType.APPLICATION_JSON).content("{\"approved\":true}"))
+            .andExpect(status().isOk());
+
+        mockMvc.perform(get("/projects").cookie(a))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].approvedAt").isNotEmpty());
+    }
+
+    @Test
     void patchByNonOwnerIs404() throws Exception {
         Cookie a = registerAndSession("owner-patch@example.com");
         Cookie b = registerAndSession("intruder-patch@example.com");

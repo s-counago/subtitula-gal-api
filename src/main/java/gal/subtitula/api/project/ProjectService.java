@@ -61,12 +61,16 @@ public class ProjectService {
     @Transactional
     public Project update(UUID id, UUID userId, gal.subtitula.api.project.dto.ProjectUpdateRequest req) {
         Project p = get(id, userId);               // throws ProjectNotFoundException if not owner
+        // An approved session is the filed artifact: its content stops changing
+        // here rather than trusting the client to stop asking.
+        if (p.isApproved() && touchesContent(req)) throw new ProjectApprovedException();
         if (req.name() != null) p.setName(req.name());
         if (req.words() != null) p.setWords(req.words());
         if (req.style() != null) p.setStyle(req.style());
         if (req.speedFactor() != null) p.setSpeedFactor(req.speedFactor());
         if (req.baseBox() != null) p.setBaseBox(req.baseBox());
         if (req.segments() != null) p.setSegments(req.segments());
+        if (Boolean.TRUE.equals(req.approved())) p.approve();
         return projects.save(p);
     }
 
@@ -74,6 +78,12 @@ public class ProjectService {
     public void delete(UUID id, UUID userId) {
         Project p = get(id, userId);               // 404 for non-owner
         projects.delete(p);
+    }
+
+    /** Anything that would alter what was approved. Renaming stays allowed. */
+    private static boolean touchesContent(gal.subtitula.api.project.dto.ProjectUpdateRequest req) {
+        return req.words() != null || req.style() != null || req.speedFactor() != null
+            || req.baseBox() != null || req.segments() != null;
     }
 
     private static String normalizeWorkflowMode(String workflowMode) {

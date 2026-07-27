@@ -51,6 +51,10 @@ public class Project {
     @Column(name = "workflow_mode", nullable = false)
     private String workflowMode;
 
+    // Set once, when the session is approved. Null while it is still editable.
+    @Column(name = "approved_at")
+    private Instant approvedAt;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
@@ -97,6 +101,10 @@ public class Project {
     public double getSpeedFactor() { return speedFactor; }
     public void setSpeedFactor(double f) { this.speedFactor = f; }
     public String getWorkflowMode() { return workflowMode; }
+    public Instant getApprovedAt() { return approvedAt; }
+    public boolean isApproved() { return approvedAt != null; }
+    /** Approval is one-way: a second call must not move the recorded instant. */
+    public void approve() { if (approvedAt == null) this.approvedAt = Instant.now(); }
     public Instant getCreatedAt() { return createdAt; }
     public Instant getUpdatedAt() { return updatedAt; }
 }

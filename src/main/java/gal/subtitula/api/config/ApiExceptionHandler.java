@@ -45,6 +45,13 @@ public class ApiExceptionHandler {
             .body(Map.of("error", "not_found", "message", "Project not found."));
     }
 
+    @ExceptionHandler(gal.subtitula.api.project.ProjectApprovedException.class)
+    ResponseEntity<Map<String, String>> projectApproved() {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+            .body(Map.of("error", "project_approved",
+                         "message", "This session is approved — create a new version to change it."));
+    }
+
     @ExceptionHandler(gal.subtitula.api.font.FontNotFoundException.class)
     ResponseEntity<Map<String, String>> fontNotFound() {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
