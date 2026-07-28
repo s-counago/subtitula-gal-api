@@ -8,7 +8,8 @@
     "install:dev-secrets": "node .github/scripts/install-dev-secrets.mjs",
     "install:local-secrets": "node .github/scripts/install-local-secrets.mjs",
     "test:bootstrap": "node --test .github/scripts/parse-secret-send.test.mjs",
-    "typecheck:worker": "tsc --noEmit -p tsconfig.worker.json"
+    "typecheck:worker": "tsc --noEmit -p tsconfig.worker.json",
+    "wake": "node .github/scripts/wake-api.mjs"
   },
   "dependencies": {
     "@cloudflare/containers": "latest"
