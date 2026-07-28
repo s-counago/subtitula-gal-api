@@ -15,7 +15,12 @@
     {
       "class_name": "SubtitulaApiContainer",
       "image": "./Dockerfile",
-      "instance_type": "basic",
+      // Spring start-up is CPU-bound, and `basic` is 1/4 vCPU — that quarter core
+      // was most of the ~53s cold start. Cloudflare bills CPU on actual usage and
+      // memory on the provisioned amount, so buying vCPU is close to free; the
+      // memory is the cost, and 3 GiB is the mandatory floor of 3 GiB per vCPU.
+      // Disk stays at `basic`'s 4 GB.
+      "instance_type": { "vcpu": 1, "memory_mib": 3072, "disk_mb": 4000 },
       "max_instances": 1
     }
   ],
@@ -53,7 +58,9 @@
         {
           "class_name": "SubtitulaApiContainer",
           "image": "./Dockerfile",
-          "instance_type": "basic",
+          // Deploys use --env development, so this block is the one that takes
+          // effect; keep it in step with the top-level default above.
+          "instance_type": { "vcpu": 1, "memory_mib": 3072, "disk_mb": 4000 },
           "max_instances": 1
         }
       ],
