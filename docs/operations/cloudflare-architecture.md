@@ -1,6 +1,8 @@
 # Arquitectura Cloudflare-first con PostgreSQL
 
-**Estado:** hosted dev desplegado; E2E de contraseña y Google validados · **Actualizado:** 23 de julio de 2026.
+**Estado:** hosted dev base desplegado; vertical de transparencia implementado
+en local y pendiente de recursos/smoke hosted · **Actualizado:** 30 de julio de
+2026.
 
 La aplicación conserva PostgreSQL y la integración nativa de Spring. PlanetScale opera la base, provisionada y facturada mediante Cloudflare. El frontend vive en Workers/OpenNext y Spring en Containers. No se ejecuta PostgreSQL dentro de un Container: su disco es efímero.
 
@@ -18,7 +20,8 @@ El modo temporal `EMAIL_PROVIDER=disabled` no entrega ni simula email: lanza un 
 | API | `localhost:8080` | `subtitula-api-dev.s-counago00.workers.dev` → Container | dominio propio → misma imagen Container |
 | Datos | Docker PostgreSQL 17 | PlanetScale PostgreSQL dev | PlanetScale PostgreSQL prod HA |
 | Email | Mailpit, no entrega | deshabilitado y fallo visible | Cloudflare Email Service |
-| Objetos | filesystem temporal | R2 dev cuando se implemente | R2 prod |
+| Objetos | R2 local de Wrangler | R2 privado dev al activar el piloto | R2 privado prod |
+| Procesamiento | Worker `:8787` + Workflows | Processing Worker + tres Workflows + Workers AI | recursos prod aislados tras anexo |
 | Secretos | `.env` ignorado | Worker Secrets dev | Worker Secrets prod |
 
 No se copian datos, buckets ni claves entre dev y producción.
@@ -53,7 +56,30 @@ PlanetScale mantiene la rama predeterminada marcada técnicamente como productio
 - dev remoto funciona sin salida de correo y deja el fallo en logs;
 - el dominio propio activa Cloudflare Email Service en prod, sin AWS/SES/Mailtrap de respaldo.
 
-Los Containers no almacenan datos durables. Vídeos, fuentes y exportaciones pertenecerán a R2; PostgreSQL guarda metadatos, transcripciones y referencias.
+Los Containers no almacenan datos durables. El nuevo camino institucional
+envía media directamente a R2 privado y guarda en PostgreSQL metadatos,
+revisiones, evidencia, publicaciones y proyecciones de búsqueda. El Processing
+Worker posee URLs firmadas, integración con ElevenLabs, Workflows y Workers AI;
+Spring conserva la autoridad de dominio. El camino creador legacy sigue
+temporalmente en el Container.
+
+```text
+Browser
+  ├─ /backend/* ─────> Web Worker ─API_SERVICE────────> Spring Container
+  └─ /processing/* ──> Web Worker ─PROCESSING_SERVICE─> Processing Worker
+                                                         ├─ R2 privado
+                                                         ├─ Workflows
+                                                         ├─ Workers AI
+                                                         └─ API_SERVICE -> Spring
+
+Spring Container ─JDBC/TLS─> PlanetScale PostgreSQL
+```
+
+El baseline híbrido vive en PostgreSQL/pgvector: candidatos literales y
+semánticos exactos se mezclan con RRF. No se añaden Vectorize, AI Search, D1,
+Kafka ni otra API. Antes del primer deploy de V9–V16 hay que habilitar `vector`
+en PlanetScale; véase
+[el runbook del piloto](transparency-pilot-runbook.md).
 
 ## Coste inicial
 

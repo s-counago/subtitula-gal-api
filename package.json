@@ -2,13 +2,21 @@
   "name": "subtitula-api-cloudflare",
   "private": true,
   "scripts": {
-    "cf-typegen": "wrangler types --env development",
+    "cf-typegen:container": "wrangler types --env development",
+    "cf-typegen:processing": "npm --prefix processing-worker run cf-typegen",
+    "cf-typegen": "npm run cf-typegen:container && npm run cf-typegen:processing",
     "deploy:dev": "wrangler deploy --env development",
-    "deploy:dev:dry-run": "wrangler deploy --env development --dry-run",
+    "deploy:processing:dev": "npm --prefix processing-worker run deploy:dev",
+    "deploy:dev:dry-run": "wrangler deploy --env development --dry-run && npm --prefix processing-worker run deploy:dev:dry-run",
     "install:dev-secrets": "node .github/scripts/install-dev-secrets.mjs",
     "install:local-secrets": "node .github/scripts/install-local-secrets.mjs",
     "test:bootstrap": "node --test .github/scripts/parse-secret-send.test.mjs",
-    "typecheck:worker": "tsc --noEmit -p tsconfig.worker.json"
+    "test:processing-worker": "npm --prefix processing-worker test",
+    "test:search-evaluation": "node --test scripts/evaluate-search.test.mjs",
+    "evaluate:search": "node scripts/evaluate-search.mjs",
+    "typecheck:container-worker": "tsc --noEmit -p tsconfig.worker.json",
+    "typecheck:processing-worker": "npm --prefix processing-worker run typecheck",
+    "typecheck:worker": "npm run typecheck:container-worker && npm run typecheck:processing-worker"
   },
   "dependencies": {
     "@cloudflare/containers": "latest"

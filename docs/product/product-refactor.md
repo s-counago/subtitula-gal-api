@@ -5,6 +5,13 @@ Output:
 
 ## Resultado deseado
 
+> **Actualización de implementación (29 de julio de 2026):** el plan canónico es
+> [Transparency evidence and search — canonical implementation plan](transparency-evidence-search-implementation-plan.md).
+> En particular, no se harán dos revisiones humanas exhaustivas: texto/hablantes es la
+> única puerta obligatoria; agenda, temas, intervenciones y decisiones se generan
+> automáticamente y solo muestran excepciones breves. Ante conflicto, prevalece el plan
+> canónico.
+
 Una persona autenticada elige por qué viene a Subtitula una vez. A partir de ahí trabaja siempre en el mismo espacio de proyecto: sube el medio, obtiene una transcripción, la revisa en un editor y publica o exporta. El modo cambia las ayudas y los controles, no duplica el flujo ni obliga a abandonar el editor para leer la transcripción.
 
 | Modo | Promesa | Usuario principal | Salida dominante |
@@ -132,8 +139,9 @@ Reglas de interacción:
 ### Panel específico de institución
 
 - asignar, fusionar y renombrar hablantes; conservar Hablante desconocido en vez de inventar nombres;
-- cola de revisión por confianza: filtro crítica, media, resuelta; cada alerta explica su señal: audio pobre, solapamiento, nombre propio o desacuerdo de modelo;
-- dividir y asociar segmentos a puntos del orden del día;
+- cola de revisión por sinais: filtro obrigatoria, aviso, resolta; cada alerta explica a súa razón: audio pobre, solapamento, nome propio ou desacordo de modelo;
+- importar o pegar el orden del día y dejar que el sistema alinee automáticamente los tramos; el humano solo comprueba transiciones ambiguas;
+- generar temas e intervenciones con evidencia de forma automática; confirmar únicamente decisiones relevantes o excepciones que no puedan omitirse con seguridad;
 - adjuntar acta, convocatoria, orden del día y acuerdos; se enlazan, no se reemplazan;
 - estado de publicación con checklist: título/fecha, vídeo original, revisión, accesibilidad, adjuntos y responsable;
 - generar enlace público, descarga de transcripción y exportación de subtítulos.
@@ -183,7 +191,7 @@ Estados mínimos de proyecto: borrador → subido → procesando → requiere re
 ## Implementación por cortes
 
 1. **Corte A: navegación y proyecto único.** Selector, asistente común, biblioteca y entrada única al editor; conservar el flujo actual detrás de adaptadores.
-2. **Corte B: revisión institucional.** Hablantes, señales de revisión, agenda y adjuntos dentro del mismo editor.
+2. **Corte B: revisión institucional.** Una sola revisión obligatoria, dirigida por señales, para texto/hablantes; agenda y guía automáticas con comprobaciones por excepción dentro del mismo editor.
 3. **Corte C: publicación pública.** Ficha pública de sesión con vídeo/transcripción sincronizada y enlaces a documentos.
 4. **Corte D: búsqueda verificable.** Índice léxico, filtros y analítica de búsquedas sin resultado.
 5. **Corte E: búsqueda híbrida.** Solo con corpus suficiente y métricas comparativas favorables.

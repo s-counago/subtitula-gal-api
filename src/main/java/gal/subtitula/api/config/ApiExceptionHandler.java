@@ -50,4 +50,37 @@ public class ApiExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
             .body(Map.of("error", "not_found", "message", "Font not found."));
     }
+
+    @ExceptionHandler(gal.subtitula.api.transparency.review.ReviewConflictException.class)
+    ResponseEntity<Map<String, String>> reviewConflict() {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+            .body(Map.of(
+                "error", "review_conflict",
+                "message", "Refresh the review state and try again."));
+    }
+
+    @ExceptionHandler(gal.subtitula.api.transparency.TransparencyStateConflictException.class)
+    ResponseEntity<Map<String, String>> transparencyConflict() {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+            .body(Map.of(
+                "error", "transparency_conflict",
+                "message", "Refresh the session state and try again."));
+    }
+
+    @ExceptionHandler(gal.subtitula.api.transparency.search.SearchRequestException.class)
+    ResponseEntity<Map<String, String>> invalidSearch(
+            gal.subtitula.api.transparency.search.SearchRequestException exception) {
+        return ResponseEntity.badRequest()
+            .body(Map.of(
+                "error", "invalid_search",
+                "message", exception.getMessage()));
+    }
+
+    @ExceptionHandler(gal.subtitula.api.transparency.search.SearchUnavailableException.class)
+    ResponseEntity<Map<String, String>> searchUnavailable() {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+            .body(Map.of(
+                "error", "search_unavailable",
+                "message", "Public search is temporarily unavailable."));
+    }
 }

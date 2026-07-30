@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://subtitula.gal/contracts/search-evaluation-v1.schema.json",
+  "title": "Subtitula search evaluation case v1",
+  "description": "One JSONL row used to compare lexical, semantic, and hybrid evidence retrieval on the same labelled query.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "locale",
+    "query",
+    "intent",
+    "expectedNoAnswer",
+    "relevantEvidenceRefs"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^q[0-9]{3,}$"
+    },
+    "locale": {
+      "enum": [
+        "gl",
+        "es"
+      ]
+    },
+    "query": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "intent": {
+      "enum": [
+        "exact_quote",
+        "paraphrase",
+        "name",
+        "typo",
+        "date",
+        "agenda",
+        "who",
+        "when",
+        "bilingual",
+        "no_answer"
+      ]
+    },
+    "filters": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "organizationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "sessionSlug": {
+          "type": "string"
+        },
+        "body": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "speakerId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "agendaItemId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "dateFrom": {
+          "type": "string",
+          "format": "date"
+        },
+        "dateTo": {
+          "type": "string",
+          "format": "date"
+        },
+        "language": {
+          "type": "string",
+          "maxLength": 16
+        },
+        "kind": {
+          "enum": [
+            "evidence",
+            "topic",
+            "contribution",
+            "document_chunk"
+          ]
+        }
+      }
+    },
+    "expectedNoAnswer": {
+      "type": "boolean"
+    },
+    "relevantEvidenceRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9-]+:[a-z0-9-]+:[a-z0-9-]+$"
+      }
+    },
+    "notes": {
+      "type": "string",
+      "maxLength": 1000
+    }
+  }
+}

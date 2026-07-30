@@ -1,0 +1,23 @@
+{
+  "name": "subtitula-processing-worker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --port 8787 --persist-to .wrangler/state",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "cf-typegen": "wrangler types worker-configuration.d.ts --env development",
+    "deploy:dev": "wrangler deploy --env development",
+    "deploy:dev:dry-run": "wrangler deploy --env development --dry-run"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "latest",
+    "@aws-sdk/s3-request-presigner": "latest"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "latest",
+    "typescript": "^5.9.3",
+    "vitest": "latest",
+    "wrangler": "latest"
+  }
+}

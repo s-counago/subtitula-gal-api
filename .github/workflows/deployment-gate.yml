@@ -31,12 +31,21 @@ jobs:
         with:
           node-version: 22
           cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            processing-worker/package-lock.json
       - run: npm ci
+      - run: npm --prefix processing-worker ci
       - run: npm run test:bootstrap
       - run: ./mvnw -B test
       - run: npm run cf-typegen
       - run: npm run typecheck:worker
+      - run: npm run test:processing-worker
+      - run: npm run deploy:dev:dry-run
       - run: npm run deploy:dev
+      - name: Deploy asynchronous processing Worker
+        if: vars.PROCESSING_DEPLOY_ENABLED == 'true'
+        run: npm run deploy:processing:dev
       - name: Install verified Bitwarden CLI
         run: |
           curl --fail --silent --show-error --location \
@@ -61,6 +70,13 @@ jobs:
             --retry 59 --retry-delay 10 --retry-all-errors \
             --connect-timeout 10 --max-time 20 \
             https://subtitula-api-dev.s-counago00.workers.dev/ping
+      - name: Wait for the processing Worker
+        if: vars.PROCESSING_DEPLOY_ENABLED == 'true'
+        run: |
+          curl --fail --show-error --silent \
+            --retry 12 --retry-delay 5 --retry-all-errors \
+            --connect-timeout 10 --max-time 20 \
+            https://subtitula-processing-dev.s-counago00.workers.dev/ping
 
   production:
     if: github.ref == 'refs/heads/main'

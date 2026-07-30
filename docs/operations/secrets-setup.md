@@ -1,6 +1,6 @@
 # Guía paso a paso de configuración y secretos
 
-**Estado:** runbook para local y hosted dev pre-dominio · **Actualizado:** 23 de julio de 2026.
+**Estado:** runbook para local y hosted dev pre-dominio · **Actualizado:** 30 de julio de 2026.
 
 Esta es la fuente de verdad para obtener y colocar cada valor. El dominio propio, SMTP hospedado y producción pública están pospuestos al [anexo de lanzamiento](custom-domain-launch-annex.md).
 
@@ -72,16 +72,32 @@ Mailpit no usa usuario, contraseña ni API key.
 | `ELEVENLABS_API_KEY` | sí | clave dev limitada | Worker Secret |
 | `ELEVENLABS_MODEL_ID` | no | `scribe_v2` | Wrangler var |
 | `ELEVENLABS_LANGUAGE_HINT` | no | `glg` | Wrangler var |
+| `INTERNAL_API_HMAC_SECRET` | sí | firma processor→Spring; mismo valor en ambos Workers | Worker Secret |
+| `SEARCH_ANALYTICS_HMAC_SECRET` | sí/opcional | habilita analítica sin texto de consulta | Worker Secret |
 | `CORS_ORIGINS` | no | URL exacta del frontend dev | Wrangler var |
 | `FRONTEND_URL` | no | URL exacta del frontend dev | Wrangler var |
 
 No configures `APP_EMAIL_FROM`, `SMTP_HOST`, `SMTP_USERNAME` ni `SMTP_PASSWORD` en development mientras no exista dominio. `workers.dev` no pertenece al proyecto y no es un remitente válido.
+
+### Processing Worker development (pendiente de provisionar)
+
+| Nombre | Secreto | Uso |
+|---|---|---|
+| `ELEVENLABS_API_KEY` | sí | Scribe v2, con cuota development |
+| `ELEVENLABS_WEBHOOK_SECRET` | sí | verificar el cuerpo crudo antes de parsear |
+| `INTERNAL_API_HMAC_SECRET` | sí | exactamente el mismo valor que en el API |
+| `R2_S3_ACCESS_KEY_ID` | sí | presigned URLs, alcance solo en el bucket dev |
+| `R2_S3_SECRET_ACCESS_KEY` | sí | presigned URLs, alcance solo en el bucket dev |
+
+Modelos, límites, retención, precios estimados, bindings R2/AI/Workflow y rate
+limits son variables versionadas, no secretos.
 
 ### Frontend
 
 | Nombre | Local | Development |
 |---|---|---|
 | `NEXT_PUBLIC_API_URL` | `http://localhost:8080` | `/backend` |
+| `NEXT_PUBLIC_PROCESSING_URL` | `http://localhost:8787` | `/processing` |
 | `NEXT_PUBLIC_SITE_URL` | `http://localhost:3000` | `https://subtitula-web-dev.s-counago00.workers.dev` |
 | `NEXT_PUBLIC_EMAIL_DELIVERY_ENABLED` | `true` | `false` |
 | `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED` | `true` | `true` |
@@ -95,7 +111,7 @@ Son valores públicos incluidos en el bundle. Nunca pongas secretos en variables
 | `CLOUDFLARE_ACCOUNT_ID` | no | GitHub Environment Variable |
 | `CLOUDFLARE_API_TOKEN` | sí | GitHub Environment Secret, distinto por repo |
 | `DEPLOY_ENABLED` | no | GitHub repository variable; el job-level `if` se evalúa antes del Environment |
-| las cuatro `NEXT_PUBLIC_*` | no | GitHub Environment Variables del frontend |
+| las cinco `NEXT_PUBLIC_*` | no | GitHub Environment Variables del frontend |
 
 ## 4. Cloudflare: cuenta, hostname y tokens
 
@@ -260,15 +276,32 @@ npx wrangler secret put DB_PASSWORD --env development
 npx wrangler secret put GOOGLE_CLIENT_ID --env development
 npx wrangler secret put GOOGLE_CLIENT_SECRET --env development
 npx wrangler secret put ELEVENLABS_API_KEY --env development
+npx wrangler secret put INTERNAL_API_HMAC_SECRET --env development
+npx wrangler secret put SEARCH_ANALYTICS_HMAC_SECRET --env development
 npx wrangler secret list --env development
 ```
 
 Google está habilitado y sus credenciales dev permanecen únicamente en Worker Secrets. No crees `SMTP_PASSWORD`.
 
+Para el processor, ejecutar desde el repo API y dejar que Wrangler solicite
+cada valor sin incluirlo en la línea de comandos:
+
+```powershell
+npx wrangler secret put ELEVENLABS_API_KEY --config processing-worker/wrangler.jsonc --env development
+npx wrangler secret put ELEVENLABS_WEBHOOK_SECRET --config processing-worker/wrangler.jsonc --env development
+npx wrangler secret put INTERNAL_API_HMAC_SECRET --config processing-worker/wrangler.jsonc --env development
+npx wrangler secret put R2_S3_ACCESS_KEY_ID --config processing-worker/wrangler.jsonc --env development
+npx wrangler secret put R2_S3_SECRET_ACCESS_KEY --config processing-worker/wrangler.jsonc --env development
+```
+
+No instalar `SEARCH_ANALYTICS_HMAC_SECRET` hasta aprobar finalidad y retención.
+Vacío desactiva por completo la persistencia de queries/clicks.
+
 ### Variables de build frontend
 
 ```text
 NEXT_PUBLIC_API_URL=/backend
+NEXT_PUBLIC_PROCESSING_URL=/processing
 NEXT_PUBLIC_SITE_URL=https://subtitula-web-dev.s-counago00.workers.dev
 NEXT_PUBLIC_EMAIL_DELIVERY_ENABLED=false
 NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true
@@ -283,7 +316,7 @@ En cada repo: **Settings → Environments → New environment → development**.
 1. Restringe deployments a `develop`.
 2. Variable de Environment en ambos: `CLOUDFLARE_ACCOUNT_ID`. Variable de repositorio: `DEPLOY_ENABLED=false` durante bootstrap y `true` al desplegar. GitHub no carga variables del Environment antes de evaluar el `if:` del job.
 3. Secret en cada repo: su propio `CLOUDFLARE_API_TOKEN`.
-4. En frontend añade las cuatro variables `NEXT_PUBLIC_*` exactas.
+4. En frontend añade las cinco variables `NEXT_PUBLIC_*` exactas.
 5. En el primer API deploy añade temporalmente `BOOTSTRAP_DB_URL`, `BOOTSTRAP_DB_USER`, `BOOTSTRAP_DB_PASSWORD` y `BOOTSTRAP_SERVICE_SECRETS_JSON` como Environment Secrets. El JSON contiene únicamente `GOOGLE_CLIENT_ID_DEV`, `GOOGLE_CLIENT_SECRET_DEV` y `ELEVENLABS_API_KEY_DEV`. Tras una ejecución correcta, bórralos; los valores runtime quedan en Cloudflare.
 6. Si excepcionalmente se entrega el Send directamente a CI como `BOOTSTRAP_BITWARDEN_SEND_URL`, el workflow configura primero `https://vault.bitwarden.eu`. Descarga una versión nativa y checksum-pinned de Bitwarden CLI; no instales `@bitwarden/cli` desde npm.
 

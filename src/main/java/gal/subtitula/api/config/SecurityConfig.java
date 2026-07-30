@@ -2,6 +2,7 @@ package gal.subtitula.api.config;
 
 import gal.subtitula.api.oauth.OAuthSuccessHandler;
 import gal.subtitula.api.ratelimit.RateLimitFilter;
+import gal.subtitula.api.transparency.internal.InternalRequestAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -41,10 +42,20 @@ public class SecurityConfig {
     }
 
     @Bean
+    FilterRegistrationBean<InternalRequestAuthenticationFilter> internalRequestFilterRegistration(
+            InternalRequestAuthenticationFilter filter) {
+        FilterRegistrationBean<InternalRequestAuthenticationFilter> registration =
+            new FilterRegistrationBean<>(filter);
+        registration.setEnabled(false);
+        return registration;
+    }
+
+    @Bean
     SecurityFilterChain filterChain(HttpSecurity http,
                                     UrlBasedCorsConfigurationSource cors,
                                     OAuthSuccessHandler oauthSuccessHandler,
                                     RateLimitFilter rateLimitFilter,
+                                    InternalRequestAuthenticationFilter internalRequestFilter,
                                     @Value("${app.frontend.base-url}") String frontendUrl) throws Exception {
         http
             .cors(c -> c.configurationSource(cors))
@@ -52,13 +63,18 @@ public class SecurityConfig {
             // value the SPA echoes in X-XSRF-TOKEN matches what the server validates.
             .csrf(csrf -> csrf
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler()))
+                .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
+                .ignoringRequestMatchers("/internal/processing/**"))
             // Materialise the deferred token on every request so the XSRF-TOKEN cookie is delivered.
             .addFilterAfter(new CsrfCookieFilter(), CsrfFilter.class)
+            .addFilterBefore(internalRequestFilter, UsernamePasswordAuthenticationFilter.class)
             .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(reg -> reg
                 .requestMatchers(
                     "/ping",
+                    "/capabilities",
+                    "/public/**",
+                    "/internal/processing/**",
                     "/auth/register", "/auth/login",
                     "/auth/verify-email", "/auth/forgot-password", "/auth/reset-password",
                     "/oauth2/**", "/login/oauth2/**"

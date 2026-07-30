@@ -1,0 +1,227 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://subtitula.gal/contracts/session-guide-v1.schema.json",
+  "title": "Subtitula assisted session guide v1",
+  "description": "Schema-constrained enrichment output. It is an assisted guide, never official minutes, and every displayed object must cite transcript evidence.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "projectId",
+    "transcriptRevisionId",
+    "model",
+    "promptVersion",
+    "sourceContentHash",
+    "topics"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "projectId": {
+      "$ref": "#/$defs/uuid"
+    },
+    "transcriptRevisionId": {
+      "$ref": "#/$defs/uuid"
+    },
+    "model": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "promptVersion": {
+      "type": "string",
+      "pattern": "^guide-v[0-9]+$"
+    },
+    "sourceContentHash": {
+      "$ref": "#/$defs/sha256"
+    },
+    "topics": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/topic"
+      }
+    }
+  },
+  "$defs": {
+    "uuid": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "evidenceIds": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/uuid"
+      }
+    },
+    "contribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceContributionId",
+        "speakerId",
+        "kind",
+        "neutralSummary",
+        "evidenceSegmentIds"
+      ],
+      "properties": {
+        "sourceContributionId": {
+          "type": "string",
+          "pattern": "^c[0-9]+$"
+        },
+        "speakerId": {
+          "$ref": "#/$defs/uuid"
+        },
+        "kind": {
+          "enum": [
+            "question",
+            "proposal",
+            "explanation",
+            "reply",
+            "objection",
+            "support",
+            "procedural",
+            "other"
+          ]
+        },
+        "neutralSummary": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "evidenceSegmentIds": {
+          "$ref": "#/$defs/evidenceIds"
+        }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceDecisionId",
+        "neutralDescription",
+        "evidenceSegmentIds",
+        "explicitOutcomeLanguage",
+        "requiresHumanConfirmation",
+        "officialDocumentIds"
+      ],
+      "properties": {
+        "sourceDecisionId": {
+          "type": "string",
+          "pattern": "^d[0-9]+$"
+        },
+        "neutralDescription": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "motion": {
+          "type": ["string", "null"],
+          "maxLength": 1000
+        },
+        "result": {
+          "type": ["string", "null"],
+          "maxLength": 500
+        },
+        "vote": {
+          "type": ["string", "null"],
+          "maxLength": 500
+        },
+        "evidenceSegmentIds": {
+          "$ref": "#/$defs/evidenceIds"
+        },
+        "explicitOutcomeLanguage": {
+          "type": "boolean"
+        },
+        "requiresHumanConfirmation": {
+          "const": true
+        },
+        "officialDocumentIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/uuid"
+          }
+        }
+      }
+    },
+    "topic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceTopicId",
+        "title",
+        "aliases",
+        "neutralSummary",
+        "agendaItemId",
+        "startSegmentId",
+        "endSegmentId",
+        "evidenceSegmentIds",
+        "contributions",
+        "candidateDecisions"
+      ],
+      "properties": {
+        "sourceTopicId": {
+          "type": "string",
+          "pattern": "^t[0-9]+$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "aliases": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 240
+          }
+        },
+        "neutralSummary": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "agendaItemId": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "startSegmentId": {
+          "$ref": "#/$defs/uuid"
+        },
+        "endSegmentId": {
+          "$ref": "#/$defs/uuid"
+        },
+        "evidenceSegmentIds": {
+          "$ref": "#/$defs/evidenceIds"
+        },
+        "contributions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/contribution"
+          }
+        },
+        "candidateDecisions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/decision"
+          }
+        }
+      }
+    }
+  }
+}
