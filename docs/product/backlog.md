@@ -22,13 +22,17 @@ Convención: **P0** desbloquea el primer piloto; **P1** aumenta el valor del pil
 | INF-01 | P0 | Pendiente | Google OAuth separado | Dos clientes OAuth web —dev/prod— con callback exacto; no confundir con API key. |
 | INF-02 | P0 | Hecho | Base de datos de desarrollo aislada | PlanetScale dev aislado; Flyway/JDBC/TLS validados con datos sintéticos y sin credenciales production. |
 | INF-03 | P0 | En código | Migración y validación Scribe v2 | El código usa `scribe_v2`; falta clave dev limitada, corpus gallego y medición de coste/calidad. |
+| DATA-02 | P0 | Pendiente | Modelo normalizado de evidencia | Revisiones, hablantes, segmentos, incidencias y trabajos quedan versionados sin romper proyectos legacy. |
+| INF-08 | P0 | Pendiente | Ingesta durable asíncrona | R2 + Worker de procesamiento + Workflows + webhook sustituyen el buffer síncrono y sobreviven al cierre del navegador. |
 
 ## Siguiente — hacer que sea valioso para institución y ciudadanía
 
 | ID | Pri. | Estado | Iniciativa | Resultado verificable |
 |---|---:|---|---|---|
 | UX-05 | P1 | Pendiente | Checklist de publicación | Impide publicar sin fecha/título/origen y hace visibles las excepciones justificadas. |
-| UX-06 | P1 | Pendiente | Asociación asistida al orden del día | Personal puede mapear tramos al punto correspondiente y corregir el resultado sin fricción. |
+| UX-06 | P1 | Pendiente | Alineación automática con el orden del día | El sistema alinea los tramos y el personal solo comprueba transiciones ambiguas; objetivo habitual 1–3 minutos. |
+| GUIDE-01 | P1 | Pendiente | Guía estructurada con evidencia | Temas e intervenciones se generan con citas; decisiones consecuentes se confirman u omiten sin segunda revisión exhaustiva. |
+| COST-04 | P1 | Pendiente | Presupuesto de intervención humana | El enriquecimiento posterior a texto/hablantes añade habitualmente 2–5 minutos; más de 10 activa revisión de producto/automatización. |
 | PUB-02 | P1 | Pendiente | Portal por entidad | Archivo de sesiones, filtros y página de cómo usar/solicitar información, embebible o enlazable desde la sede. |
 | SRCH-02 | P1 | Pendiente | Búsqueda global léxica | Filtros por entidad, órgano, fecha, hablante y punto del día; fragmento + timestamp en cada resultado. |
 | SRCH-03 | P1 | Pendiente | Analítica de necesidades ciudadanas | Búsquedas sin resultado, CTR al minuto, consultas repetidas y clics a documentos; sin perfilar ideología. |

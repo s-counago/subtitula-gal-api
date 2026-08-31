@@ -1,0 +1,28 @@
+{
+  "rules": [
+    {
+      "id": "subtitula-web-dev-private-media",
+      "allowed": {
+        "origins": [
+          "https://subtitula-web-dev.s-counago00.workers.dev"
+        ],
+        "methods": [
+          "GET",
+          "HEAD",
+          "PUT"
+        ],
+        "headers": [
+          "Content-Type",
+          "Range"
+        ]
+      },
+      "exposeHeaders": [
+        "Accept-Ranges",
+        "Content-Length",
+        "Content-Range",
+        "ETag"
+      ],
+      "maxAgeSeconds": 3600
+    }
+  ]
+}

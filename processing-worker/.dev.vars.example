@@ -1,0 +1,6 @@
+# Copy to .dev.vars. Values are local-only and must match the Spring process.
+INTERNAL_API_HMAC_SECRET=replace-with-a-random-local-secret
+ELEVENLABS_API_KEY=
+ELEVENLABS_WEBHOOK_SECRET=
+R2_S3_ACCESS_KEY_ID=
+R2_S3_SECRET_ACCESS_KEY=

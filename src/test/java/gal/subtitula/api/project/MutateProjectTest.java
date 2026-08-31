@@ -45,7 +45,8 @@ class MutateProjectTest extends AbstractIntegrationTest {
             .andExpect(jsonPath("$.segments[0].startSec").value(3.5))
             .andExpect(jsonPath("$.segments[0].box.align").value("left"))
             .andExpect(jsonPath("$.words.length()").value(1))
-            .andExpect(jsonPath("$.words[0].text").value("Ola"));
+            .andExpect(jsonPath("$.words[0].text").value("Ola"))
+            .andExpect(jsonPath("$.version").value(1));
     }
 
     @Test

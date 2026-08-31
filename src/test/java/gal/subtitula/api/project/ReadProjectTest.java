@@ -40,7 +40,9 @@ class ReadProjectTest extends AbstractIntegrationTest {
         mockMvc.perform(get("/projects/" + id).cookie(a))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.name").value("Mine"))
-            .andExpect(jsonPath("$.words.length()").value(3));
+            .andExpect(jsonPath("$.words.length()").value(3))
+            .andExpect(jsonPath("$.status").value("ready"))
+            .andExpect(jsonPath("$.version").value(0));
     }
 
     @Test

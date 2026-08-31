@@ -4,6 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gal.subtitula.api.auth.AuthPrincipal;
 import gal.subtitula.api.project.dto.ProjectResponse;
+import gal.subtitula.api.project.dto.InstitutionalProjectCreateRequest;
+import gal.subtitula.api.transparency.capability.TransparencyCapabilities;
+import jakarta.validation.Valid;
+import org.springframework.http.MediaType;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -15,13 +19,18 @@ public class ProjectController {
 
     private final ProjectService service;
     private final ObjectMapper mapper;
+    private final TransparencyCapabilities capabilities;
 
-    public ProjectController(ProjectService service, ObjectMapper mapper) {
+    public ProjectController(
+            ProjectService service,
+            ObjectMapper mapper,
+            TransparencyCapabilities capabilities) {
         this.service = service;
         this.mapper = mapper;
+        this.capabilities = capabilities;
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ProjectResponse create(@AuthenticationPrincipal AuthPrincipal principal,
                                   @RequestParam("file") MultipartFile file,
@@ -31,6 +40,22 @@ public class ProjectController {
             throws Exception {
         JsonNode style = (styleJson == null || styleJson.isBlank()) ? null : mapper.readTree(styleJson);
         return ProjectResponse.from(service.createFromUpload(principal.userId(), file, name, style, workflowMode));
+    }
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
+    public ProjectResponse createInstitutionalDraft(
+            @AuthenticationPrincipal AuthPrincipal principal,
+            @Valid @RequestBody InstitutionalProjectCreateRequest request) {
+        capabilities.requireDurableInstitutionalUpload();
+        return ProjectResponse.from(service.createInstitutionalDraft(
+            principal.userId(),
+            request.name(),
+            request.language() == null || request.language().isBlank() ? "glg" : request.language(),
+            request.sessionDate(),
+            request.body(),
+            request.location(),
+            request.sessionType()));
     }
 
     @GetMapping

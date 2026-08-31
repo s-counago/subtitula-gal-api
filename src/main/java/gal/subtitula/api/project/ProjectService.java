@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.UUID;
+import java.time.LocalDate;
 
 @Service
 public class ProjectService {
@@ -84,6 +85,25 @@ public class ProjectService {
     private static boolean touchesContent(gal.subtitula.api.project.dto.ProjectUpdateRequest req) {
         return req.words() != null || req.style() != null || req.speedFactor() != null
             || req.baseBox() != null || req.segments() != null;
+    }
+
+    @Transactional
+    public Project createInstitutionalDraft(
+            UUID userId,
+            String name,
+            String language,
+            LocalDate sessionDate,
+            String sessionBody,
+            String location,
+            String sessionType) {
+        return projects.save(Project.createInstitutionalDraft(
+            userId,
+            name,
+            language,
+            sessionDate,
+            sessionBody,
+            location,
+            sessionType));
     }
 
     private static String normalizeWorkflowMode(String workflowMode) {

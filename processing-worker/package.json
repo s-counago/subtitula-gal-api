@@ -1,0 +1,25 @@
+{
+  "name": "subtitula-processing-worker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --port 8787 --persist-to .wrangler/state",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "cf-typegen": "wrangler types worker-configuration.d.ts --env development",
+    "r2:cors:dev:list": "wrangler r2 bucket cors list subtitula-media-dev",
+    "r2:cors:dev:apply": "wrangler r2 bucket cors set subtitula-media-dev --file r2-cors.development.json",
+    "deploy:dev": "node scripts/deploy-development.mjs",
+    "deploy:dev:dry-run": "node scripts/deploy-development.mjs --dry-run"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "latest",
+    "@aws-sdk/s3-request-presigner": "latest"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "latest",
+    "typescript": "^5.9.3",
+    "vitest": "latest",
+    "wrangler": "latest"
+  }
+}
