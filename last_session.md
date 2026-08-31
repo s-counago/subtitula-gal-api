@@ -1,13 +1,14 @@
 # Last session
 
-**Updated:** 30 July 2026 (Europe/Madrid)
+**Updated:** 31 August 2026 (Europe/Madrid)
 
-**Repositories:** API `develop` at `0154633`; frontend `develop` at `613c52e`
+**Integrated commits:** API `c4f09f4`; frontend `fa0eeb3`
 
-**Snapshot branch:** `feature/transparency-evidence-search` in both repositories
+**Remote branch:** `feature/transparency-evidence-search-integrated` in both repositories
 
-**State:** committed feature-branch snapshot for remote safekeeping; `develop` and
-production branches remain untouched and nothing was deployed.
+**State:** the reviewed implementation, develop integration, hardening fixes, tests, and
+documentation are committed and pushed to both remotes. `develop` and production
+branches remain untouched and nothing was deployed.
 
 ## Canonical context
 
@@ -27,17 +28,23 @@ line-by-line transcript or agenda review.
 
 ## Implementation state
 
-Phases 0–7 of the canonical plan are implemented locally behind capabilities. Phase 8
-pilot hardening is implemented locally; its hosted, real-data, governance, load, and
-relevance gates remain open.
+Phases 0–7 of the canonical plan and the current Phase 8 hardening are implemented on
+the remote integrated branches behind server-enforced capabilities. Hosted, real-data,
+governance, load, and relevance gates remain open.
 
 - Flyway V11–V18 add the normalized evidence model, durable ingestion, exception review,
   agenda/guide evidence, immutable publication snapshots, lexical search, 1024-dimension
   pgvector projections, and configured cost/search metrics.
 - The processing Worker owns private R2 upload/download signing, durable ingest,
   enrichment, and publication-index Workflows, ElevenLabs Scribe v2 orchestration,
-  Workers AI guide/embedding calls, idempotent signed API commands, retries, daily
-  abandoned-upload cleanup, and 90-day privacy-safe analytics retention.
+  Workers AI guide/embedding calls, idempotent signed API commands, retries, five-minute
+  job/recording reconciliation, and 90-day privacy-safe analytics retention.
+- Private recordings reopen through an owner check and a renewable 15-minute signed R2
+  URL; local development retains an authenticated Range proxy. The Spring Container and
+  database do not proxy hosted video bytes.
+- R2 deletion is two-phase (`ABORTED/EXPIRED`, idempotent object delete, `DELETED`), so
+  concurrent abort/cleanup cannot delete a verified recording and failed deletion stays
+  retryable.
 - Human review is exception-driven: low-confidence text, speaker, overlap, and ambiguous
   transition issues enter a short queue. Agenda and structured-guide candidates are
   generated and deterministically validated; editors can correct/freeze them, but no
@@ -75,49 +82,58 @@ unpublish evidence or interrupt lexical search.
 
 ## Verification completed
 
-- Spring/Testcontainers: `.\mvnw.cmd -B test` — **78 tests passed**; PostgreSQL
-  17 + pgvector applied all 16 migrations.
-- Processing Worker: **23 tests passed** across 6 files.
+- Spring/Testcontainers: `.\mvnw.cmd -B test` — **81 tests passed**; PostgreSQL
+  17 + pgvector applied all 18 migrations.
+- Processing Worker: **28 tests passed** across 6 files; strict typecheck passed.
 - Search evaluator: **3 tests passed**; secret-bootstrap parser: **2 tests passed**.
 - API container Worker and processing Worker typechecks passed.
 - API container image build and both Cloudflare Worker deployment dry-runs passed with
   the expected Container, Workflows, R2, AI, service, and rate-limit bindings.
-- Frontend: **186 tests passed** across 36 files; `tsc --noEmit`, Next.js/OpenNext
+- Frontend: **301 tests passed** across 48 files; Next.js/OpenNext
   production build, and Cloudflare deployment dry-run passed.
 - `git diff --check` passed in both repositories.
 
 The frontend test suite still prints the existing jsdom “navigation not implemented”
 diagnostic; the suite exits successfully.
 
-## External state and remaining gates
+## Qué falta realmente
 
 No Cloudflare resource, Worker Secret, PlanetScale extension/schema, hosted database,
-provider webhook, or deployment was changed. The only remote mutation is the
-`feature/transparency-evidence-search` snapshot branch in each GitHub repository.
+provider webhook, or deployment was changed. The integrated feature branch and all its
+documentation are available remotely in both GitHub repositories.
 
-Before any push to `develop` (which auto-deploys), follow the runbook. In particular:
+The code path is implemented and locally verified. These are the remaining operational
+prerequisites before treating hosted development as functional:
 
 1. Back up the PlanetScale development branch and prove `vector`, `unaccent`, and
    `pg_trgm` can be enabled by the migration role. V17 runs even while hybrid is dark.
-2. Provision the private development R2 bucket and processor Workflows/service bindings;
-   verify rate-limit namespace IDs `10001`–`10004` are unused.
-3. Install the documented API/processor secrets without printing or reading them back.
-4. Run a single synthetic/public hosted session with every new capability still false,
-   then activate one slice at a time.
-5. Build a governed real Galician/Spanish gold set, pre-agree relevance/no-answer,
-   latency, workload, and margin thresholds, and graduate hybrid only if it clears them.
-6. Complete accessibility, load, retention/export, DPA/subprocessor, RGPD/ENS, and
-   backup/restore exercises before non-public pilot data.
+2. Provision/verify the private `subtitula-media-dev` bucket, processing Worker,
+   Workflows, service bindings, and unused rate-limit namespace IDs `10001`–`10004`.
+3. Install the documented ElevenLabs, internal-HMAC, analytics-HMAC (optional), and R2
+   S3 credentials without printing or reading Worker Secrets back. The deploy derives
+   `R2_S3_ENDPOINT` from `CLOUDFLARE_ACCOUNT_ID` and fails early if it is absent.
+4. Apply and list `processing-worker/r2-cors.development.json` with
+   `npm run r2:cors:dev:apply` and `npm run r2:cors:dev:list`; this session could not
+   mutate the live bucket because it had no Cloudflare API token.
+5. Run one synthetic/public hosted smoke with the new capabilities dark, including
+   upload, webhook, server-side Workflow reconciliation, private reopen/playback,
+   exception review, publication, lexical fallback, cleanup, and URL renewal. Activate
+   one server capability at a time only after its smoke passes.
+6. Keep hybrid search dark until a governed Galician/Spanish gold set clears agreed
+   relevance, no-answer, p95 latency, workload, and cost/margin thresholds.
+7. Complete long-session/load, accessibility, retention/export, DPA/subprocessor,
+   RGPD/ENS, and backup/restore exercises before using non-public pilot data.
+8. Organization membership and institutional role enforcement remain intentionally
+   deferred. Personal ownership checks protect the current pilot; do not represent the
+   organization entities as a completed authorization model.
 
 ## Exact next safe step
 
-Treat the feature branch as a backup snapshot, not a deployable candidate yet. At snapshot
-time it was based four API commits and seventeen frontend commits behind each
-`origin/develop`. Reconcile those upstream changes carefully, rerun the entire
-cross-repository verification matrix, and review the resulting diff before any PR or
-`develop` push. Then, with explicit authorization for hosted changes, perform the
-PlanetScale extension/pre-deploy gate and development backup described in the pilot
-runbook before enabling any new capability.
+Open PRs from `feature/transparency-evidence-search-integrated` only after preparing the
+PlanetScale backup/extensions and the required Cloudflare R2/Workflow/secrets/CORS
+resources. A merge into `develop` auto-deploys, so follow the deployment order and smoke
+procedure in `docs/operations/transparency-pilot-runbook.md`; keep every new capability
+dark initially and graduate them one by one.
 
 Preserve unrelated pre-existing worktree edits, especially product/backlog documents and
 workspace guidance, when splitting or committing this implementation.
