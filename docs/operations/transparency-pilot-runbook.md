@@ -59,6 +59,17 @@ debe retirar unha publicación nin desactivar a busca literal.
 8. **Backups:** tomar un backup verificable da base development antes das
    migracións e confirmar que a política/versionado de R2 permite recuperar un
    obxecto borrado por erro operativo.
+9. **Orde de push:** o `wrangler.jsonc` do frontend declara
+   `PROCESSING_SERVICE -> subtitula-processing-dev`, un Worker que **aínda non
+   existe na conta**. Un service binding resólvese no momento do deploy, así que
+   `wrangler deploy` do frontend falla ata que o processor estea aprovisionado e
+   despregado. Aprovisionar e despregar primeiro o processor, despois a API e só
+   ao final o frontend. Con `DEPLOY_ENABLED=true` nos dous repositorios, un push
+   a `develop` desprega de inmediato, polo que a orde de push é a orde de
+   deploy. Un `wrangler deploy` fallido é atómico e deixa o frontend actual
+   servindo; o código de ruta trata o binding como opcional
+   (`PROCESSING_SERVICE?`) e degrada en runtime, así que este é un gate de
+   deploy, non de execución.
 
 PlanetScale documenta as extensións dispoñibles e pgvector; local e
 Testcontainers usan `pgvector/pgvector:pg17`, conservando PostgreSQL major 17.
