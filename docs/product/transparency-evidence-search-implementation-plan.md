@@ -1461,6 +1461,7 @@ Rollback:
 
 | Date | Change | Reason |
 |---|---|---|
+| 2026-09-08 | Recovered September Windows commits and unversioned flow diagrams; consolidated continuity and capability/credential inventory | No phase graduated or hosted capability enabled. September sessions report PlanetScale extensions and R2 account activation complete, with local E2E and hosted provisioning still pending. Separate Omarchy navigation/coherence work explicitly deferred by the user; see `../operations/continuity-2026-09-08.md`. |
 | 2026-07-29 | Initial canonical plan | Consolidates durable ingestion, evidence model, minimal human review, structured guide, public publication, and hybrid search discussion |
 | 2026-07-29 | Phase 0 completed; Phase 1 started | Captured a sanitized real Scribe v2 contract and metrics, fixed current provider assumptions, versioned schemas/API/UX contracts, added fail-closed flags and evaluation seeds, and passed 67 API tests plus 175 frontend tests/build |
 | 2026-07-29 | Phase 1 completed; Phase 2 started | Added additive PostgreSQL evidence/job migrations, organization-ready project lifecycle, optimistic entities, legacy transcript adapter, owner-scoped transcript/processing APIs, capability-gated lifecycle UX, forward-fix rollback policy, and passed 71 API plus 179 frontend tests/build |

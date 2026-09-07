@@ -12,6 +12,9 @@ La entrada comercial es la accesibilidad y el ahorro operativo; el valor públic
 
 ## Contenido
 
+- [Continuidad consolidada del 8 de septiembre](../operations/continuity-2026-09-08.md): conversaciones de Claude, tabla de capacidades, claves pendientes y trabajo de Omarchy aplazado.
+- [Arquitectura y flujos](architecture-flows.md): diagramas Mermaid recuperados de la conversación de agosto.
+- [Sala de control](subtitula-sala-de-control.html): visualización de nueve flujos, recuperada de septiembre; es una instantánea explicativa, no un monitor live.
 - [Plan canónico de evidencia, enriquecimiento y búsqueda](transparency-evidence-search-implementation-plan.md): implementación completa y por fases de vídeo durable, revisión humana mínima, guía estructurada, publicación y búsqueda híbrida. Toda sesión futura que trabaje en este flujo debe empezar aquí.
 - [Contrato API de transparencia v1](transparency-api-contract-v1.md): formas HTTP, precondiciones y DTOs públicos/internos.
 - [Contrato UX de transparencia](transparency-ux-acceptance.md): escenarios de tarea, textos gallegos y accesibilidad.

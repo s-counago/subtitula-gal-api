@@ -1,0 +1,866 @@
+<title>Sala de Control Subtitula</title>
+<!-- Historical explanatory artifact from 2 September 2026, recovered on 8 September.
+     The local=true upload flag refers to C:/Users/Sejio/subtitula only.
+     Current continuity: ../operations/continuity-2026-09-08.md. Not a live monitor. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --bg: #0c1118;
+    --bg-2: #111823;
+    --panel: #151d29;
+    --panel-2: #1b2534;
+    --line: #26313f;
+    --line-2: #34435a;
+    --text: #e9edf2;
+    --muted: #93a1b3;
+    --faint: #5d6b7d;
+    --accent: #f2d45c;
+    --accent-2: #ffe98a;
+    --accent-ink: #1a1500;
+    --accent-dim: rgba(242, 212, 92, .16);
+    --ext: #b7a3ec;
+    --ok: #57c9a3;
+    --warn: #f0925a;
+    --bad: #e46a7c;
+    --display: "Bricolage Grotesque", "Trebuchet MS", "Segoe UI", sans-serif;
+    --body: "Atkinson Hyperlegible", "Segoe UI", Arial, sans-serif;
+    --mono: "JetBrains Mono", "Cascadia Mono", Consolas, monospace;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html, body { background: var(--bg); color: var(--text); }
+  body {
+    margin: 0;
+    font-family: var(--body);
+    font-size: 15px;
+    line-height: 1.55;
+    background:
+      radial-gradient(1200px 600px at 20% -10%, rgba(242, 212, 92, .07), transparent 60%),
+      radial-gradient(900px 500px at 100% 100%, rgba(183, 163, 236, .06), transparent 60%),
+      var(--bg);
+    min-height: 100vh;
+  }
+  a { color: var(--accent); }
+  code { font-family: var(--mono); font-size: .86em; background: var(--panel-2); padding: .08em .38em; border-radius: 4px; color: var(--accent-2); }
+  ::selection { background: var(--accent); color: var(--accent-ink); }
+
+  .shell { max-width: 1440px; margin: 0 auto; padding: 22px 22px 60px; }
+
+  /* Header */
+  header.top {
+    display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap;
+    padding-bottom: 18px; border-bottom: 1px solid var(--line);
+  }
+  .brand h1 {
+    font-family: var(--display); font-weight: 800; font-size: clamp(30px, 4.2vw, 50px);
+    letter-spacing: -.02em; line-height: 1; margin: 0; text-wrap: balance;
+  }
+  .brand h1 em { font-style: normal; color: var(--accent); }
+  .brand p { margin: 8px 0 0; color: var(--muted); max-width: 62ch; }
+  .eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); }
+
+  .deck {
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px;
+  }
+  .tc {
+    font-family: var(--mono); font-size: 26px; font-variant-numeric: tabular-nums; letter-spacing: .04em;
+    color: var(--accent); background: #0a0e14; border: 1px solid var(--line-2); border-radius: 6px; padding: 6px 12px;
+    min-width: 176px; text-align: center; line-height: 1.1;
+  }
+  .tc small { display: block; font-size: 10px; letter-spacing: .16em; color: var(--faint); margin-top: 2px; }
+  .rec { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--faint); margin-right: 8px; vertical-align: middle; }
+  .rec.on { background: var(--bad); box-shadow: 0 0 10px var(--bad); animation: blink 1.2s steps(2, start) infinite; }
+  .btn {
+    font-family: var(--body); font-weight: 700; font-size: 14px; cursor: pointer;
+    border: 1px solid var(--line-2); background: var(--panel-2); color: var(--text);
+    border-radius: 7px; padding: 8px 12px; min-width: 44px; min-height: 40px;
+  }
+  .btn:hover { border-color: var(--accent); }
+  .btn:focus-visible, .tab:focus-visible, .tick:focus-visible, .node:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .btn.primary:hover { background: var(--accent-2); }
+  .keys { color: var(--faint); font-size: 12px; font-family: var(--mono); }
+  .keys kbd { border: 1px solid var(--line-2); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; color: var(--muted); }
+
+  /* Tabs */
+  nav.tabs { display: flex; gap: 6px; overflow-x: auto; padding: 16px 0 6px; scrollbar-width: thin; }
+  .tab {
+    flex: 0 0 auto; cursor: pointer; font-family: var(--display); font-weight: 700; font-size: 14px;
+    color: var(--muted); background: transparent; border: 1px solid transparent; border-radius: 999px; padding: 8px 14px;
+    display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;
+  }
+  .tab .n { font-family: var(--mono); font-size: 11px; color: var(--faint); font-weight: 500; }
+  .tab:hover { color: var(--text); border-color: var(--line-2); }
+  .tab[aria-selected="true"] { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); }
+  .tab[aria-selected="true"] .n { color: var(--accent-ink); opacity: .7; }
+
+  /* Main grid */
+  .stage { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(340px, .95fr); gap: 18px; margin-top: 10px; }
+  @media (max-width: 980px) { .stage { grid-template-columns: 1fr; } }
+
+  .monitor {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .monitor-bar {
+    display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 14px;
+    border-bottom: 1px solid var(--line); font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--faint);
+  }
+  .monitor-bar b { color: var(--muted); font-weight: 500; }
+  svg.map { width: 100%; height: auto; display: block; background:
+    linear-gradient(transparent 95%, rgba(255,255,255,.025) 95%) 0 0/100% 40px,
+    linear-gradient(90deg, transparent 95%, rgba(255,255,255,.025) 95%) 0 0/40px 100%; }
+
+  .node { cursor: pointer; }
+  .node rect { fill: var(--panel-2); stroke: var(--line-2); stroke-width: 1.2; rx: 9; transition: stroke .2s, fill .2s; }
+  .node.ext rect { stroke-dasharray: 5 4; stroke: #5f5480; }
+  .node text { fill: var(--text); font-family: var(--display); font-weight: 700; font-size: 14px; pointer-events: none; }
+  .node text.sub { fill: var(--muted); font-family: var(--mono); font-weight: 400; font-size: 9.5px; letter-spacing: .04em; }
+  .node:hover rect { stroke: var(--muted); }
+  .node.lit rect { stroke: var(--accent); fill: #2a2a1a; }
+  .node.ext.lit rect { stroke: var(--ext); fill: #262038; }
+  .node.hot rect { stroke: var(--accent); stroke-width: 2; filter: drop-shadow(0 0 10px rgba(242,212,92,.55)); }
+  .node.ext.hot rect { stroke: var(--ext); filter: drop-shadow(0 0 10px rgba(183,163,236,.55)); }
+  .node.selected rect { stroke: var(--accent-2); stroke-width: 2.4; }
+  .pulse { fill: none; stroke: var(--accent); stroke-width: 2; opacity: 0; }
+  .node.hot .pulse { animation: pulse 1.6s ease-out infinite; }
+
+  .edge { fill: none; stroke: var(--line-2); stroke-width: 1.4; opacity: .55; }
+  .edge.done { stroke: var(--accent); opacity: .35; }
+  .edge.active { stroke: var(--accent); stroke-width: 2.6; opacity: 1; stroke-dasharray: 7 6; animation: dash 1.1s linear infinite; }
+  .edge.active.ext { stroke: var(--ext); }
+  .dot { fill: var(--accent-2); filter: drop-shadow(0 0 6px var(--accent)); }
+  .dot.ext { fill: var(--ext); filter: drop-shadow(0 0 6px var(--ext)); }
+  .arrow { fill: var(--accent); }
+
+  /* Scrubber */
+  .scrubber { border-top: 1px solid var(--line); padding: 12px 14px 14px; background: var(--bg-2); }
+  .scrub-row { display: flex; align-items: center; gap: 4px; }
+  .tick {
+    flex: 1 1 0; min-width: 0; height: 30px; cursor: pointer; border: 0; background: transparent; padding: 0; position: relative;
+  }
+  .tick::before { content: ""; position: absolute; left: 2px; right: 2px; top: 12px; height: 6px; border-radius: 3px; background: var(--line-2); transition: background .2s, transform .2s; }
+  .tick.done::before { background: rgba(242,212,92,.45); }
+  .tick[aria-current="step"]::before { background: var(--accent); transform: scaleY(1.7); box-shadow: 0 0 10px rgba(242,212,92,.6); }
+  .tick:hover::before { background: var(--muted); }
+  .tick[aria-current="step"]:hover::before { background: var(--accent-2); }
+  .scrub-labels { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 11px; color: var(--faint); margin-top: 4px; }
+  .scrub-labels b { color: var(--muted); font-weight: 500; }
+
+  /* Status strip */
+  .strip { display: flex; flex-wrap: wrap; gap: 4px; padding: 10px 14px 12px; border-top: 1px solid var(--line); }
+  .strip .st {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .06em; color: var(--faint);
+    border: 1px solid var(--line); border-radius: 4px; padding: 3px 7px; background: var(--bg);
+  }
+  .strip .st.on { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); font-weight: 500; }
+  .strip .st.side { border-style: dashed; margin-left: auto; }
+  .strip .st.side.on { background: var(--bad); border-color: var(--bad); color: #fff; }
+  .strip-title { flex-basis: 100%; font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); margin-bottom: 2px; }
+
+  /* Panel */
+  .panel { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; }
+  .card.hero { border-color: var(--line-2); background: linear-gradient(180deg, var(--panel-2), var(--panel)); }
+  .stepno { display: flex; justify-content: space-between; align-items: baseline; font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); }
+  .stepno b { color: var(--accent); font-weight: 500; }
+  .card h2 { font-family: var(--display); font-weight: 800; font-size: 24px; letter-spacing: -.015em; line-height: 1.15; margin: 8px 0 10px; text-wrap: balance; }
+  .card h3 { font-family: var(--display); font-weight: 700; font-size: 15px; margin: 0 0 8px; color: var(--muted); letter-spacing: .01em; }
+  .card p { margin: 0 0 10px; max-width: 64ch; }
+  .card p:last-child { margin-bottom: 0; }
+  .card ul { margin: 0 0 8px; padding-left: 18px; max-width: 64ch; }
+  .card li { margin: 3px 0; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 12px; }
+  .chip { font-family: var(--mono); font-size: 11px; letter-spacing: .04em; border: 1px solid var(--line-2); border-radius: 999px; padding: 3px 9px; color: var(--muted); background: var(--bg); }
+  .chip.gate { border-color: rgba(242,212,92,.5); color: var(--accent); }
+  .chip.gate.off { border-color: var(--line); color: var(--faint); }
+  .chip.kind { color: var(--text); }
+  .chip.ok { border-color: rgba(87,201,163,.5); color: var(--ok); }
+  .chip.warn { border-color: rgba(240,146,90,.5); color: var(--warn); }
+  .chip.bad { border-color: rgba(228,106,124,.5); color: var(--bad); }
+  .endpoint {
+    font-family: var(--mono); font-size: 12.5px; line-height: 1.6; background: #0a0e14; border: 1px solid var(--line-2); border-left: 3px solid var(--accent);
+    border-radius: 6px; padding: 10px 12px; margin: 0 0 12px; overflow-x: auto; white-space: pre; color: var(--accent-2);
+  }
+  .endpoint .m { color: var(--muted); }
+  .route { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; color: var(--muted); margin-bottom: 10px; flex-wrap: wrap; }
+  .route .from, .route .to { color: var(--text); font-weight: 500; }
+  .route .ar { color: var(--accent); }
+  .hint { color: var(--faint); font-size: 13px; }
+  .fade { animation: fadein .28s ease-out; }
+  .legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px 14px; font-size: 13px; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 8px; }
+  .sw { width: 22px; height: 0; border-top: 2px solid var(--line-2); display: inline-block; }
+  .sw.active { border-color: var(--accent); border-top-style: dashed; }
+  .sw.ext { border-color: var(--ext); border-top-style: dashed; }
+  .sw.box { width: 14px; height: 14px; border: 1.5px solid var(--line-2); border-radius: 3px; }
+  .sw.box.ext { border-style: dashed; border-color: #5f5480; }
+
+  .caps { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; font-family: var(--mono); font-size: 12px; align-items: center; }
+  .caps .k { color: var(--muted); }
+  .caps .v { justify-self: end; border-radius: 4px; padding: 1px 8px; font-size: 11px; }
+  .caps .v.on { background: rgba(87,201,163,.18); color: var(--ok); }
+  .caps .v.off { background: var(--bg); color: var(--faint); border: 1px solid var(--line); }
+  .caps .v.local { background: var(--accent-dim); color: var(--accent); }
+
+  footer { margin-top: 26px; color: var(--faint); font-size: 12.5px; border-top: 1px solid var(--line); padding-top: 14px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  footer code { color: var(--muted); }
+
+  @keyframes dash { to { stroke-dashoffset: -26; } }
+  @keyframes pulse { 0% { opacity: .9; transform: scale(1); } 100% { opacity: 0; transform: scale(1.22); } }
+  @keyframes blink { 50% { opacity: .25; } }
+  @keyframes fadein { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .edge.active { animation: none; stroke-dasharray: none; }
+    .node.hot .pulse { animation: none; opacity: .5; }
+    .rec.on { animation: none; }
+    .fade { animation: none; }
+    .dot { display: none; }
+  }
+</style>
+
+<div class="shell">
+  <header class="top">
+    <div class="brand">
+      <div class="eyebrow">subtitula-gal · subtitula-gal-api · processing-worker</div>
+      <h1>Sala de control <em>Subtitula</em></h1>
+      <p>Todos los flujos de la aplicación como señal en movimiento: elige un canal, pulsa reproducir o avanza paso a paso, y toca cualquier nodo del mapa para ver qué posee y qué le llega.</p>
+    </div>
+    <div class="deck" role="group" aria-label="Reproducción">
+      <div class="tc" aria-live="off"><span class="rec" id="rec"></span><span id="tc">00:00:00:00</span><small>TC · SEÑAL</small></div>
+      <button class="btn" id="prev" title="Paso anterior (←)" aria-label="Paso anterior">◀</button>
+      <button class="btn primary" id="play" title="Reproducir / pausar (espacio)">▶ Reproducir</button>
+      <button class="btn" id="next" title="Paso siguiente (→)" aria-label="Paso siguiente">▶</button>
+      <span class="keys"><kbd>←</kbd> <kbd>→</kbd> pasos · <kbd>espacio</kbd> play · <kbd>1</kbd>–<kbd>9</kbd> canal</span>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Canales" id="tabs"></nav>
+
+  <div class="stage">
+    <section class="monitor" aria-label="Mapa del sistema">
+      <div class="monitor-bar"><span>Monitor · <b id="flow-kicker"></b></span><span id="env-label">local · dev · prod</span></div>
+      <svg class="map" viewBox="0 0 1000 660" id="map" role="img" aria-label="Diagrama de arquitectura con el paso activo resaltado">
+        <defs>
+          <marker id="head" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" class="arrow"></path>
+          </marker>
+          <marker id="head-ext" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="#b7a3ec"></path>
+          </marker>
+        </defs>
+        <g id="edges"></g>
+        <g id="nodes"></g>
+      </svg>
+      <div class="scrubber">
+        <div class="scrub-row" id="scrub" role="list" aria-label="Pasos del flujo"></div>
+        <div class="scrub-labels"><span id="scrub-left"></span><span id="scrub-right"></span></div>
+      </div>
+      <div class="strip" id="strip" aria-label="Estado del proyecto institucional"></div>
+    </section>
+
+    <aside class="panel" id="panel">
+      <div class="card hero fade" id="detail"></div>
+      <div class="card" id="context"></div>
+    </aside>
+  </div>
+
+  <footer>
+    <span>Fuente: <code>develop</code> de ambos repos con <code>feature/transparency-evidence-search-integrated</code> fusionada · migraciones <code>V1–V18</code>.</span>
+    <span>Los textos entre comillas son la copia real de la interfaz en gallego.</span>
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ------------------------------------------------------------------ */
+  /* Nodes                                                               */
+  /* ------------------------------------------------------------------ */
+  const NODES = [
+    { id: "browser", x: 100, y: 330, w: 140, h: 56, label: "Navegador", sub: "Next.js client · IndexedDB",
+      owns: "La única superficie de trabajo: subida, editor, revisión, publicación y búsqueda pública. Guarda una copia privada del vídeo en IndexedDB (<code>lib/video-store.ts</code>) para reproducir sin pedir URLs firmadas.",
+      tech: "Route groups <code>(public)</code> · <code>(auth)</code> · <code>(entry)</code> · <code>(creator)</code> · <code>(institution)</code> · <code>(marketing)/transparencia/[slug]</code>.",
+      env: "Local <code>localhost:3000</code> · dev <code>subtitula-web-dev…workers.dev</code> · prod dominio propio con <code>inst.</code> y <code>creator.</code> por subdominio." },
+    { id: "web", x: 320, y: 330, w: 150, h: 56, label: "Web Worker", sub: "OpenNext · gateways",
+      owns: "Sirve el frontend y ofrece dos gateways de mismo origen: <code>/backend/*</code> hacia Spring y <code>/processing/*</code> hacia el processor. Reenvía cuerpo en streaming, cookies, CSRF y reescribe redirecciones internas a <code>/backend</code>.",
+      tech: "<code>app/backend/[...path]/route.ts</code> y <code>app/processing/[...path]/route.ts</code>. Bindings <code>API_SERVICE</code> y <code>PROCESSING_SERVICE</code>; fuera de workerd usa <code>API_ORIGIN</code> / <code>PROCESSING_ORIGIN</code>.",
+      env: "Existe porque <code>workers.dev</code> está en la Public Suffix List: dos Workers no comparten cookie, y un <code>fetch()</code> público entre Workers de la misma zona da error 1042." },
+    { id: "api", x: 560, y: 210, w: 160, h: 56, label: "Spring API", sub: "Cloudflare Container",
+      owns: "La autoridad de dominio: autenticación, CSRF, proyectos, revisiones, hablantes, evidencia, agenda, guía, documentos, publicaciones, consultas de búsqueda y ranking final, analítica.",
+      tech: "Spring Boot · JPA/Hibernate · Flyway · Spring Session JDBC · perfil <code>hosted</code> compartido entre dev y prod. Rutas: <code>/auth</code>, <code>/projects</code>, <code>/fonts</code>, <code>/public</code>, <code>/internal/processing</code>, <code>/capabilities</code>.",
+      env: "Puede escalar a cero: <code>/ping</code> tardó ~24 s en frío y &lt;1 s en caliente. El disco del Container es efímero: nada durable vive aquí." },
+    { id: "db", x: 830, y: 210, w: 160, h: 56, label: "PostgreSQL 17", sub: "PlanetScale · pgvector",
+      owns: "Todo el estado relacional: usuarios y sesiones, proyectos legacy (<code>words</code> jsonb), y el modelo normalizado de transparencia (recordings, revisiones, segmentos de evidencia, issues, agenda, guía, publicaciones, <code>search_documents</code> con <code>tsvector</code> y <code>vector(1024)</code>).",
+      tech: "JDBC/TLS directo desde el Container, Hikari con pool pequeño, sin Hyperdrive. Extensiones <code>vector</code>, <code>unaccent</code>, <code>pg_trgm</code>. Migraciones <code>V1–V18</code>, todas aditivas.",
+      env: "Local: Docker <code>postgres17-data</code> con imagen pgvector · dev: rama <code>development</code>, rol <code>subtitula_app_dev</code> · prod: rama <code>production</code> HA, se crea con el anexo de lanzamiento." },
+    { id: "proc", x: 560, y: 470, w: 160, h: 56, label: "Processing Worker", sub: "Cloudflare Worker · :8787",
+      owns: "Todo lo que toca bytes grandes o proveedores: URLs firmadas de R2, intents de subida, ElevenLabs y su webhook, orquestación de Workflows, Workers AI (guía y embeddings), rate limiting y cron de limpieza.",
+      tech: "<code>processing-worker/src/index.ts</code> enruta por método+path; <code>internal-api.ts</code> firma cada comando hacia Spring con HMAC. Tres clases Workflow. Vars de coste por proveedor en <code>wrangler.jsonc</code>.",
+      env: "Local <code>subtitula-processing</code> con miniflare simulando R2 · dev <code>subtitula-processing-dev</code> (aún no existe: gate <code>PROCESSING_DEPLOY_ENABLED</code>). El binding <code>AI</code> es sólo remoto, por eso <code>wrangler dev</code> necesita login." },
+    { id: "r2", x: 830, y: 400, w: 160, h: 52, label: "R2 privado", sub: "subtitula-media-dev",
+      owns: "Grabaciones originales, payloads crudos del proveedor y artefactos generados. Nunca es público: cada acceso es una URL firmada de corta duración o un proxy autenticado.",
+      tech: "Clave <code>{env}/organizations/{org}/projects/{project}/recordings/{rec}/original</code>: sin nombres humanos, títulos ni municipios. CORS versionado en <code>r2-cors.development.json</code>.",
+      env: "Local: R2 de Wrangler y proxy Range (no hay credenciales S3) · dev: bucket privado + token S3 (por crear; R2 se habilitó en la cuenta el 2 de septiembre)." },
+    { id: "wf", x: 830, y: 500, w: 160, h: 46, label: "Workflows ×3", sub: "ingest · enrich · index",
+      owns: "Orquestación durable con reintentos. Entre pasos sólo viajan IDs y claves de R2, nunca transcripciones. Los nombres de paso son deterministas.",
+      tech: "<code>IngestSessionWorkflow</code>, <code>EnrichSessionWorkflow</code>, <code>IndexPublicationWorkflow</code>. Instancias con ID estable derivado del job para que un reintento no duplique trabajo.",
+      env: "Local <code>subtitula-*-local</code> · dev <code>subtitula-ingest-dev</code>, <code>subtitula-enrich-dev</code>, <code>subtitula-index-dev</code>." },
+    { id: "ai", x: 830, y: 592, w: 160, h: 46, label: "Workers AI", sub: "glm-4.7-flash · bge-m3",
+      owns: "Extracción estructurada de la guía (JSON Schema, ventanas ≤24 000 caracteres) y embeddings multilingües de 1024 dimensiones para búsqueda semántica.",
+      tech: "<code>@cf/zai-org/glm-4.7-flash</code> con <code>guide-v1</code>; <code>@cf/baai/bge-m3</code> en lotes de 24. Coste estimado en micro-USD por millón de tokens, guardado en <code>processing_jobs</code>.",
+      env: "Mismo binding en local y dev, siempre remoto. Rate limit de búsqueda antes de embeber cualquier consulta." },
+    { id: "eleven", x: 560, y: 600, w: 160, h: 46, label: "ElevenLabs", sub: "Scribe v2 · webhook", ext: true,
+      owns: "Transcripción con diarización. En el camino institucional recibe una <code>source_url</code> firmada y responde por webhook; en el camino creador legacy Spring le sube el fichero en multipart y espera.",
+      tech: "<code>ELEVENLABS_MODEL_ID=scribe_v2</code>, <code>ELEVENLABS_LANGUAGE_HINT=glg</code>. Webhook verificado por HMAC sobre el cuerpo crudo, máximo 16 MB.",
+      env: "Clave y secreto de webhook por entorno. <code>ELEVENLABS_WEBHOOK_ID</code> sigue vacío en <code>wrangler.jsonc</code>." },
+    { id: "cron", x: 320, y: 470, w: 150, h: 46, label: "Cron", sub: "*/5 · 03:17", ext: false,
+      owns: "Dos disparadores sobre el processor: cada cinco minutos limpia subidas caducadas y reconcilia Workflows pendientes; a las 03:17 purga la analítica de búsqueda.",
+      tech: "<code>scheduled()</code> en <code>index.ts</code>: <code>cleanupExpiredUploads</code>, <code>reconcilePendingWorkflows</code>, <code>cleanupSearchAnalytics</code>.",
+      env: "Sólo declarados en el entorno <code>development</code> del manifest; en local no hay cron." },
+    { id: "google", x: 320, y: 90, w: 150, h: 46, label: "Google OAuth", sub: "oauth2/authorization", ext: true,
+      owns: "Inicio de sesión alternativo. Spring inicia y recibe el callback; el navegador nunca habla con Spring directamente.",
+      tech: "<code>/backend/oauth2/authorization/google</code> → Google → <code>/backend/login/oauth2/code/google</code>. <code>GOOGLE_REDIRECT_URI</code> cambia host/ruta por entorno; tabla <code>oauth_accounts</code> (V5).",
+      env: "Local usa credenciales dummy que inyecta el lanzador si faltan." },
+    { id: "mail", x: 830, y: 90, w: 160, h: 46, label: "Correo", sub: "Mailpit · Email Service", ext: true,
+      owns: "Verificación de cuenta y restablecimiento de contraseña a través del puerto <code>EmailSender</code>.",
+      tech: "<code>AuthMailService.sendVerification / sendReset</code> con tokens de un solo uso (V3, V4).",
+      env: "Local: SMTP contra Mailpit <code>:8025</code> · dev: <code>EMAIL_PROVIDER=disabled</code>, el fallo queda en logs · prod: Cloudflare Email Service con dominio propio." },
+  ];
+  const NODE = Object.fromEntries(NODES.map((n) => [n.id, n]));
+
+  const STATUSES = ["DRAFT", "UPLOADING", "UPLOADED", "TRANSCRIBING", "REVIEW_REQUIRED", "ENRICHING", "READY", "PUBLISHED", "ARCHIVED"];
+
+  const CAPS = [
+    ["durableInstitutionalUpload", false, true],
+    ["normalizedTranscript", true, true],
+    ["exceptionReview", false, false],
+    ["automaticAgenda", false, false],
+    ["structuredGuide", false, false],
+    ["publicPublication", false, false],
+    ["lexicalSearch", false, false],
+    ["hybridSearch", false, false],
+  ];
+
+  const KIND = {
+    http: "HTTP · cookie de sesión + CSRF",
+    gateway: "gateway mismo origen · service binding",
+    hmac: "interno firmado · HMAC",
+    signed: "URL firmada · corta duración",
+    workflow: "Workflow · paso durable",
+    webhook: "webhook · HMAC sobre cuerpo crudo",
+    db: "transacción · PostgreSQL",
+    ai: "Workers AI",
+    cron: "cron",
+    ui: "sólo navegador",
+    ext: "proveedor externo",
+  };
+
+  /* ------------------------------------------------------------------ */
+  /* Flows                                                               */
+  /* ------------------------------------------------------------------ */
+  const FLOWS = [
+    {
+      id: "auth", name: "Autenticación", kicker: "una sesión, dos apps",
+      intro: "El apex aloja login y registro para las dos aplicaciones. Todo pasa por el gateway <code>/backend</code> porque en <code>workers.dev</code> no hay cookies compartidas entre Workers.",
+      steps: [
+        { from: "browser", to: "web", kind: "http", title: "Registro en el apex",
+          label: "signup", endpoint: "POST /backend/auth/register\n{ email, password, displayName }",
+          body: "<p>Las rutas <code>(auth)</code> viven en el apex: <code>/login</code>, <code>/signup</code>, <code>/forgot-password</code>, <code>/reset-password</code>, <code>/verify-email</code>. Un único flujo para creadores e instituciones.</p><p>El cliente (<code>lib/api/client.ts</code>) lee la cookie <code>XSRF-TOKEN</code> y la devuelve como cabecera en cada mutación.</p>" },
+        { from: "web", to: "api", kind: "gateway", title: "El gateway reenvía a Spring por binding",
+          label: "gateway", endpoint: "API_SERVICE.fetch(new Request(\"/auth/register\"))\n// sin prefijo /backend río arriba",
+          body: "<p><code>app/backend/[...path]/route.ts</code> construye la petición desde la original para que las subidas sigan en streaming, elimina <code>host</code>, <code>content-length</code> y cabeceras hop-by-hop, y usa <code>API_SERVICE</code> si existe; en <code>next dev</code> cae a <code>API_ORIGIN</code>.</p><p>Si Spring redirige a sí mismo, el gateway reescribe <code>Location</code> a <code>/backend/…</code>; las redirecciones externas (Google) pasan intactas.</p>" },
+        { from: "api", to: "db", kind: "db", title: "Usuario + token de verificación",
+          label: "users", endpoint: "users (V1) · verification_tokens (V3)\nRegistrationService.register → PasswordEncoder",
+          body: "<p><code>RegistrationService</code> guarda el usuario con la contraseña cifrada y falla con <code>EmailAlreadyRegisteredException</code> si el correo ya existe.</p>" },
+        { from: "api", to: "mail", kind: "ext", title: "Correo de verificación",
+          label: "verify", endpoint: "AuthMailService.sendVerification(user)\nPOST /auth/verify-email { token }  ·  POST /auth/resend-verification",
+          body: "<p>En local el correo llega a Mailpit; en dev remoto <code>EMAIL_PROVIDER=disabled</code> lanza un error visible en logs en lugar de simular una entrega; en producción usará Cloudflare Email Service con el dominio propio.</p><p><code>VerifyBanner</code> recuerda al usuario que verifique y permite reenviar.</p>" },
+        { from: "browser", to: "api", kind: "http", title: "Login con sesión JDBC y CSRF por cookie",
+          label: "login", endpoint: "POST /auth/login → SessionAuthService.login\nspring_session (V2) · 401, nunca redirect",
+          body: "<p><code>SecurityConfig</code> usa <code>CookieCsrfTokenRepository.withHttpOnlyFalse()</code>: el token viaja en una cookie legible por JS y se materializa en cada respuesta. Las llamadas sin sesión reciben 401 en vez de una página de login.</p><p>Rutas públicas: <code>/ping</code>, <code>/auth/*</code>, <code>/capabilities</code>, <code>/public/*</code>, <code>/oauth2/**</code>, <code>/login/oauth2/**</code>; el resto exige sesión.</p>" },
+        { from: "api", to: "google", kind: "ext", title: "Alternativa: Google OAuth",
+          label: "google", endpoint: "GET /backend/oauth2/authorization/google\n→ Google → GET /backend/login/oauth2/code/google",
+          body: "<p>Spring inicia el flujo y recibe el callback a través del gateway. <code>GOOGLE_REDIRECT_URI</code> cambia el host por entorno sin tocar código; la cuenta se vincula en <code>oauth_accounts</code> (V5).</p>" },
+        { from: "browser", to: "api", kind: "http", title: "Olvidé la contraseña",
+          label: "reset", endpoint: "POST /auth/forgot-password { email }\nPOST /auth/reset-password { token, password }  ·  reset_tokens (V4)",
+          body: "<p>Mismo patrón que la verificación: token de un solo uso enviado por correo y consumido por <code>/reset-password</code>.</p>" },
+        { from: "browser", to: "api", kind: "http", title: "La puerta: /projects decide la app",
+          label: "entry", endpoint: "GET /projects → EntryRouter\ninstitution ∈ workflowMode ? /inst : lista > 0 ? /creator : «Con que traballas?»",
+          body: "<p><code>components/app/entry-router.tsx</code> es el único sitio del producto donde las dos apps se nombran juntas. Una cuenta con sesiones plenarias va a <code>/inst</code>; con cualquier otro proyecto, a <code>/creator</code>; una cuenta vacía (o cuya lista falle) elige una vez.</p><p>Abrir un proyecto en la app equivocada redirige a la correcta conservando el ID: <code>workflowMode</code> es dato, no navegación.</p>" },
+      ],
+    },
+    {
+      id: "creator", name: "Creador", kicker: "camino legacy · síncrono",
+      intro: "El flujo original: subes un vídeo, Spring lo transcribe en el acto y el navegador hace todo lo demás. El vídeo nunca se guarda en el servidor.",
+      steps: [
+        { from: "browser", to: "web", kind: "http", title: "Dropzone y subida multipart",
+          label: "upload", endpoint: "POST /backend/projects  (multipart/form-data)\ncreateProject(file, name, \"creator\")",
+          body: "<p><code>/creator/upload</code> es un dropzone denso (<code>components/app/upload-flow.tsx</code>). El fichero viaja en streaming por el gateway hasta Spring.</p><p>Mientras tanto el navegador guarda su propia copia del vídeo en IndexedDB (<code>lib/video-store.ts</code>): es la única copia que existirá.</p>" },
+        { from: "api", to: "eleven", kind: "ext", title: "Spring transcribe en el mismo request",
+          label: "scribe", endpoint: "ProjectService.createFromUpload → ElevenLabsScribeClient.transcribe(bytes)\nmodel_id=scribe_v2 · language hint",
+          body: "<p>El camino legacy lee los bytes en memoria y los reenvía a ElevenLabs en multipart, esperando la respuesta. <code>TranscriptionResult.words()</code> trae palabras con <code>start/end</code> y tipo <code>word | spacing | audio_event</code>.</p><p>Es exactamente lo que el camino institucional sustituye: subida durable, asíncrona y sin bytes en el Container.</p>" },
+        { from: "api", to: "db", kind: "db", title: "Proyecto con words[] en JSONB",
+          label: "project", endpoint: "projects (V6) · workflow_mode (V8) · segments (V9) · approved_at (V10)\n{ words, style, baseBox, segments, speedFactor, workflowMode }",
+          body: "<p><code>Project</code> es un blob de trabajo: palabras, estilo, caja base, segmentos con estilo propio y factor de velocidad. El proyecto nace con <code>status=DRAFT</code> del modelo institucional aunque el camino creador no lo use.</p>", status: "DRAFT" },
+        { from: "browser", to: "browser", kind: "ui", title: "El motor: words → resegment → cues",
+          label: "editor", endpoint: "/creator/editor/[id]\nlib/editor/state.ts · lib/subtitles/resegment.ts",
+          body: "<p>El editor es <code>CreatorWorkspace</code>: Stage (vídeo con la caja de subtítulos arrastrable), Timeline con límites de cue arrastrables y factor de velocidad, y Rail con pestañas <b>Texto · Estilo · Animar</b>.</p><p>Densidad compacta y teclado primero: <kbd>J/K</kbd> y <kbd>↑/↓</kbd> mueven la selección, <kbd>espacio</kbd> reproduce, <kbd>⌘K</kbd> abre la paleta de comandos. Cada cue muestra caracteres por segundo (<code>readability.ts</code>) y avisa en ámbar si no se puede leer.</p>" },
+        { from: "browser", to: "api", kind: "http", title: "Autoguardado por diferencias",
+          label: "autosave", endpoint: "PATCH /projects/{id}\n{ words? style? speedFactor? baseBox? segments? name? }",
+          body: "<p><code>use-autosave.ts</code> persiste sólo lo que cambió. Un proyecto <em>aprobado</em> (institución) rechaza cualquier PATCH que toque contenido con <code>409 project_approved</code>; renombrar sigue permitido.</p>" },
+        { from: "browser", to: "browser", kind: "ui", title: "Exportar SRT · VTT · ASS en el cliente",
+          label: "export", endpoint: "buildSrt(cues) · buildVtt(cues, layout) · buildAss(cues, style, box, segments)\nPOST /fonts · GET /fonts/{id}  (custom_fonts, V7)",
+          body: "<p>La exportación es puramente client-side: SRT plano, VTT con posicionamiento y ASS con estilos, karaoke (<em>highlight</em>) y fuentes personalizadas que el usuario sube a <code>/fonts</code>.</p><p>Los proyectos legacy siguen abriéndose sin migración: el endpoint normalizado de transcript los devuelve con <code>legacyAdapter=true</code>.</p>" },
+      ],
+    },
+    {
+      id: "ingest", name: "Subida durable", kicker: "institución · fase 2",
+      intro: "El primer corte de transparencia y la capacidad que tienes activa en local: el vídeo va directo a R2, la transcripción es asíncrona y sobrevive a cerrar el navegador.",
+      steps: [
+        { from: "browser", to: "api", kind: "http", title: "Borrador metadata-first",
+          label: "draft", endpoint: "POST /projects  (application/json)\n{ name, sessionDate, sessionBody, sessionType, location, language }",
+          body: "<p><code>/inst/upload</code> crea primero el proyecto sin fichero (<code>createInstitutionalProjectDraft</code>). El multipart del creador queda como adaptador legacy en el mismo controlador.</p>", status: "DRAFT", gate: "durableInstitutionalUpload" },
+        { from: "browser", to: "proc", kind: "gateway", title: "Intención de subida",
+          label: "intent", endpoint: "POST /processing/upload-intents\n{ projectId, filename, sizeBytes, contentType, checksum? }",
+          body: "<p>Pasa por el gateway <code>/processing/*</code> y <code>PROCESSING_SERVICE</code>. Antes de hacer nada externo el Worker exige mismo origen (<code>ALLOWED_ORIGIN</code>), eco de CSRF, y consume el <code>MUTATION_RATE_LIMITER</code> (10 por minuto).</p><p>Ficheros por encima de <code>MAX_UPLOAD_BYTES</code> (≈2 GB, el límite de <code>source_url</code> del proveedor) se rechazan con un mensaje útil antes de subir nada.</p>", gate: "durableInstitutionalUpload" },
+        { from: "proc", to: "api", kind: "hmac", title: "Spring registra recording, intent y job",
+          label: "hmac", endpoint: "POST /internal/processing/upload-intents\nX-Subtitula-Timestamp · X-Subtitula-Nonce · X-Subtitula-Content-SHA256 · X-Subtitula-Signature",
+          body: "<p>Cada comando interno se firma con <code>INTERNAL_API_HMAC_SECRET</code>: cadena canónica = método en mayúsculas, ruta sin query, timestamp, nonce y SHA-256 del cuerpo exacto, separados por saltos de línea. Spring rechaza antes del controlador si el reloj difiere más de cinco minutos, el nonce se repite o el digest no cuadra.</p><p>Spring verifica la propiedad del proyecto y crea el <code>recording</code> (<code>INTENT_CREATED</code>), el intent y un <code>processing_job</code> de tipo <code>INGEST</code> en <code>QUEUED</code>.</p>", status: "UPLOADING", gate: "durableInstitutionalUpload" },
+        { from: "proc", to: "browser", kind: "signed", title: "Respuesta: PUT presignado o PUT local",
+          label: "presign", endpoint: "{ intentId, recordingId, jobId, uploadUrl, uploadMode: \"presigned_put\",\n  uploadToken, method: \"PUT\", allowedHeaders, expiresAt, sizeBytes }",
+          body: "<p>En hosted la URL es un PUT presignado S3 contra R2 (<code>R2_S3_*</code>, TTL 900 s). En local, donde no hay credenciales S3, es <code>PUT /processing/uploads/{intentId}</code> con un token opaco; misma forma de respuesta.</p><p>El frontend nunca guarda ni loggea la URL ni el token.</p>", gate: "durableInstitutionalUpload" },
+        { from: "browser", to: "r2", kind: "signed", title: "Los bytes van directos a R2",
+          label: "PUT", endpoint: "PUT {uploadUrl}  Content-Type: video/mp4\nkey = {env}/organizations/{org}/projects/{project}/recordings/{rec}/original",
+          body: "<p>Progreso real de bytes en la interfaz. La clave del objeto no contiene nombre de fichero, título ni municipio: el nombre original se guarda aparte en el recording.</p><p>Aviso de salir de página sólo durante la subida activa.</p>", gate: "durableInstitutionalUpload" },
+        { from: "browser", to: "proc", kind: "gateway", title: "Completar: verificación y arranque del Workflow",
+          label: "complete", endpoint: "POST /processing/upload-intents/{intentId}/complete\n→ HEAD R2 · POST /internal/…/complete · INGEST_SESSION.create({ id: jobId })",
+          body: "<p>El Worker hace <code>HEAD</code> sobre el objeto y comprueba tamaño, tipo y checksum (errores <code>UPLOAD_MISSING</code>, <code>UPLOAD_SIZE_MISMATCH</code>, <code>UPLOAD_CHECKSUM_MISMATCH</code>, no reintentables). Spring pasa el recording a <code>VERIFIED</code> y el proyecto a <code>UPLOADED</code>.</p><p>Después crea la instancia del Workflow con un ID derivado del job: completar dos veces es inocuo. <code>abort</code> hace el camino contrario.</p>", status: "UPLOADED", gate: "durableInstitutionalUpload" },
+        { from: "proc", to: "wf", kind: "workflow", title: "Ingest: contexto, URL firmada, envío a Scribe",
+          label: "ingest", endpoint: "load verified ingest context → mark transcription started\n→ issue provider media url → submit scribe transcription → persist provider correlation",
+          body: "<p>Nombres de paso literales de <code>ingest-session.ts</code>. El Worker emite un GET firmado de R2 (<code>PROVIDER_SOURCE_TTL_SECONDS=3600</code>) y lo entrega a ElevenLabs como <code>source_url</code> con <code>scribe_v2</code>, diarización y webhook activados; guarda el <code>provider request id</code> en Spring.</p><p>Etapas del job: <code>SUBMITTING_PROVIDER → WAITING_FOR_PROVIDER</code>.</p>", status: "TRANSCRIBING", stage: "WAITING_FOR_PROVIDER", gate: "durableInstitutionalUpload" },
+        { from: "eleven", to: "r2", kind: "ext", title: "ElevenLabs lee el vídeo desde R2",
+          label: "source", endpoint: "GET {signed source_url}   (sólo el sistema genera esta URL)",
+          body: "<p>Nunca una URL arbitraria del usuario se convierte en objetivo de fetch del proveedor: sólo el Worker firma <code>source_url</code>. Por eso el E2E real con ElevenLabs sólo puede correr en hosted: el proveedor no puede leer <code>localhost</code>.</p>", gate: "durableInstitutionalUpload" },
+        { from: "eleven", to: "proc", kind: "webhook", title: "Webhook verificado y payload crudo a R2",
+          label: "webhook", endpoint: "POST /webhooks/elevenlabs/speech-to-text\nHMAC sobre cuerpo crudo · ≤ 16 MB · idempotente por request id + digest",
+          body: "<p>El handler verifica la firma antes de parsear, escribe el payload crudo en R2 y sólo entonces responde 200. Al Workflow, que estaba en <code>step.waitForEvent(\"wait for scribe webhook\")</code>, le llega únicamente la clave del artefacto y su digest.</p>", stage: "STORING_PROVIDER_ARTIFACT", gate: "durableInstitutionalUpload" },
+        { from: "proc", to: "api", kind: "hmac", title: "Normalizar y persistir: nace la revisión ASR",
+          label: "normalize", endpoint: "normalize provider artifact → persist normalized transcript\nPOST /internal/processing/jobs/{jobId}/transcript  (JSON Schema normalize-transcript)",
+          body: "<p>El esquema <code>normalize-transcript.ts</code> convierte la respuesta en comandos: una <code>transcript_revision</code> <code>WORKING</code> de origen <code>ASR</code>, hablantes <code>speaker_0…</code> en estado <code>UNKNOWN</code> y segmentos de evidencia que nunca cruzan un cambio de hablante, prefieren límites de frase y conservan timing por palabra.</p><p>Spring lo guarda en una transacción junto con las <code>review_issues</code> derivadas de las señales, y el proyecto queda en <code>REVIEW_REQUIRED</code>. Job: <code>SUCCEEDED</code>.</p>", status: "REVIEW_REQUIRED", stage: "PERSISTING_TRANSCRIPT", gate: "normalizedTranscript" },
+        { from: "browser", to: "proc", kind: "gateway", title: "Si falla: estado seguro y reintento sin re-subir",
+          label: "retry", endpoint: "record safe ingest failure → POST /internal/processing/jobs/{jobId}/failed { code }\nPOST /processing/projects/{projectId}/ingestion/retry",
+          body: "<p><code>ProcessingErrorCode</code> distingue reintentable (<code>PROVIDER_UNAVAILABLE</code>, <code>PROVIDER_TIMEOUT</code>, <code>R2_UNAVAILABLE</code>…) de terminal (<code>PROVIDER_REJECTED</code>, <code>WEBHOOK_SIGNATURE_INVALID</code>…). El proyecto va a <code>PROCESSING_FAILED</code> conservando el último artefacto.</p><p>«Tentar de novo» crea un Workflow nuevo sobre el mismo objeto de R2: el vídeo no vuelve a subirse. Es una de las tres pruebas manuales de la fase 0 pendientes.</p>", status: "PROCESSING_FAILED", gate: "durableInstitutionalUpload" },
+      ],
+    },
+    {
+      id: "review", name: "Revisión", kicker: "sólo excepciones · fase 3",
+      intro: "La única puerta humana obligatoria. Nadie lee la transcripción entera: el editor salta sólo a lo que una persona debe comprobar.",
+      steps: [
+        { from: "browser", to: "api", kind: "http", title: "El editor institucional abre la sesión",
+          label: "open", endpoint: "GET /projects/{id}/processing · GET /projects/{id}/transcript · GET /projects/{id}/review-issues\nPOST /projects/{id}/review/open",
+          body: "<p><code>InstitutionWorkspace</code> es un asistente lineal: <b>«Comprobar o texto» → «Aprobar» → «Descargar»</b>, con densidad <code>comfortable</code>, registro formal y sin las pestañas Estilo/Animar ni el enlace a la app de creador.</p><p><code>ProjectLifecycleStatus</code> muestra la etapa en lenguaje llano (nunca nombres de proveedor ni un porcentaje falso) y el job acotado: <code>state</code>, <code>stage</code>, <code>attempt</code>, <code>retryable</code>, coste.</p>", status: "REVIEW_REQUIRED", gate: "exceptionReview" },
+        { from: "api", to: "db", kind: "db", title: "La cola: «12 cousas por comprobar»",
+          label: "queue", endpoint: "review_issues (V13)\nUNKNOWN_SPEAKER · SPEAKER_CHANGE · LOW_CONFIDENCE_SPAN · PROBABLE_PROPER_NAME\nGLOSSARY_MISMATCH · OVERLAP_OR_NOISE · MISSING_TIMING · INVALID_SEGMENT",
+          body: "<p>Cada issue tiene severidad <code>REQUIRED</code> o <code>WARNING</code> y señales legibles por máquina. Se explica <em>por qué</em> mirar (audio pobre, solapamiento, nombre propio, desacuerdo de modelo), nunca una «precisión del 94 %».</p>", gate: "exceptionReview" },
+        { from: "browser", to: "browser", kind: "ui", title: "Reproducción privada sin URL firmada",
+          label: "media", endpoint: "IndexedDB primero · si no: GET /processing/projects/{id}/media-url → GET presignado renovable (900 s)\nlocal: GET|HEAD /processing/projects/{id}/media  (proxy Range)",
+          body: "<p>Seleccionar un issue lleva el vídeo al pasaje, resalta las palabras y muestra el hablante y el contexto. Si el navegador no tiene copia local, el Worker autoriza contra Spring y entrega un GET firmado que se renueva al caducar; los bytes van de R2 al navegador sin pasar por el Container.</p>", gate: "exceptionReview" },
+        { from: "browser", to: "api", kind: "http", title: "La acción mínima: editar, asignar, fusionar, confirmar",
+          label: "edit", endpoint: "PATCH /projects/{id}/segments/{segmentId}   { text, expectedVersion }\nPATCH /projects/{id}/speakers/{speakerId}   { displayLabel, confirmedName?, identity }\nPOST  /projects/{id}/review-issues/{issueId}/resolve   { resolution: RESOLVED | DISMISSED }",
+          body: "<p>Los agregados llevan <code>version</code> optimista: una edición obsoleta devuelve <code>409 transparency_conflict</code> sin escrituras parciales. Los hablantes pasan por <code>UNKNOWN → LABELLED → CONFIRMED</code>; «Persoa non identificada» se queda así antes que inventar un nombre.</p><p>Cada cambio deja un <code>transcript_edit_event</code> con hashes previo/nuevo. El texto completo nunca va a logs.</p>", gate: "exceptionReview" },
+        { from: "browser", to: "api", kind: "http", title: "Tiempo activo, no cronómetro",
+          label: "activity", endpoint: "POST /projects/{id}/review/activity   { intervals }\nGET  /projects/{id}/pilot-metrics   (sólo propietario)",
+          body: "<p>Se registran intervalos activos acotados por huecos, no tiempo de pared ni pulsaciones. El objetivo del piloto: la revisión texto/hablantes mejora materialmente frente a un editor lineal, y el enriquecimiento añade 2–5 minutos; 10 es umbral de fallo.</p>", gate: "exceptionReview" },
+        { from: "browser", to: "api", kind: "http", title: "Rematar: sólo las REQUIRED bloquean",
+          label: "complete", endpoint: "POST /projects/{id}/review/complete   { expectedVersion }\n→ processing_job ENRICH (QUEUED)",
+          body: "<p>Las advertencias no bloquean. Al completar, Spring crea el job de enriquecimiento y el editor ofrece «Comezar agora»; el proyecto entra en <code>ENRICHING</code>.</p><p>El panel de revisión desaparece o se convierte en un resumen resuelto: no hay segunda revisión exhaustiva.</p>", status: "ENRICHING", gate: "exceptionReview" },
+      ],
+    },
+    {
+      id: "enrich", name: "Enriquecimiento", kicker: "agenda + guía · fase 4",
+      intro: "Después de la puerta humana, la máquina organiza la sesión. La persona sólo confirma transiciones ambiguas y acuerdos relevantes.",
+      steps: [
+        { from: "browser", to: "api", kind: "http", title: "Orden del día, opcional",
+          label: "agenda", endpoint: "GET|PUT /projects/{id}/agenda   { items[], expectedVersion }\nsource: MANUAL · PASTE · DOCUMENT_IMPORT · OFFICIAL_URL",
+          body: "<p><code>AgendaEditor</code> permite pegar o importar la orde do día. Nunca bloquea: sin agenda la sesión sigue siendo publicable y buscable, con ventanas por tiempo/hablante en lugar de por punto.</p>", gate: "automaticAgenda" },
+        { from: "browser", to: "proc", kind: "gateway", title: "Arrancar el Workflow de enriquecimiento",
+          label: "start", endpoint: "POST /processing/projects/{projectId}/enrichment\n→ ENRICH_SESSION.create({ id: jobId })",
+          body: "<p>Mismas guardas que la subida: origen, CSRF, propiedad y rate limiter de mutación. «Comezar agora» o «Tentar de novo» según el estado del job.</p>", status: "ENRICHING", gate: "automaticAgenda" },
+        { from: "proc", to: "api", kind: "hmac", title: "Snapshot del contexto congelado",
+          label: "context", endpoint: "snapshot frozen enrichment context → mark enrichment started\nGET /internal/processing/jobs/{jobId}/enrichment-context · POST …/enrichment-start",
+          body: "<p>El Workflow recibe segmentos revisados, hablantes confirmados, agenda y metadatos de documentos visibles, todo por referencia. Ninguna transcripción se persiste entre pasos del Workflow.</p>", stage: "ALIGNING_AGENDA", gate: "automaticAgenda" },
+        { from: "wf", to: "api", kind: "workflow", title: "Alineación determinista y monótona",
+          label: "align", endpoint: "align agenda and plan bounded windows → persist deterministic agenda alignment\nPOST /internal/processing/jobs/{jobId}/agenda   → agenda_alignments AUTOMATIC | UNRESOLVED",
+          body: "<p>Sin IA: anclas explícitas (números de punto, frases de transición), pausas, cambios de hablante y similitud léxica, resueltos con programación dinámica monótona, span mínimo y sin solapes. Produce señales, no un porcentaje, y marca sólo transiciones ausentes, débiles o contradictorias para una comprobación rápida.</p><p>Objetivo para 10–15 puntos: 1–3 minutos humanos.</p>", stage: "ALIGNING_AGENDA", gate: "automaticAgenda" },
+        { from: "proc", to: "ai", kind: "ai", title: "Extracción estructurada por ventanas",
+          label: "AI", endpoint: "@cf/zai-org/glm-4.7-flash · guide-v1 · GUIDE_MAX_WINDOW_CHARS=24000\nJSON Schema guide-extraction: topics[], contributions[], candidateDecisions[], evidenceSegmentIds[]",
+          body: "<p>Nunca la sesión entera en un prompt: secciones acotadas por rango de agenda (o ventanas deterministas). El texto de transcripción y documentos entra como <em>datos</em>, no como instrucciones. Cada objeto debe citar IDs de segmentos.</p><p>El artefacto crudo se guarda en R2 privado para reproducibilidad; el coste se estima con <code>GUIDE_*_MICRO_USD_PER_MILLION_TOKENS</code>.</p>", stage: "GENERATING_GUIDE", gate: "structuredGuide" },
+        { from: "wf", to: "api", kind: "workflow", title: "Validador determinista y guía persistida",
+          label: "validate", endpoint: "validate and assemble evidence linked guide → persist validated guide\nPOST /internal/processing/jobs/{jobId}/guide   → session_guides GENERATED | EXCEPTIONS",
+          body: "<p>Se rechaza o degrada cualquier objeto cuya evidencia no exista o sea de otra revisión, cuyo hablante no coincida, cuyo rango no contenga su evidencia, o cuyo «acuerdo» carezca de lenguaje explícito de resultado. Un tema débil se omite; una decisión consecuente queda <code>CANDIDATE</code> hasta confirmación; un payload inválido reintenta y, si no, termina <em>sin</em> guía en lugar de bloquear.</p><p>Tablas: <code>topics</code>, <code>contributions</code> (kind <code>QUESTION…OTHER</code>, sin inferir apoyo u oposición), <code>decisions</code>, <code>evidence_links</code>. Proyecto → <code>READY</code>.</p>", status: "READY", stage: "PERSISTING_GUIDE", gate: "structuredGuide" },
+        { from: "browser", to: "api", kind: "http", title: "Comprobaciones rápidas, no segunda revisión",
+          label: "checks", endpoint: "PATCH /projects/{id}/agenda-alignments/{alignmentId}   CONFIRMED | ADJUSTED\nPATCH /projects/{id}/guide/decisions/{decisionId}   CONFIRMED | OMITTED",
+          body: "<p>El panel muestra un resumen: <em>«✓ 8 temas organizados con fontes · ✓ 23 intervencións ligadas ao vídeo · ! 2 posibles acordos por confirmar · ! 1 cambio da orde do día pouco claro»</em>. Cada elemento tiene «Ver evidencia». No hay que aprobar cada tema.</p><p>Si el enriquecimiento falla (<code>GUIDE_GENERATION_FAILED</code>, reintentable), la publicación buscable no depende de él.</p>", gate: "structuredGuide" },
+      ],
+    },
+    {
+      id: "publish", name: "Publicación", kicker: "snapshot inmutable · fase 5",
+      intro: "Publicar congela evidencia. Una corrección crea una versión nueva y nunca reescribe en silencio lo que ya era público.",
+      steps: [
+        { from: "browser", to: "api", kind: "http", title: "Checklist: requerido vs. mejorado",
+          label: "checklist", endpoint: "GET /projects/{id}/publication-checklist\nGET|POST /projects/{id}/documents   { type, officialUrl, title, issuingBody, documentDate, visibility }",
+          body: "<p>Requerido: órgano, título, fecha, idioma; permiso y grabación; transcripción congelable; issues <code>REQUIRED</code> resueltas o hablante dejado explícitamente como desconocido; slug; procedencia de documentos; responsable. Opcional: agenda, guía, acuerdos confirmados.</p><p>Documentos: <code>AGENDA · NOTICE · MINUTES · PROPOSAL · AGREEMENT · OTHER</code>; se enlazan, no se sustituyen. El acta oficial sigue siendo el acta.</p>", status: "READY", gate: "publicPublication" },
+        { from: "api", to: "db", kind: "db", title: "La transacción de publicar",
+          label: "publish", endpoint: "POST /projects/{id}/publications   { expectedVersion, publicSlug, correctionNote? }\nrevision WORKING→FROZEN · publication PUBLISHED{ revision, recording, guide, documents } · search_documents",
+          body: "<p>«Publicar a sesión» congela la revisión, crea una <code>publication</code> con slug inmutable que <em>fija</em> revisión, grabación, guía y documentos visibles, y en la misma transacción escribe los <code>search_documents</code> léxicos (kind <code>EVIDENCE · TOPIC · CONTRIBUTION · DOCUMENT_CHUNK</code>, <code>tsvector</code> ponderado + texto normalizado). Crea el job <code>INDEX</code>.</p><p>La sesión es pública y buscable literalmente al instante; lo semántico llega después sin bloquear.</p>", status: "PUBLISHED", gate: "publicPublication" },
+        { from: "browser", to: "proc", kind: "gateway", title: "Índice: proyección léxica y embeddings",
+          label: "index", endpoint: "POST /processing/publications/{publicationId}/index → INDEX_PUBLICATION\nbuild durable lexical search projection → snapshot active public search documents → mark embedding projection started",
+          body: "<p>El Workflow confirma la proyección léxica (<code>lexical-workflow</code>, <code>lexical-index</code>) y toma un snapshot de los documentos activos. Si algo falla en léxico se registra con <code>lexical-index-failed</code> pero la publicación sigue viva.</p>", stage: "BUILDING_SEARCH_DOCUMENTS", gate: "lexicalSearch" },
+        { from: "proc", to: "ai", kind: "ai", title: "bge-m3 en lotes de 24",
+          label: "embed", endpoint: "@cf/baai/bge-m3 · 1024 dims · EMBEDDING_BATCH_SIZE=24\nPOST /internal/…/embeddings   { searchDocumentId, embedding[1024], model, contentHash }  → complete semantic search projection",
+          body: "<p>Cada documento guarda modelo, versión y hash de contenido, así una re-indexación sólo embebe lo que cambió. Escaneo vectorial exacto: HNSW sólo cuando un <code>EXPLAIN ANALYZE</code> lo justifique (comentario literal de V17).</p><p>Fallo → <code>record safe embedding failure</code>: <code>EMBEDDING_UNAVAILABLE</code>, reintentable, la búsqueda literal sigue funcionando.</p>", stage: "GENERATING_EMBEDDINGS", gate: "hybridSearch" },
+        { from: "browser", to: "api", kind: "http", title: "Corregir: fork, no edición",
+          label: "correct", endpoint: "POST /projects/{id}/corrections\n→ nueva revisión WORKING desde la FROZEN · el snapshot actual sigue live",
+          body: "<p>«Corrixir a sesión» bifurca la última revisión congelada; el operador edita, resuelve issues nuevas, y el re-enriquecimiento es incremental por hash. Volver a publicar exige una «Nota pública da corrección» no vacía y crea la versión N+1; N pasa a <code>SUPERSEDED</code>. La URL estable muestra siempre la última activa con su nota.</p>", gate: "publicPublication" },
+        { from: "browser", to: "api", kind: "http", title: "Retirar y reconstruir",
+          label: "withdraw", endpoint: "POST /projects/{id}/publications/{publicationId}/withdraw   → WITHDRAWN, tombstone search_documents, bloquea media URLs\nPOST /projects/{id}/publications/{publicationId}/reindex   → 202 + jobId (sólo propietario)",
+          body: "<p>Retirar tumba todos los documentos de búsqueda al instante. Reindexar («Mantemento da busca → Reconstruír a busca») conserva identidades y clics de los documentos y limpia embeddings obsoletos; el reconciliador del cron arranca el Workflow pendiente. Es el camino de recuperación tras un restore.</p>", gate: "publicPublication" },
+      ],
+    },
+    {
+      id: "search", name: "Búsqueda pública", kicker: "léxica → híbrida · fases 6–7",
+      intro: "Sin cuenta, desde cualquier lugar de Galicia: una pregunta lleva al minuto exacto, a quien habló y al documento. Nunca un chatbot como interfaz principal.",
+      steps: [
+        { from: "browser", to: "proc", kind: "gateway", title: "/transparencia: una caja, la consulta en la URL",
+          label: "query", endpoint: "GET /processing/search?q=…&organizationId&body&dateFrom&dateTo&speakerId&agendaItemId&language&kind&limit&offset\nSEARCH_RATE_LIMITER 60/min antes de cualquier IA",
+          body: "<p><code>TransparencyExplorer</code> vive en el apex público con identidad cívica sobria. Placeholder real: <em>«Ex.: cando se falou do orzamento das tubaxes?»</em>. Filtros escondidos en chips hasta que se usan; la consulta se conserva en la URL para compartir y volver.</p><p>La barra de accesibilidad (tamaño de texto, contraste, lectura en voz alta <code>gl-ES</code>) es la misma que usa el editor institucional.</p>", gate: "lexicalSearch" },
+        { from: "proc", to: "api", kind: "gateway", title: "Modo léxico: FTS + trigramas + filtros",
+          label: "lexical", endpoint: "GET /public/search   (Spring, anónimo)\nfrase exacta · tsvector «simple» ponderado · pg_trgm · unaccent · boosts transparentes",
+          body: "<p>Sólo documentos que se unen a una publicación <code>PUBLISHED</code> activa. Boosts: frase exacta, título de agenda/tema, hablante confirmado, evidencia revisada; ningún boost opaco por recencia o «importancia política». Configuración <code>simple</code> a propósito: el gallego se evalúa, no se le aplica un stemmer castellano por suposición.</p><p>Sin evidencia: 200 con <code>results=[]</code>, distinto de un fallo técnico.</p>", gate: "lexicalSearch" },
+        { from: "proc", to: "ai", kind: "ai", title: "Modo híbrido: embeber la consulta",
+          label: "embed q", endpoint: "AI.run(\"@cf/baai/bge-m3\", { text: [q] })  → vector(1024)",
+          body: "<p>Sólo si <code>hybridSearch</code> está activa. Rate limit primero, IA después.</p>", gate: "hybridSearch" },
+        { from: "proc", to: "api", kind: "hmac", title: "RRF en PostgreSQL, fail-open a léxico",
+          label: "RRF", endpoint: "POST /internal/processing/search/hybrid   { queryEmbedding, q, filters }\ncandidatos léxicos ∪ candidatos vectoriales (exacto) → Reciprocal Rank Fusion k=60 → boosts → agrupar duplicados",
+          body: "<p>Mismo DTO que el léxico, con <code>matchReasons</code> que pueden añadir <code>RELATED_MEANING</code> a <code>EXACT_PHRASE</code>; las puntuaciones nunca salen. Cualquier fallo de IA o interno degrada al proxy de <code>/public/search</code>: la búsqueda literal es el suelo.</p><p>«Cuándo» devuelve ocurrencias cronológicas; «quién» agrupa hablantes. Ninguna necesita respuesta generada.</p>", gate: "hybridSearch" },
+        { from: "api", to: "browser", kind: "http", title: "Resultado = evidencia con destino",
+          label: "results", endpoint: "{ searchDocumentId, publicSlug, publicationVersion, kind, evidenceSegmentId, sessionTitle,\n  excerpt, speakerLabel, startMs, endMs, evidenceHref: \"/transparencia/pleno-xullo-2026?t=1902\", matchReasons[] }",
+          body: "<p>Tarjetas de evidencia, no burbujas de chat: fragmento, hablante (o «Persoa non identificada»), fecha, y «reproducir desde el minuto». El texto generado (temas, intervenciones) amplía el <em>recall</em>; la evidencia sigue siendo el destino.</p>", gate: "lexicalSearch" },
+        { from: "browser", to: "api", kind: "http", title: "La página pública de sesión",
+          label: "session", endpoint: "GET /public/sessions/{slug}?version=n · GET /public/sessions/{slug}/search?q=…\nGET|HEAD /processing/publications/{slug}/media   (Range · presignado o proxy)",
+          body: "<p><code>/transparencia/[slug]</code>: título, órgano, fecha, estado de publicación/corrección, enlace al origen, vídeo, «Buscar nesta sesión». Debajo: índice por agenda, transcripción sincronizada con hablantes, la <b>«Guía da sesión»</b> etiquetada como asistida y con fuentes, y documentos con procedencia.</p><p>La URL lleva el estado: <code>?t=</code> busca el segundo, <code>?evidence=</code> resalta el pasaje, <code>?q=</code> conserva la búsqueda. Nunca autoplay con sonido.</p>", gate: "publicPublication" },
+        { from: "browser", to: "api", kind: "http", title: "Clics sin perfilado",
+          label: "clicks", endpoint: "POST /public/search/clicks   { queryEventId, searchDocumentId }\nqueryEventId es null si el HMAC de analítica está en blanco",
+          body: "<p>Cuando está activa, la API guarda sólo un digest con clave de la consulta, su longitud, filtros acotados, número de resultados, latencia, modo y coste estimado. Nunca la consulta cruda, la IP ni el user-agent. El cron de las 03:17 borra lo que supere <code>SEARCH_ANALYTICS_RETENTION_DAYS=90</code>.</p>", gate: "lexicalSearch" },
+      ],
+    },
+    {
+      id: "cron", name: "Mantenimiento", kicker: "cron · limpieza · reconciliación",
+      intro: "Lo que pasa cuando nadie mira: nada se borra sin una transición comprometida antes, y ningún Workflow se queda huérfano.",
+      steps: [
+        { from: "cron", to: "proc", kind: "cron", title: "Cada cinco minutos",
+          label: "*/5", endpoint: "scheduled(controller) → Promise.all([ cleanupExpiredUploads, reconcilePendingWorkflows ])",
+          body: "<p>Ambas tareas corren en paralelo y sus fallos se propagan para que el disparador se reintente. Sólo existen en el entorno <code>development</code> del manifest.</p>" },
+        { from: "proc", to: "api", kind: "hmac", title: "Subidas caducadas: reclamar antes de borrar",
+          label: "expired", endpoint: "POST /internal/processing/cleanup/upload-intents/candidates   { expiredBefore: now − UPLOAD_CLEANUP_GRACE_SECONDS, limit: 100 }\nPOST /internal/processing/cleanup/upload-intents/{intentId}/complete   { expectedIntentVersion, expectedRecordingVersion }",
+          body: "<p>Gracia de 3600 s (acotada entre 900 y 604 800). Cada candidato se reclama con versiones esperadas: si otro proceso lo movió, el reclamo falla y el ciclo lanza <code>expired_upload_claim_failed</code>.</p><p>Es la primera prueba manual de la fase 0: crear un intent, abandonarlo y verificar que el fichero desaparece tras la gracia.</p>", status: "UPLOADING" },
+        { from: "proc", to: "r2", kind: "signed", title: "Borrado sólo tras transición comprometida",
+          label: "delete", endpoint: "POST /internal/processing/cleanup/recordings/candidates → MEDIA.delete(key) → POST …/recordings/{recordingId}/complete",
+          body: "<p>Comentario literal del código: «Deletion always follows a committed state transition». Un recording <code>ABORTED</code>/<code>EXPIRED</code> sigue siendo candidato hasta que R2 confirma el borrado, así un fallo transitorio de R2 no filtra datos y se reintenta en la siguiente pasada.</p>" },
+        { from: "proc", to: "wf", kind: "workflow", title: "Reconciliar Workflows pendientes",
+          label: "reconcile", endpoint: "POST /internal/processing/jobs/pending-workflows → INGEST_SESSION | ENRICH_SESSION | INDEX_PUBLICATION .create({ id: jobId })",
+          body: "<p>Si Spring tiene un job en cola cuyo Workflow no llegó a crearse (caída del Worker, restore de base de datos, reindex solicitado), el reconciliador lo arranca. Como el ID de instancia deriva del job, no puede duplicarse.</p>" },
+        { from: "cron", to: "api", kind: "cron", title: "03:17: retención de analítica",
+          label: "03:17", endpoint: "POST /internal/processing/cleanup/search-analytics   { olderThan: now − 90 días }",
+          body: "<p>Purga las filas de eventos de búsqueda y clics más antiguas que <code>SEARCH_ANALYTICS_RETENTION_DAYS</code>. Es la única tarea exclusiva del cron diario.</p>" },
+      ],
+    },
+    {
+      id: "caps", name: "Capacidades", kicker: "lanzamiento oscuro · fase 8",
+      intro: "Ocho interruptores en el servidor deciden qué existe. Lo apagado devuelve 404, no 403; el frontend falla cerrado; se enciende de uno en uno y en este orden.",
+      steps: [
+        { nodes: ["api", "browser"], kind: "http", title: "Descubrimiento que falla cerrado",
+          label: "discover", endpoint: "GET /capabilities   (anónimo)\n{ contractVersion: \"1.0.0\", durableInstitutionalUpload, normalizedTranscript, exceptionReview, automaticAgenda, structuredGuide, publicPublication, lexicalSearch, hybridSearch }",
+          body: "<p><code>TransparencyCapabilities</code> es un record con ocho booleanos ligado a <code>app.capabilities.*</code>, que en hosted vienen de las vars <code>CAPABILITY_*</code> de <code>wrangler.jsonc</code>: encender una es un commit y un deploy, auditable y revertible, sin interruptor de emergencia.</p><p><code>getTransparencyCapabilities()</code> devuelve todo <code>false</code> ante cualquier error; el frontend nunca infiere una capacidad por la presencia de datos. En el servidor, <code>CapabilityDisabledException</code> responde <b>404</b> «so disabled rollout slices are not reachable as dark APIs».</p>" },
+        { nodes: ["browser", "web", "proc", "r2", "api"], kind: "signed", title: "1 · durableInstitutionalUpload",
+          label: "upload", endpoint: "CAPABILITY_DURABLE_INSTITUTIONAL_UPLOAD   local=true · dev=false",
+          body: "<p>La que tienes activa en <code>.env</code> local. Abre el canal <b>Subida durable</b> completo: intents, PUT directo a R2, Workflow de ingestión, webhook y reintento. Es la primera en encenderse en hosted, y su prueba es subir y abandonar un fichero y ver que se limpia.</p>", gate: "durableInstitutionalUpload" },
+        { nodes: ["api", "db"], kind: "db", title: "normalizedTranscript · ya encendida",
+          label: "transcript", endpoint: "CAPABILITY_NORMALIZED_TRANSCRIPT   local=true · dev=true",
+          body: "<p>La única activa en hosted: el modelo de revisiones, hablantes y segmentos (V11) y el endpoint <code>GET /projects/{id}/transcript</code>, que devuelve proyectos legacy con la misma forma y <code>legacyAdapter=true</code>. Es segura porque no cambia ningún comportamiento visible del creador.</p>", gate: "normalizedTranscript" },
+        { nodes: ["browser", "api", "db"], kind: "http", title: "2 · exceptionReview",
+          label: "review", endpoint: "CAPABILITY_EXCEPTION_REVIEW   false",
+          body: "<p>Cola de issues, ediciones con versión, métricas de tiempo activo y la puerta «review/complete». Gate del piloto: medir el tiempo activo y comprobar que los hablantes desconocidos siguen desconocidos.</p>", gate: "exceptionReview" },
+        { nodes: ["proc", "wf", "ai", "api"], kind: "workflow", title: "3 · automaticAgenda, después structuredGuide",
+          label: "enrich", endpoint: "CAPABILITY_AUTOMATIC_AGENDA · CAPABILITY_STRUCTURED_GUIDE   false · false",
+          body: "<p>Las únicas dos que el runbook permite activar seguidas. Su gate de graduación es de campo: el enriquecimiento debe añadir 2–5 minutos humanos en sesiones normales, o la fase no se gradúa.</p>", gate: "structuredGuide" },
+        { nodes: ["browser", "api", "db", "r2"], kind: "http", title: "4 · publicPublication + lexicalSearch",
+          label: "publish", endpoint: "CAPABILITY_PUBLIC_PUBLICATION · CAPABILITY_LEXICAL_SEARCH   false · false",
+          body: "<p>Snapshots inmutables, página pública, Range y DTO allowlist; y sólo después la búsqueda literal. Antes de la híbrida hay que etiquetar un <em>gold set</em> real en gallego y castellano y ejecutar el evaluador de búsqueda.</p>", gate: "publicPublication" },
+        { nodes: ["proc", "ai", "db", "api"], kind: "ai", title: "5 · hybridSearch, la última",
+          label: "hybrid", endpoint: "CAPABILITY_HYBRID_SEARCH   false\nSEARCH_EMBEDDING_MODEL_ID=@cf/baai/bge-m3 · SEARCH_EMBEDDING_DIMENSIONS=1024",
+          body: "<p>Sólo si mejora materialmente el éxito de búsqueda sin empeorar no-respuesta, p95 de latencia, carga ni coste/margen. Rollback: apagar primero híbrida, luego léxica/publicación, luego guía/agenda; nunca revertir Flyway ni retirar V11–V18; conservar R2, artefactos, revisiones y jobs.</p>", gate: "hybridSearch" },
+      ],
+    },
+  ];
+
+  /* ------------------------------------------------------------------ */
+  /* State                                                               */
+  /* ------------------------------------------------------------------ */
+  const state = { flow: 0, step: 0, playing: false, timer: null, tcStart: 0, tcBase: 0, selectedNode: null };
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const STEP_MS = 4200;
+
+  const $ = (id) => document.getElementById(id);
+  const svgNS = "http://www.w3.org/2000/svg";
+  const el = (tag, attrs, parent) => {
+    const e = document.createElementNS(svgNS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  };
+
+  /* Persisted position (per viewer convenience only) */
+  try {
+    const saved = JSON.parse(localStorage.getItem("subtitula-sala") || "null");
+    if (saved && FLOWS[saved.flow]) { state.flow = saved.flow; state.step = Math.min(saved.step || 0, FLOWS[saved.flow].steps.length - 1); }
+  } catch (e) { /* storage unavailable */ }
+  const persist = () => { try { localStorage.setItem("subtitula-sala", JSON.stringify({ flow: state.flow, step: state.step })); } catch (e) { /* ignore */ } };
+
+  /* ------------------------------------------------------------------ */
+  /* Diagram                                                             */
+  /* ------------------------------------------------------------------ */
+  const nodesG = $("nodes"), edgesG = $("edges");
+  const nodeEls = {};
+  for (const n of NODES) {
+    const g = el("g", { class: "node" + (n.ext ? " ext" : ""), tabindex: "0", role: "button", "aria-label": n.label, "data-id": n.id }, nodesG);
+    el("rect", { x: n.x - n.w / 2, y: n.y - n.h / 2, width: n.w, height: n.h, rx: 9 }, g);
+    el("rect", { class: "pulse", x: n.x - n.w / 2 - 4, y: n.y - n.h / 2 - 4, width: n.w + 8, height: n.h + 8, rx: 12, style: "transform-origin:" + n.x + "px " + n.y + "px" }, g);
+    const t = el("text", { x: n.x, y: n.y - 3, "text-anchor": "middle" }, g); t.textContent = n.label;
+    const s = el("text", { class: "sub", x: n.x, y: n.y + 14, "text-anchor": "middle" }, g); s.textContent = n.sub;
+    g.addEventListener("click", () => selectNode(n.id));
+    g.addEventListener("keydown", (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); selectNode(n.id); } });
+    nodeEls[n.id] = g;
+  }
+
+  function anchor(a, b) {
+    // Point on the border of node a in the direction of node b.
+    const dx = b.x - a.x, dy = b.y - a.y;
+    const hw = a.w / 2, hh = a.h / 2;
+    if (dx === 0 && dy === 0) return { x: a.x, y: a.y };
+    const sx = Math.abs(dx) > 0 ? hw / Math.abs(dx) : Infinity;
+    const sy = Math.abs(dy) > 0 ? hh / Math.abs(dy) : Infinity;
+    const s = Math.min(sx, sy);
+    return { x: a.x + dx * s, y: a.y + dy * s };
+  }
+  // Bows are keyed by the alphabetically ordered pair so the same curve is
+  // drawn whichever direction the step travels. Positive bends along the
+  // left-hand normal of the a→b chord; values were chosen so no edge cuts
+  // through a box it does not connect.
+  const BOWS = { "browser>r2": -190, "api>browser": 40, "browser>proc": 20, "api>wf": 130, "api>eleven": 200 };
+  function edgePath(fromId, toId) {
+    const reversed = fromId > toId;
+    const aId = reversed ? toId : fromId, bId = reversed ? fromId : toId;
+    const a = NODE[aId], b = NODE[bId];
+    const p = anchor(a, b), q = anchor(b, a);
+    const dist = Math.hypot(q.x - p.x, q.y - p.y);
+    const bow = BOWS[aId + ">" + bId] || 0;
+    const mx = (p.x + q.x) / 2, my = (p.y + q.y) / 2;
+    const nx = -(q.y - p.y) / dist, ny = (q.x - p.x) / dist;
+    const c = { x: mx + nx * bow, y: my + ny * bow };
+    const s = reversed ? q : p, e = reversed ? p : q;
+    return "M" + s.x.toFixed(1) + " " + s.y.toFixed(1) + " Q" + c.x.toFixed(1) + " " + c.y.toFixed(1) + " " + e.x.toFixed(1) + " " + e.y.toFixed(1);
+  }
+
+  function drawFlow() {
+    edgesG.innerHTML = "";
+    const flow = FLOWS[state.flow];
+    const seen = new Set();
+    flow.steps.forEach((s, i) => {
+      if (!s.from || s.from === s.to) return;
+      const key = s.from + ">" + s.to;
+      const cls = "edge" + (i < state.step ? " done" : "");
+      if (i !== state.step) {
+        if (seen.has(key)) return;
+        seen.add(key);
+        el("path", { class: cls, d: edgePath(s.from, s.to) }, edgesG);
+      }
+    });
+    // Active edge on top, with its traveller.
+    const cur = flow.steps[state.step];
+    if (cur.from && cur.to && cur.from !== cur.to) {
+      const ext = NODE[cur.from].ext || NODE[cur.to].ext;
+      const path = el("path", { class: "edge active" + (ext ? " ext" : ""), d: edgePath(cur.from, cur.to), id: "active-edge", "marker-end": ext ? "url(#head-ext)" : "url(#head)" }, edgesG);
+      if (!reduced) {
+        const dot = el("circle", { class: "dot" + (ext ? " ext" : ""), r: 5 }, edgesG);
+        const am = el("animateMotion", { dur: "1.5s", repeatCount: "indefinite", rotate: "auto" }, dot);
+        el("mpath", { href: "#active-edge" }, am);
+      }
+      void path;
+    }
+    // Node states.
+    const touched = new Set();
+    flow.steps.slice(0, state.step).forEach((s) => { if (s.nodes) s.nodes.forEach((n) => touched.add(n)); if (s.from) { touched.add(s.from); touched.add(s.to); } });
+    const hot = new Set(cur.nodes || [cur.from, cur.to]);
+    for (const id in nodeEls) {
+      const g = nodeEls[id];
+      g.classList.toggle("lit", touched.has(id) && !hot.has(id));
+      g.classList.toggle("hot", hot.has(id));
+      g.classList.toggle("selected", state.selectedNode === id);
+    }
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Tabs, scrubber, strip                                               */
+  /* ------------------------------------------------------------------ */
+  const tabs = $("tabs");
+  FLOWS.forEach((f, i) => {
+    const b = document.createElement("button");
+    b.className = "tab"; b.setAttribute("role", "tab"); b.id = "tab-" + f.id;
+    b.innerHTML = '<span class="n">' + (i + 1) + "</span>" + f.name;
+    b.addEventListener("click", () => setFlow(i));
+    tabs.appendChild(b);
+  });
+
+  function renderTabs() {
+    [...tabs.children].forEach((b, i) => b.setAttribute("aria-selected", i === state.flow ? "true" : "false"));
+    $("flow-kicker").textContent = FLOWS[state.flow].name + " · " + FLOWS[state.flow].kicker;
+  }
+
+  function renderScrub() {
+    const flow = FLOWS[state.flow];
+    const row = $("scrub"); row.innerHTML = "";
+    flow.steps.forEach((s, i) => {
+      const t = document.createElement("button");
+      t.className = "tick" + (i < state.step ? " done" : "");
+      t.setAttribute("role", "listitem");
+      t.title = (i + 1) + " · " + s.title;
+      t.setAttribute("aria-label", "Paso " + (i + 1) + ": " + s.title);
+      if (i === state.step) t.setAttribute("aria-current", "step");
+      t.addEventListener("click", () => setStep(i));
+      row.appendChild(t);
+    });
+    $("scrub-left").innerHTML = "<b>" + String(state.step + 1).padStart(2, "0") + "</b> / " + String(flow.steps.length).padStart(2, "0") + " · " + flow.steps[state.step].label;
+    $("scrub-right").textContent = flow.steps.map((s) => s.label).join(" · ");
+  }
+
+  function renderStrip() {
+    const cur = FLOWS[state.flow].steps[state.step];
+    const strip = $("strip");
+    let html = '<span class="strip-title">InstitutionalProjectStatus · V11</span>';
+    STATUSES.forEach((s, i) => { html += '<span class="st' + (cur.status === s ? " on" : "") + '">' + s + "</span>" + (i < STATUSES.length - 1 ? "" : ""); });
+    html += '<span class="st side' + (cur.status === "PROCESSING_FAILED" ? " on" : "") + '">PROCESSING_FAILED</span>';
+    strip.innerHTML = html;
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Panel                                                               */
+  /* ------------------------------------------------------------------ */
+  function chip(text, cls) { return '<span class="chip ' + (cls || "") + '">' + text + "</span>"; }
+
+  function renderDetail() {
+    const flow = FLOWS[state.flow];
+    const s = flow.steps[state.step];
+    const d = $("detail");
+    let route = "";
+    if (s.nodes) route = '<div class="route">' + s.nodes.map((n) => '<span class="to">' + NODE[n].label + "</span>").join('<span class="ar">·</span>') + "</div>";
+    else if (s.from === s.to) route = '<div class="route"><span class="from">' + NODE[s.from].label + '</span><span class="ar">↻</span><span>interno</span></div>';
+    else route = '<div class="route"><span class="from">' + NODE[s.from].label + '</span><span class="ar">→</span><span class="to">' + NODE[s.to].label + "</span></div>";
+    let chips = chip(KIND[s.kind] || s.kind, "kind");
+    if (s.gate) {
+      const cap = CAPS.find((c) => c[0] === s.gate);
+      const onDev = cap && cap[1];
+      chips += chip("cap · " + s.gate + (onDev ? " · on" : " · dev off"), "gate" + (onDev ? "" : " off"));
+    }
+    if (s.stage) chips += chip("stage · " + s.stage, "warn");
+    if (s.status) chips += chip("status → " + s.status, s.status === "PROCESSING_FAILED" ? "bad" : "ok");
+    d.innerHTML =
+      '<div class="stepno"><span>Canal ' + (state.flow + 1) + " · " + flow.name + '</span><span>paso <b>' + (state.step + 1) + "</b> / " + flow.steps.length + "</span></div>" +
+      "<h2>" + s.title + "</h2>" + route + '<div class="chips">' + chips + "</div>" +
+      (s.endpoint ? '<pre class="endpoint">' + s.endpoint.replace(/&/g, "&amp;").replace(/</g, "&lt;") + "</pre>" : "") +
+      s.body;
+    d.classList.remove("fade"); void d.offsetWidth; d.classList.add("fade");
+  }
+
+  function renderContext() {
+    const c = $("context");
+    if (state.selectedNode) {
+      const n = NODE[state.selectedNode];
+      c.innerHTML =
+        '<div class="stepno"><span>Nodo</span><span>' + (n.ext ? "externo" : "Cloudflare / propio") + "</span></div>" +
+        "<h2>" + n.label + '</h2><p class="hint" style="margin-top:-4px">' + n.sub + "</p>" +
+        "<h3>Qué posee</h3><p>" + n.owns + "</p>" +
+        "<h3>Cómo</h3><p>" + n.tech + "</p>" +
+        "<h3>Local · dev · prod</h3><p>" + n.env + "</p>" +
+        '<p class="hint">Pulsa el nodo otra vez o Esc para volver al canal.</p>';
+      return;
+    }
+    const flow = FLOWS[state.flow];
+    let caps = "";
+    for (const [k, dev, local] of CAPS) {
+      caps += '<span class="k">' + k + '</span><span class="v ' + (dev ? "on" : local ? "local" : "off") + '">' + (dev ? "dev on" : local ? "local only" : "off") + "</span>";
+    }
+    c.innerHTML =
+      '<div class="stepno"><span>Sobre este canal</span><span>' + flow.steps.length + " pasos</span></div>" +
+      "<p>" + flow.intro + "</p>" +
+      "<h3>Leyenda</h3>" +
+      '<div class="legend">' +
+        '<span><i class="sw active"></i> paso activo</span><span><i class="sw ext"></i> proveedor externo</span>' +
+        '<span><i class="sw box"></i> Cloudflare / propio</span><span><i class="sw box ext"></i> servicio externo</span>' +
+      "</div>" +
+      '<h3 style="margin-top:14px">Capacidades hoy</h3><div class="caps">' + caps + "</div>" +
+      '<p class="hint" style="margin-top:10px">Apagado = 404 en Spring y todo-false en el frontend. Se enciende con un commit en <code>wrangler.jsonc</code>.</p>';
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Transport                                                           */
+  /* ------------------------------------------------------------------ */
+  function render() { renderTabs(); drawFlow(); renderScrub(); renderStrip(); renderDetail(); renderContext(); persist(); }
+  function setFlow(i) { state.flow = i; state.step = 0; state.selectedNode = null; render(); }
+  function setStep(i) {
+    const n = FLOWS[state.flow].steps.length;
+    state.step = ((i % n) + n) % n; state.selectedNode = null; render();
+  }
+  function selectNode(id) { state.selectedNode = state.selectedNode === id ? null : id; drawFlow(); renderContext(); }
+
+  function play() {
+    state.playing = true; $("play").textContent = "❚❚ Pausar"; $("rec").classList.add("on");
+    state.tcStart = performance.now() - state.tcBase;
+    state.timer = setInterval(() => {
+      if (state.step + 1 >= FLOWS[state.flow].steps.length) {
+        if (state.flow + 1 < FLOWS.length) setFlow(state.flow + 1); else stop();
+      } else setStep(state.step + 1);
+    }, STEP_MS);
+    tick();
+  }
+  function stop() {
+    state.playing = false; $("play").textContent = "▶ Reproducir"; $("rec").classList.remove("on");
+    clearInterval(state.timer); state.tcBase = performance.now() - state.tcStart;
+  }
+  function tick() {
+    if (!state.playing) return;
+    const ms = performance.now() - state.tcStart;
+    const f = Math.floor((ms % 1000) / 40), s = Math.floor(ms / 1000) % 60, m = Math.floor(ms / 60000) % 60, h = Math.floor(ms / 3600000);
+    $("tc").textContent = [h, m, s, f].map((v) => String(v).padStart(2, "0")).join(":");
+    requestAnimationFrame(tick);
+  }
+
+  $("play").addEventListener("click", () => (state.playing ? stop() : play()));
+  $("next").addEventListener("click", () => setStep(state.step + 1));
+  $("prev").addEventListener("click", () => setStep(state.step - 1));
+  document.addEventListener("keydown", (ev) => {
+    if (ev.target && /input|textarea/i.test(ev.target.tagName)) return;
+    if (ev.key === "ArrowRight") { ev.preventDefault(); setStep(state.step + 1); }
+    else if (ev.key === "ArrowLeft") { ev.preventDefault(); setStep(state.step - 1); }
+    else if (ev.key === " ") { ev.preventDefault(); state.playing ? stop() : play(); }
+    else if (ev.key === "Escape" && state.selectedNode) { state.selectedNode = null; drawFlow(); renderContext(); }
+    else if (/^[1-9]$/.test(ev.key) && FLOWS[Number(ev.key) - 1]) setFlow(Number(ev.key) - 1);
+  });
+
+  render();
+})();
+</script>

@@ -117,6 +117,18 @@ Os prezos son supostos configurados en microunidades de USD. As métricas din
 
 ## 4. Verificación local antes do hosted smoke
 
+En local, Wrangler/Miniflare simula o bucket R2 en disco e a reprodución usa
+un proxy autenticado con Range. As credenciais S3 baleiras non bloquean a
+subida/lectura local, pero non converten ese bucket nunha URL accesible por
+ElevenLabs: o E2E real `source_url`/webhook require a mostra hosted descrita
+na sección 5. Para fallos locais reproducibles, usar dobres de provedor.
+O binding AI usa servizo remoto e pode requirir autenticación de Wrangler
+mesmo se a guía está desactivada. Non confundir readiness con E2E completo.
+
+O estado recuperado por ambiente, as diferenzas entre copias locais e os gates
+xa comprobados están en [continuidade do 8 de setembro](continuity-2026-09-08.md).
+Antes de actuar, distinguir esa evidencia histórica dun inventario live.
+
 Desde o repositorio API:
 
 ```powershell
@@ -161,7 +173,7 @@ Executar cunha soa sesión pública sintética:
 3. Activar `durable upload`; subir e abandonar un ficheiro de proba, e verificar
    a limpeza despois do grace period.
 4. Activar `exception review`; medir tempo activo e comprobar descoñecidos.
-5. Activar xuntos `automatic agenda` e despois `structured guide`. A guía pode
+5. Activar `automatic agenda`, verificala e despois `structured guide`. A guía pode
    omitirse; nunca bloquea a transcrición publicable.
 6. Activar `public publication`, comprobar DTO allowlist e Range, e só entón
    `lexical search`.
