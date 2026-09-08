@@ -21,7 +21,10 @@ This supersedes earlier activation instructions and historical statements that
 
 The API Container is configured to sleep after ten minutes without requests.
 With external routes and Cron triggers disabled, it can become inactive.
-Its final observed state is recorded below after verification.
+The latest live check still reported `development-singleton` as `running`:
+container shutdown is NOT confirmed. Cron removal can take up to fifteen minutes
+to propagate, but this and the idle timeout do not guarantee a shutdown deadline.
+Verify its actual state before reporting container compute charges stopped.
 
 ## Preserved resources and billing limits
 

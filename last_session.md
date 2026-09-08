@@ -9,6 +9,37 @@ V18 and provisioned resources; the July/early-September inventory below is histo
 
 **Updated:** 8 September 2026 (Europe/Madrid)
 
+## Suspension handoff — latest user decision
+
+- Local stack and Docker Desktop stopped. Do not restart automatically.
+- Removed the processor's every-five-minute (`*/5 * * * *`) and daily
+  (`17 3 * * *`) Cron schedules through the Cloudflare administration API.
+  A subsequent live read returned `schedules: []` successfully.
+- Committed and pushed development `triggers.crons: []` in
+  `processing-worker/wrangler.jsonc`. Deploying the current configuration keeps
+  schedules disabled; deploying an older configuration containing schedules
+  could restore them. Removing the property is NOT equivalent to an empty list.
+- Disabled public workers.dev and preview URLs for `subtitula-web-dev`,
+  `subtitula-api-dev`, and `subtitula-processing-dev`; persisted development
+  route settings in both repositories.
+- Set `DEPLOY_ENABLED=false` at repository and development-environment scope
+  in both repositories, and API `PROCESSING_DEPLOY_ENABLED=false` in both
+  scopes. No active Actions or Workflow instances were observed at suspension.
+- **Container shutdown is NOT confirmed:** the latest live check still showed
+  `development-singleton` running. Its configured inactivity timeout is ten
+  minutes; Cron removal can take up to fifteen minutes to propagate. These are
+  not a guaranteed shutdown deadline. Verify actual state before claiming that
+  container usage charges have stopped.
+- Database, backup, R2 files, secrets and deployments are preserved. Workers
+  Paid and PlanetScale subscriptions were NOT cancelled. The $5 Workers plan
+  includes usage allowances, not a spending cap; an active container can incur
+  overages even with public access disabled.
+
+Resume only after an explicit user request: read the suspension and rollout
+records, deliberately restore the required routes and schedules, verify runtime
+capability flags after container restart, then enable deployment gates as needed.
+Do not restore schedules or hosted services as a side effect of unrelated work.
+
 ## Start here
 
 Read [the consolidated recovery and capability table](docs/operations/continuity-2026-09-08.md).
