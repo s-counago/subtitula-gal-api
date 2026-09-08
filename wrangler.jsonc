@@ -41,6 +41,8 @@
   "env": {
     "development": {
       "name": "subtitula-api-dev",
+      "workers_dev": false,
+      "preview_urls": false,
       "vars": {
         "SPRING_PROFILES_ACTIVE": "dev",
         "EMAIL_PROVIDER": "disabled",

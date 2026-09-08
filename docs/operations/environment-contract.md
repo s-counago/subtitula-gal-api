@@ -1,5 +1,11 @@
 # Contrato operativo de entornos
 
+**8 septiembre 2026: development suspendido por petición del usuario.**
+Las puertas de despliegue están en `false`; rutas públicas, previews y Cron
+desactivados. Véase [registro de suspensión](hosted-suspension-2026-09-08.md).
+Las instrucciones de despliegue siguientes describen cómo funciona el sistema,
+no autorizan reactivarlo.
+
 Este documento traduce la estrategia de ramas a un despliegue seguro. No contiene secretos ni habilita proveedores.
 
 ## Flujo de Git

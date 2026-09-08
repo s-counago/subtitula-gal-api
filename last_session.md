@@ -1,5 +1,12 @@
 # Last session
 
+**Current override: hosted development is suspended at the user's request.**
+Read [the suspension record](docs/operations/hosted-suspension-2026-09-08.md)
+before the historical recovery notes below. Public/preview routes and Cron are
+disabled; GitHub deployment gates are false. Do not resume automatically.
+The [rollout record](docs/operations/capability-rollout-2026-09-08.md) records
+V18 and provisioned resources; the July/early-September inventory below is historical.
+
 **Updated:** 8 September 2026 (Europe/Madrid)
 
 ## Start here

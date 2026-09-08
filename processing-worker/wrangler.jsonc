@@ -88,6 +88,8 @@
   "env": {
     "development": {
       "name": "subtitula-processing-dev",
+      "workers_dev": false,
+      "preview_urls": false,
       "vars": {
         "ENVIRONMENT": "development",
         "API_ORIGIN": "https://subtitula-api-dev.s-counago00.workers.dev",
@@ -119,7 +121,7 @@
         "ESTIMATED_CHARS_PER_TOKEN": "3"
       },
       "triggers": {
-        "crons": ["*/5 * * * *", "17 3 * * *"]
+        "crons": []
       },
       "r2_buckets": [
         {
