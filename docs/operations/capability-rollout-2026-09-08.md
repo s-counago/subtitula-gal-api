@@ -41,8 +41,32 @@ Engine 28.5.1 responds and Testcontainers works. No database volumes were remove
 
 ## Remaining
 
-Deploy the API schema with flags dark, verify migration and service bindings,
-then deploy frontend. Activate/test the capabilities sequentially under the
+### Paused at the user's request for the night
+
+The API dark deployment completed (Worker version
+`6b18375f-1831-4082-a411-49925b84a2a9`, image digest
+`sha256:f5ddf1bf6887fcf36efcfab4d7c5c618a0276a11f880191868d77edfcb59f2eb`).
+PlanetScale V11–V18 are now all successfully applied. The frontend deployed as
+`80dd5d8c-341f-4b51-b6ff-4dd7dc2599e5`, with both service bindings verified in
+deployment output; 301 frontend tests and the OpenNext build/dry-run passed.
+
+The durable-upload flag is now true in the development Worker configuration
+(version `14900a14-c8d8-409a-a854-881c90ad3a8e`) and this manifest, but the running
+Spring process still reports it false. Changing Worker variables did not restart
+the container because the image was unchanged. Next action: restart only the
+development API container through its supported controls, then verify
+`/backend/capabilities` before uploading. Do not claim upload enabled until that
+runtime response changes. All other new flags remain false.
+
+The synthetic pilot account is registered; its credentials/session and the
+43-second synthetic WAV are in ignored `processing-worker/.wrangler/rollout/`.
+No pilot project or transcription was submitted. `pilot-client.mjs` and
+`pilot-upload.mjs` there are prepared helpers. New secrets are installed in
+Cloudflare, with recovery material only in that ignored directory. Never print
+these files or commit them. API tail stopped; local stack/Docker are stopped
+for the night. Resume only when the user asks.
+
+After resuming and verifying the restarted container, activate/test the capabilities sequentially under the
 canonical implementation plan and pilot runbook, including real short-clip
 transcription, exception review, agenda, guide, publication, lexical search and
 the labelled relevance/no-answer comparison before enabling hybrid search.
