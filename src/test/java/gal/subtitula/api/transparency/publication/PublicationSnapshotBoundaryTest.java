@@ -371,6 +371,14 @@ class PublicationSnapshotBoundaryTest extends AbstractIntegrationTest {
                 embeddingCompleteBody))
             .andExpect(status().isNoContent());
 
+        // The topic contains the context needed by a short evidence fragment.
+        // Its cited source must remain retrievable even when that fragment's
+        // own embedding falls below the semantic threshold.
+        ArrayNode opposite = unitVector();
+        opposite.set(0, mapper.getNodeFactory().numberNode(-1.0));
+        jdbc.update("update search_documents set embedding = cast(? as vector) "
+            + "where publication_id = ? and document_kind = 'EVIDENCE'",
+            opposite.toString(), UUID.fromString(publicationId));
         var hybridCommand = mapper.createObjectNode()
             .put("query", "renovación da rede de abastecemento")
             .put("publicSlug", slug)
@@ -399,6 +407,10 @@ class PublicationSnapshotBoundaryTest extends AbstractIntegrationTest {
                 .value(org.hamcrest.Matchers.hasItem("RELATED_MEANING")))
             .andReturn().getResponse().getContentAsString();
         assertThat(hybridResponse).doesNotContain("score", "embedding", "objectKey");
+        assertThat(json(hybridResponse).get("results")).anySatisfy(result -> {
+            assertThat(result.get("kind").asText()).isEqualTo("EVIDENCE");
+            assertThat(result.get("evidenceSegmentId").asText()).isEqualTo(segment.getId().toString());
+        });
         assertThat(jdbc.queryForObject(
             "select count(*) from search_query_events where search_mode = 'HYBRID'",
             Integer.class)).isEqualTo(1);

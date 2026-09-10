@@ -160,6 +160,24 @@ public class PublicSearchService {
         """;
 
     private static final String SEMANTIC_SQL = """
+        with cited_sources as (
+            select source.publication_id, citation.evidence_segment_id,
+                   min(source.embedding <=> cast(:embedding as vector)) as distance
+            from search_documents source
+            join publications pinned on pinned.id = source.publication_id
+                and pinned.publication_state = 'PUBLISHED'
+            join guide_evidence_links citation
+                on citation.guide_id = pinned.guide_id
+               and citation.subject_type = 'TOPIC'
+               and citation.subject_id = source.source_entity_id
+            where source.active = true and source.document_kind = 'TOPIC'
+              and source.embedding is not null
+              and source.embedding_model = :embeddingModel
+              and source.embedded_content_hash = source.content_hash
+              and (1 - (source.embedding <=> cast(:embedding as vector))) >= :minimumSimilarity
+              and (cast(:publicSlug as text) is null or source.public_slug = :publicSlug)
+            group by source.publication_id, citation.evidence_segment_id
+        )
         select
             sd.id,
             sd.publication_id,
@@ -194,11 +212,16 @@ public class PublicSearchService {
           on publication.id = sd.publication_id
          and publication.publication_state = 'PUBLISHED'
         left join organizations organization on organization.id = sd.organization_id
+        left join cited_sources cited
+          on sd.document_kind = 'EVIDENCE'
+         and cited.publication_id = sd.publication_id
+         and cited.evidence_segment_id = sd.evidence_segment_id
         where sd.active = true
-          and sd.embedding is not null
-          and sd.embedding_model = :embeddingModel
-          and sd.embedded_content_hash = sd.content_hash
-          and (1 - (sd.embedding <=> cast(:embedding as vector))) >= :minimumSimilarity
+          and ((sd.embedding is not null
+            and sd.embedding_model = :embeddingModel
+            and sd.embedded_content_hash = sd.content_hash
+            and (1 - (sd.embedding <=> cast(:embedding as vector))) >= :minimumSimilarity)
+            or cited.evidence_segment_id is not null)
           and (cast(:publicSlug as text) is null or sd.public_slug = :publicSlug)
           and (cast(:organizationId as uuid) is null
             or sd.organization_id = :organizationId)
@@ -211,7 +234,7 @@ public class PublicSearchService {
             or sd.agenda_item_id = :agendaItemId)
           and (cast(:language as text) is null or sd.language_code = :language)
           and (cast(:kind as text) is null or sd.document_kind = :kind)
-        order by sd.embedding <=> cast(:embedding as vector), sd.id
+        order by least(sd.embedding <=> cast(:embedding as vector), cited.distance + 0.03), sd.id
         limit :candidateLimit
         """;
 
