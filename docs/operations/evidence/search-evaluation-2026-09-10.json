@@ -1,0 +1,396 @@
+{
+  "scope": "Synthetic development calibration and additional regression set; not a representative institutional gold set. The additional set was unseen when threshold 0.48 was fixed; it exposed a short-prefix lexical defect that was corrected before the final repeat.",
+  "minimumSemanticSimilarity": 0.48,
+  "apiWorkerVersion": "e58cb417-6e64-4416-ab44-b3c77cc4531a",
+  "apiImageDigest": "sha256:2645030385c88fc3b3c230eb97014b5f044f199b0f5795303fcdd814bfaeb5ab",
+  "principalGatePassed": true,
+  "additionalUnresolvedCase": "h10: the response-specific evidence remains below the first 20 results; no speaker identity is inferred",
+  "reports": {
+    "final-lexical": {
+      "schemaVersion": "1.0.0",
+      "mode": "lexical",
+      "evaluatedAt": "2026-09-10T20:04:56.998Z",
+      "caseCount": 22,
+      "answerCaseCount": 16,
+      "noAnswerCaseCount": 6,
+      "requestFailureCount": 0,
+      "requestFailureCaseIds": [],
+      "recallAt20": 0.8125,
+      "taskSuccessAt20": 0.8125,
+      "meanReciprocalRank": 0.3927083333333333,
+      "ndcgAt20": 0.4977788126802167,
+      "falseNoAnswerRate": 0.125,
+      "correctNoAnswerRate": 1,
+      "misleadingNoAnswerRate": 0,
+      "zeroResultRate": 0.36363636363636365,
+      "latencyMs": {
+        "p50": 840,
+        "p95": 1024,
+        "maximum": 1090
+      },
+      "byIntent": {
+        "bilingual": {
+          "caseCount": 3,
+          "taskSuccessAt20": 0.3333333333333333
+        },
+        "date": {
+          "caseCount": 1,
+          "taskSuccessAt20": 1
+        },
+        "decision": {
+          "caseCount": 1,
+          "taskSuccessAt20": 1
+        },
+        "exact_quote": {
+          "caseCount": 4,
+          "taskSuccessAt20": 1
+        },
+        "name": {
+          "caseCount": 1,
+          "taskSuccessAt20": 1
+        },
+        "no_answer": {
+          "caseCount": 5,
+          "taskSuccessAt20": 1
+        },
+        "no_answer_date": {
+          "caseCount": 1,
+          "taskSuccessAt20": 1
+        },
+        "paraphrase": {
+          "caseCount": 2,
+          "taskSuccessAt20": 1
+        },
+        "typo": {
+          "caseCount": 1,
+          "taskSuccessAt20": 1
+        },
+        "when": {
+          "caseCount": 2,
+          "taskSuccessAt20": 1
+        },
+        "who": {
+          "caseCount": 1,
+          "taskSuccessAt20": 0
+        }
+      },
+      "servedModes": {
+        "LEXICAL": 22
+      }
+    },
+    "final-hybrid": {
+      "schemaVersion": "1.0.0",
+      "mode": "hybrid",
+      "evaluatedAt": "2026-09-10T20:05:40.984Z",
+      "caseCount": 22,
+      "answerCaseCount": 16,
+      "noAnswerCaseCount": 6,
+      "requestFailureCount": 0,
+      "requestFailureCaseIds": [],
+      "recallAt20": 1,
+      "taskSuccessAt20": 1,
+      "meanReciprocalRank": 0.6114583333333333,
+      "ndcgAt20": 0.7057377029166809,
+      "falseNoAnswerRate": 0,
+      "correctNoAnswerRate": 1,
+      "misleadingNoAnswerRate": 0,
+      "zeroResultRate": 0.2727272727272727,
+      "latencyMs": {
+        "p50": 1824,
+        "p95": 2011,
+        "maximum": 2736
+      },
+      "byIntent": {
+        "bilingual": {
+          "caseCount": 3,
+          "taskSuccessAt20": 1
+        },
+        "date": {
+          "caseCount": 1,
+          "taskSuccessAt20": 1
+        },
+        "decision": {
+          "caseCount": 1,
+          "taskSuccessAt20": 1
+        },
+        "exact_quote": {
+          "caseCount": 4,
+          "taskSuccessAt20": 1
+        },
+        "name": {
+          "caseCount": 1,
+          "taskSuccessAt20": 1
+        },
+        "no_answer": {
+          "caseCount": 5,
+          "taskSuccessAt20": 1
+        },
+        "no_answer_date": {
+          "caseCount": 1,
+          "taskSuccessAt20": 1
+        },
+        "paraphrase": {
+          "caseCount": 2,
+          "taskSuccessAt20": 1
+        },
+        "typo": {
+          "caseCount": 1,
+          "taskSuccessAt20": 1
+        },
+        "when": {
+          "caseCount": 2,
+          "taskSuccessAt20": 1
+        },
+        "who": {
+          "caseCount": 1,
+          "taskSuccessAt20": 1
+        }
+      },
+      "servedModes": {
+        "HYBRID": 22
+      }
+    },
+    "final-additional-lexical": {
+      "schemaVersion": "1.0.0",
+      "mode": "lexical",
+      "evaluatedAt": "2026-09-10T20:05:57.136Z",
+      "caseCount": 14,
+      "answerCaseCount": 10,
+      "noAnswerCaseCount": 4,
+      "requestFailureCount": 0,
+      "requestFailureCaseIds": [],
+      "recallAt20": 0.6363636363636364,
+      "taskSuccessAt20": 0.6,
+      "meanReciprocalRank": 0.25,
+      "ndcgAt20": 0.344756878047843,
+      "falseNoAnswerRate": 0,
+      "correctNoAnswerRate": 1,
+      "misleadingNoAnswerRate": 0,
+      "zeroResultRate": 0.2857142857142857,
+      "latencyMs": {
+        "p50": 990,
+        "p95": 1051,
+        "maximum": 1113
+      },
+      "byIntent": {
+        "bilingual": {
+          "caseCount": 2,
+          "taskSuccessAt20": 0.5
+        },
+        "decision": {
+          "caseCount": 1,
+          "taskSuccessAt20": 1
+        },
+        "no_answer": {
+          "caseCount": 4,
+          "taskSuccessAt20": 1
+        },
+        "paraphrase": {
+          "caseCount": 3,
+          "taskSuccessAt20": 1
+        },
+        "when": {
+          "caseCount": 3,
+          "taskSuccessAt20": 0.3333333333333333
+        },
+        "who": {
+          "caseCount": 1,
+          "taskSuccessAt20": 0
+        }
+      },
+      "servedModes": {
+        "LEXICAL": 14
+      }
+    },
+    "final-additional-hybrid": {
+      "schemaVersion": "1.0.0",
+      "mode": "hybrid",
+      "evaluatedAt": "2026-09-10T20:06:27.315Z",
+      "caseCount": 14,
+      "answerCaseCount": 10,
+      "noAnswerCaseCount": 4,
+      "requestFailureCount": 0,
+      "requestFailureCaseIds": [],
+      "recallAt20": 0.9090909090909091,
+      "taskSuccessAt20": 0.9,
+      "meanReciprocalRank": 0.38762626262626265,
+      "ndcgAt20": 0.49711727413307366,
+      "falseNoAnswerRate": 0,
+      "correctNoAnswerRate": 1,
+      "misleadingNoAnswerRate": 0,
+      "zeroResultRate": 0.2857142857142857,
+      "latencyMs": {
+        "p50": 1993,
+        "p95": 2391,
+        "maximum": 2752
+      },
+      "byIntent": {
+        "bilingual": {
+          "caseCount": 2,
+          "taskSuccessAt20": 1
+        },
+        "decision": {
+          "caseCount": 1,
+          "taskSuccessAt20": 1
+        },
+        "no_answer": {
+          "caseCount": 4,
+          "taskSuccessAt20": 1
+        },
+        "paraphrase": {
+          "caseCount": 3,
+          "taskSuccessAt20": 1
+        },
+        "when": {
+          "caseCount": 3,
+          "taskSuccessAt20": 1
+        },
+        "who": {
+          "caseCount": 1,
+          "taskSuccessAt20": 0
+        }
+      },
+      "servedModes": {
+        "HYBRID": 14
+      }
+    },
+    "threshold032": {
+      "schemaVersion": "1.0.0",
+      "mode": "hybrid",
+      "evaluatedAt": "2026-09-10T19:41:54.114Z",
+      "caseCount": 22,
+      "answerCaseCount": 16,
+      "noAnswerCaseCount": 6,
+      "requestFailureCount": 0,
+      "requestFailureCaseIds": [],
+      "recallAt20": 1,
+      "taskSuccessAt20": 1,
+      "meanReciprocalRank": 0.6063550420168067,
+      "ndcgAt20": 0.6994507808845252,
+      "falseNoAnswerRate": 0,
+      "correctNoAnswerRate": 0.16666666666666666,
+      "misleadingNoAnswerRate": 0.8333333333333334,
+      "zeroResultRate": 0.045454545454545456,
+      "latencyMs": {
+        "p50": 1947,
+        "p95": 2496,
+        "maximum": 2560
+      },
+      "byIntent": {
+        "bilingual": {
+          "caseCount": 3,
+          "taskSuccessAt20": 1
+        },
+        "date": {
+          "caseCount": 1,
+          "taskSuccessAt20": 1
+        },
+        "decision": {
+          "caseCount": 1,
+          "taskSuccessAt20": 1
+        },
+        "exact_quote": {
+          "caseCount": 4,
+          "taskSuccessAt20": 1
+        },
+        "name": {
+          "caseCount": 1,
+          "taskSuccessAt20": 1
+        },
+        "no_answer": {
+          "caseCount": 5,
+          "taskSuccessAt20": 0
+        },
+        "no_answer_date": {
+          "caseCount": 1,
+          "taskSuccessAt20": 1
+        },
+        "paraphrase": {
+          "caseCount": 2,
+          "taskSuccessAt20": 1
+        },
+        "typo": {
+          "caseCount": 1,
+          "taskSuccessAt20": 1
+        },
+        "when": {
+          "caseCount": 2,
+          "taskSuccessAt20": 1
+        },
+        "who": {
+          "caseCount": 1,
+          "taskSuccessAt20": 1
+        }
+      }
+    },
+    "threshold048": {
+      "schemaVersion": "1.0.0",
+      "mode": "hybrid",
+      "evaluatedAt": "2026-09-10T19:46:23.193Z",
+      "caseCount": 22,
+      "answerCaseCount": 16,
+      "noAnswerCaseCount": 6,
+      "requestFailureCount": 0,
+      "requestFailureCaseIds": [],
+      "recallAt20": 0.875,
+      "taskSuccessAt20": 0.875,
+      "meanReciprocalRank": 0.5833333333333333,
+      "ndcgAt20": 0.6549637381498576,
+      "falseNoAnswerRate": 0,
+      "correctNoAnswerRate": 1,
+      "misleadingNoAnswerRate": 0,
+      "zeroResultRate": 0.2727272727272727,
+      "latencyMs": {
+        "p50": 1885,
+        "p95": 2505,
+        "maximum": 3551
+      },
+      "byIntent": {
+        "bilingual": {
+          "caseCount": 3,
+          "taskSuccessAt20": 0.6666666666666666
+        },
+        "date": {
+          "caseCount": 1,
+          "taskSuccessAt20": 1
+        },
+        "decision": {
+          "caseCount": 1,
+          "taskSuccessAt20": 1
+        },
+        "exact_quote": {
+          "caseCount": 4,
+          "taskSuccessAt20": 1
+        },
+        "name": {
+          "caseCount": 1,
+          "taskSuccessAt20": 1
+        },
+        "no_answer": {
+          "caseCount": 5,
+          "taskSuccessAt20": 1
+        },
+        "no_answer_date": {
+          "caseCount": 1,
+          "taskSuccessAt20": 1
+        },
+        "paraphrase": {
+          "caseCount": 2,
+          "taskSuccessAt20": 1
+        },
+        "typo": {
+          "caseCount": 1,
+          "taskSuccessAt20": 1
+        },
+        "when": {
+          "caseCount": 2,
+          "taskSuccessAt20": 1
+        },
+        "who": {
+          "caseCount": 1,
+          "taskSuccessAt20": 0
+        }
+      }
+    }
+  }
+}

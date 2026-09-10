@@ -1,8 +1,9 @@
 # Arquitectura Cloudflare-first con PostgreSQL
 
-**Estado:** hosted dev base desplegado; vertical de transparencia implementado
-en local y pendiente de recursos/smoke hosted · **Actualizado:** 30 de julio de
-2026.
+**Estado:** hosted dev y vertical de transparencia desplegados; pruebas sintéticas
+reales de ingestión, revisión, guía, publicación y búsqueda realizadas. Los gates
+de piloto institucional y producción siguen pendientes. **Actualizado:** 10 de
+septiembre de 2026. Véase el [registro de verificación](capability-rollout-2026-09-10.md).
 
 La aplicación conserva PostgreSQL y la integración nativa de Spring. PlanetScale opera la base, provisionada y facturada mediante Cloudflare. El frontend vive en Workers/OpenNext y Spring en Containers. No se ejecuta PostgreSQL dentro de un Container: su disco es efímero.
 
@@ -20,7 +21,7 @@ El modo temporal `EMAIL_PROVIDER=disabled` no entrega ni simula email: lanza un 
 | API | `localhost:8080` | `subtitula-api-dev.s-counago00.workers.dev` → Container | dominio propio → misma imagen Container |
 | Datos | Docker PostgreSQL 17 | PlanetScale PostgreSQL dev | PlanetScale PostgreSQL prod HA |
 | Email | Mailpit, no entrega | deshabilitado y fallo visible | Cloudflare Email Service |
-| Objetos | R2 local de Wrangler | R2 privado dev al activar el piloto | R2 privado prod |
+| Objetos | R2 local de Wrangler | R2 privado `subtitula-media-dev` verificado | R2 privado prod |
 | Procesamiento | Worker `:8787` + Workflows | Processing Worker + tres Workflows + Workers AI | recursos prod aislados tras anexo |
 | Secretos | `.env` ignorado | Worker Secrets dev | Worker Secrets prod |
 

@@ -2,28 +2,35 @@
 
 ## Current handoff — 10 September 2026
 
-**Development resumed by explicit user request. The suspension below is historical.**
-Read [the current rollout evidence](docs/operations/capability-rollout-2026-09-10.md).
-The three public development routes are restored. Production remains gated and
-new payments require explicit authorization. GitHub deployment gates remain false
-while both `feature/transparency-evidence-search-integrated` branches are validated.
+**Development resumed and all eight capabilities are enabled by the user's explicit request.**
+Read [the complete rollout evidence](docs/operations/capability-rollout-2026-09-10.md). The 8 September suspension below
+is historical. Public development routes and processor Cron are active; previews
+remain off. Production stays gated and no new payments or production resources
+were created. Galician is the default and Spanish the only alternative.
 
-Real R2 upload, ElevenLabs/webhook transcription, Range playback and a fresh Chrome
-editor login are verified. Runtime capabilities: durable upload, normalized
-transcript, exception review and automatic agenda true; four downstream capabilities false.
-API Worker `643943bf-b9db-44ba-b4aa-55fd46bcf9e2` adds authenticated development
-container controls. Its secret is installed and backed up in Bitwarden.
-Windows Docker recovery is integrated in the frontend launcher; stopped-start,
-healthy repeat passed. Current language-scope changes pass 83 API, 39 processor
-and 302 frontend tests plus builds/dry-runs; deploy is next. Product scope is
-Galician by default and Spanish only, without other languages or auto-selection.
+Both integration PRs were merged into develop after passing GitHub verification.
+Development deployment gates are re-enabled at repository/environment scope,
+including asynchronous processing. The API deployment applies each image through
+the authenticated development restart/readiness control. Final credential rotations
+are reserved for the user; the existing operations credential is also installed in
+the GitHub development environment. Never print ignored recovery material.
 
-Next: deploy the two-language changes, finish the synthetic review and test agenda,
-guide, publication and search in order. A synthetic smoke does not prove the
-normal-session human-time/relevance/load/governance pilot gates. Keep Omarchy separate.
-The user will perform final credential rotations after development. The operations
-token was already replaced after verification-output exposure; the prior value is
-confirmed invalid and its replacement matches the saved Bitwarden recovery copy.
+Verified: actual R2 upload, ElevenLabs/webhook transcription, duplicate/retry/abort
+boundaries, Range playback, exception review, automatic agenda and cited guides,
+anonymous publication, immutable correction, withdrawal and both search modes.
+Galician public version 2 and Spanish public version 1 remain available.
+Hybrid threshold 0.48 improves principal task success from 13/16 to 16/16; the
+additional set improves 6/10 to 9/10. All ten no-answer cases are correct, no request
+failed, and hybrid warm p95 is below 2.4 seconds. One specific reply remains outside
+the top 20 on the additional set. These synthetic results do not graduate the real
+institutional human-time, accessibility, load, restore or governance pilot.
+
+Validation: 85 API, 45 processor and 309 frontend tests; Worker typechecks; builds;
+4 search evaluator and 2 offline production configuration tests. Windows Docker
+startup recovery preserves data volumes. Future production configuration is generated
+offline with isolated resources and a pinned approved image; see the domain launch
+annex. No domain, HA production database, sender or production credentials exist yet.
+Keep Omarchy work separate. Review the remaining field-pilot gates before launch.
 
 ## Historical handoff — 8 September 2026
 

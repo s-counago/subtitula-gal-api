@@ -7,12 +7,13 @@ gated. This supersedes the 8 September suspension for development only.
 
 ## Verified state
 
-Latest runtime: all eight capabilities true; hybrid is in a bounded development
-comparison, with adoption conditional on its relevance/no-answer results. API Worker
-`e55d3682-d2aa-4349-b38d-f0b104d742ae`, immutable Spring image
-`sha256:19de9d46809bad21c1a10328fe9f00537f1e4696a34cbfeca0da7613e99b7e3c`;
+Verified search runtime at 20:06 UTC: all eight capabilities true; the principal
+development comparison passed and hybrid is retained with threshold `0.48`. API Worker
+`e58cb417-6e64-4416-ab44-b3c77cc4531a`, immutable Spring image
+`sha256:2645030385c88fc3b3c230eb97014b5f044f199b0f5795303fcdd814bfaeb5ab`;
 processor `f0fecadc-b612-445c-ae4d-cb066c165ed8`; frontend
-`c325ad16-69de-4c47-aacc-59a43aedfcf1`. Search evaluation continues.
+`515886c8-8ece-4ada-8c51-ef190b47ca4a`. Subsequent GitHub development deployments
+use the same merged configuration; this identifies the image used for evaluation.
 These are synthetic development smokes, not graduation of the full
 human-time, relevance, load, accessibility or governance pilot.
 
@@ -104,14 +105,14 @@ This recovers project startup; it does not patch Docker Desktop's own launcher.
   idempotent starts, immutable guide entities and racing index dispatch.
 - Processor: 45 tests passed, including lifecycle authorization, project language
   and name-warning regressions. Both Worker typechecks passed.
-- Frontend: 308 tests and Next/OpenNext build passed; includes polling regression
-  cases and immediate lexical indexing with hybrid disabled.
+- Frontend: 309 tests and Next/OpenNext build passed; includes polling regression
+  cases, immediate lexical indexing with hybrid disabled and completion status.
 - API complete image/Worker/processor dry-run passed after the language changes.
 - Processor `3e56f470-8699-4caf-9156-250138eab9b9` deployed the language/name
   fixes and restored `*/5 * * * *` and `17 3 * * *` schedules. Deployment output
   confirms both triggers and all three Workflow bindings.
-- Review, agenda, guides and both language publications are verified; a labelled
-  Galician/Spanish relevance/no-answer comparison is in progress for hybrid.
+- Review, agenda, guides and both language publications are verified; the labelled
+  Galician/Spanish relevance/no-answer comparison passes for development hybrid.
   Automated synthetic smoke does not graduate human task-study,
   normal-length media, accessibility, load, restore or governance gates.
 - Final credential rotations are reserved for the user after development, per
@@ -206,6 +207,63 @@ This recovers project startup; it does not patch Docker Desktop's own launcher.
   digest and same-origin OAuth gateway; routes, schedules and capabilities remain
   disabled. Two isolation/digest/input tests pass. No resources or payments were
   created. See the updated custom-domain launch annex.
+
+## Final search and withdrawal checks
+
+The [recorded measurements](evidence/search-evaluation-2026-09-10.json) retain the
+initial threshold attempts and final results. At `0.32`, hybrid found every expected
+answer but admitted five absent topics. At `0.48`, those false matches disappeared.
+Retrieval now also returns the actual evidence cited by a matching public topic,
+so a short answer fragment does not lose the context supplied by its guide.
+Every expanded result stays bound to the same active publication and its pinned
+guide; ordinary public filters still apply. A regression test deliberately gives
+the source fragment a nonmatching vector and checks its citation-based retrieval.
+
+| Set | Mode | Task success | Correct no-answer | MRR | nDCG@20 | Warm p95 |
+|---|---|---:|---:|---:|---:|---:|
+| Principal: 16 answer + 6 absent | Lexical | 13/16 | 6/6 | 0.393 | 0.498 | 1,024 ms |
+| Principal | Hybrid | 16/16 | 6/6 | 0.611 | 0.706 | 2,011 ms |
+| Additional: 10 answer + 4 absent | Lexical | 6/10 | 4/4 | 0.250 | 0.345 | 1,051 ms |
+| Additional | Hybrid | 9/10 | 4/4 | 0.388 | 0.497 | 2,391 ms |
+
+There were no failed requests. All 36 final hybrid responses explicitly reported
+HYBRID, not lexical fallback. The principal preregistered gain/no-answer/latency
+criteria pass. The additional set was labelled after calibration but before its
+first run. It exposed a lexical prefix defect (`plan` matching `plantea`), corrected
+generally by treating words shorter than five characters as complete FTS terms.
+Its final repeat is therefore additional regression evidence, not an untouched
+holdout. Case `h10` still misses the specifically labelled reply in the first 20;
+do not describe retrieval as universally correct or this set as representative.
+
+The public evidence IDs are reproducible through the versioned JSONL fixtures:
+
+```powershell
+npm run evaluate:search -- --fixture scripts/fixtures/hosted-search-gold-2026-09-10.jsonl --origin https://subtitula-api-dev.s-counago00.workers.dev --mode lexical --delay-ms 150
+npm run evaluate:search -- --fixture scripts/fixtures/hosted-search-gold-2026-09-10.jsonl --origin https://subtitula-web-dev.s-counago00.workers.dev --mode hybrid --delay-ms 150
+```
+
+The final measurements used the frontend gateway for both modes. Use
+`hosted-search-additional-gold-2026-09-10.jsonl` for the additional set.
+
+The earlier, separately authored synthetic Spanish session was published and
+indexed solely to verify withdrawal. Both lexical and hybrid returned its evidence
+before withdrawal and zero results afterward. Its public DTO and media-access route
+then returned 404. The two primary publications still returned 200, and Galician
+version 1 still exactly matched its saved public snapshot. No primary recording,
+database or source artifact was removed.
+
+Chrome also verified a Spanish paraphrase finding Galician water-pipe evidence.
+Following the result opened publication version 2 and focused the correct source
+at `00:11`, with its visible correction note and unidentified speaker preserved.
+
+Both integration PRs were merged into `develop` after successful GitHub checks:
+[API #1](https://github.com/s-counago/subtitula-gal-api/pull/1) and
+[frontend #1](https://github.com/s-counago/subtitula-gal/pull/1). Development
+repository/environment deployment gates are re-enabled, including the processor.
+The API deployment uses the existing operations credential in its GitHub
+development environment to apply the new image and verify actual readiness.
+No credential was rotated for this: final rotations remain the user's responsibility.
+Production workflows still perform no deployment and its gates/resources remain closed.
 
 ## Development container controls
 

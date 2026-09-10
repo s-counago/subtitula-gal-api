@@ -1,10 +1,11 @@
 # Contrato operativo de entornos
 
-**8 septiembre 2026: development suspendido por petición del usuario.**
-Las puertas de despliegue están en `false`; rutas públicas, previews y Cron
-desactivados. Véase [registro de suspensión](hosted-suspension-2026-09-08.md).
-Las instrucciones de despliegue siguientes describen cómo funciona el sistema,
-no autorizan reactivarlo.
+**10 septiembre 2026: development reanudado por petición explícita del usuario.**
+Las tres rutas públicas y los Cron están activos; previews siguen desactivadas.
+Las ocho capacidades están en comprobación/uso sintético de desarrollo; el
+[registro actual](capability-rollout-2026-09-10.md) recoge resultados y gates.
+La suspensión del 8 de septiembre es histórica. Producción sigue cerrada y
+cualquier nueva contratación necesita autorización explícita.
 
 Este documento traduce la estrategia de ramas a un despliegue seguro. No contiene secretos ni habilita proveedores.
 
@@ -45,11 +46,11 @@ Al crear una cuenta de Workers, Cloudflare asigna `<account-subdomain>.workers.d
 | Entorno | Frontend | API | Processor | Callback OAuth de Google |
 |---|---|---|---|---|
 | Local | `http://localhost:3000` | `http://localhost:8080` | `http://localhost:8787` | `http://localhost:8080/login/oauth2/code/google` |
-| Desarrollo remoto | `https://subtitula-web-dev.s-counago00.workers.dev` | `https://subtitula-api-dev.s-counago00.workers.dev` | `https://subtitula-processing-dev.s-counago00.workers.dev` (pendiente de provisionar) | `https://subtitula-web-dev.s-counago00.workers.dev/backend/login/oauth2/code/google` |
+| Desarrollo remoto | `https://subtitula-web-dev.s-counago00.workers.dev` | `https://subtitula-api-dev.s-counago00.workers.dev` | `https://subtitula-processing-dev.s-counago00.workers.dev` | `https://subtitula-web-dev.s-counago00.workers.dev/backend/login/oauth2/code/google` |
 | Producción real | Definida en el [anexo de lanzamiento](custom-domain-launch-annex.md) | Definida en el anexo | Definida en el anexo | Definida en el anexo |
 
-Los Workers son `subtitula-web-dev`, `subtitula-api-dev` y, cuando se ejecute
-el gate de transparencia, `subtitula-processing-dev`. Como `workers.dev` está
+Los Workers son `subtitula-web-dev`, `subtitula-api-dev` y
+`subtitula-processing-dev`. Como `workers.dev` está
 en la Public Suffix List, sus hostnames son sitios distintos para cookies. El
 navegador llama a los gateways same-origin `/backend/*` y `/processing/*` del
 frontend. Estos usan respectivamente `API_SERVICE` y `PROCESSING_SERVICE`.
