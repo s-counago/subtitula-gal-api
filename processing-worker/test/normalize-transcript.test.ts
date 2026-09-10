@@ -73,10 +73,12 @@ describe("speaker-aware transcript normalization", () => {
       "Primer punto: biblioteca.", "Segundo punto: transporte.",
       "Terceiro punto: preguntas.", "Tras el debate, se aprueba.",
       "Una intervención pregunta.", "Esta es una prueba para Subtitula.",
+      "Non se adopta ningún acordo.", "Antes solicitarase un informe.",
+      "Propónse abrir a sala.", "Levántase a sesión.",
     ];
     const result = normalizeTranscript({ words: lines.map((text, i) => word(text, i, i + 1, "speaker_0")) });
     expect(result.segments.map((segment) => segment.signals.properNameCandidates))
-      .toEqual([[], [], [], [], [], ["Subtitula"]]);
+      .toEqual([[], [], [], [], [], ["Subtitula"], [], [], [], []]);
   });
 
   it("preserves accented names at sentence starts and within evidence", () => {

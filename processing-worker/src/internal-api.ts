@@ -288,7 +288,7 @@ export class InternalApi {
     publicationId: string,
     projectId: string,
     workflowInstanceId: string,
-  ): Promise<{ projectId: string; semanticIndexRequired: boolean }> {
+  ): Promise<{ projectId: string; semanticIndexRequired: boolean; workflowInstanceId?: string }> {
     return this.command(
       `/internal/processing/jobs/${encodeURIComponent(jobId)}`
         + `/publications/${encodeURIComponent(publicationId)}/lexical-workflow`,
@@ -436,8 +436,11 @@ export class InternalApi {
     const target = new URL(path, this.env.API_ORIGIN);
     const request = new Request(target, init);
     request.headers.delete("host");
-    if (this.env.ENVIRONMENT === "development") {
+    if (this.env.API_SERVICE) {
       return this.env.API_SERVICE.fetch(request);
+    }
+    if (this.env.ENVIRONMENT !== "local") {
+      throw new Error("api_service_not_configured");
     }
     return fetch(request);
   }

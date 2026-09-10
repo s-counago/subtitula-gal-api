@@ -220,6 +220,7 @@ public class PublicSearchService {
     private final SearchAnalyticsService analytics;
     private final String embeddingModel;
     private final int embeddingDimensions;
+    private final double minimumSemanticSimilarity;
 
     public PublicSearchService(
             NamedParameterJdbcTemplate jdbc,
@@ -228,12 +229,19 @@ public class PublicSearchService {
             @Value("${app.search.embedding-model:@cf/baai/bge-m3}")
             String embeddingModel,
             @Value("${app.search.embedding-dimensions:1024}")
-            int embeddingDimensions) {
+            int embeddingDimensions,
+            @Value("${app.search.minimum-semantic-similarity:0.32}")
+            double minimumSemanticSimilarity) {
         this.jdbc = jdbc;
         this.capabilities = capabilities;
         this.analytics = analytics;
         this.embeddingModel = embeddingModel;
         this.embeddingDimensions = embeddingDimensions;
+        if (!Double.isFinite(minimumSemanticSimilarity)
+                || minimumSemanticSimilarity < 0 || minimumSemanticSimilarity > 1) {
+            throw new IllegalArgumentException("Invalid minimum semantic similarity");
+        }
+        this.minimumSemanticSimilarity = minimumSemanticSimilarity;
     }
 
     @Transactional(readOnly = true)
@@ -254,7 +262,7 @@ public class PublicSearchService {
         MapSqlParameterSource semanticParameters = parameters(request, query)
             .addValue("embedding", vector)
             .addValue("embeddingModel", embeddingModel)
-            .addValue("minimumSimilarity", 0.32)
+            .addValue("minimumSimilarity", minimumSemanticSimilarity)
             .addValue("candidateLimit", 100);
         List<Row> semantic = jdbc.query(
             SEMANTIC_SQL,

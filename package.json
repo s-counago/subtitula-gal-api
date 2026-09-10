@@ -13,6 +13,7 @@
     "test:bootstrap": "node --test .github/scripts/parse-secret-send.test.mjs",
     "test:processing-worker": "npm --prefix processing-worker test",
     "test:search-evaluation": "node --test scripts/evaluate-search.test.mjs",
+    "test:production-config": "node --test scripts/prepare-production.test.mjs",
     "evaluate:search": "node scripts/evaluate-search.mjs",
     "typecheck:container-worker": "tsc --noEmit -p tsconfig.worker.json",
     "typecheck:processing-worker": "npm --prefix processing-worker run typecheck",

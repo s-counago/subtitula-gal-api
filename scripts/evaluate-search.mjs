@@ -171,9 +171,12 @@ function ndcgAt20(outcome) {
   const relevant = outcome.evaluationCase.relevantEvidenceRefs;
   if (relevant.length === 0) return 0;
   let dcg = 0;
+  const found = new Set();
   for (let index = 0; index < outcome.results.length; index += 1) {
-    if (relevant.some((reference) =>
-      resultMatchesReference(outcome.results[index], reference))) {
+    const reference = relevant.find((reference) => !found.has(reference)
+      && resultMatchesReference(outcome.results[index], reference));
+    if (reference) {
+      found.add(reference);
       dcg += 1 / Math.log2(index + 2);
     }
   }

@@ -11,6 +11,14 @@ interface RuntimeSecrets {
   INTERNAL_API_HMAC_SECRET: string;
   SEARCH_ANALYTICS_HMAC_SECRET?: string;
   HOSTED_OPERATIONS_TOKEN?: string;
+  SMTP_PASSWORD?: string;
+  APP_EMAIL_FROM?: string;
+  SMTP_HOST?: string;
+  SMTP_PORT?: string;
+  SMTP_USERNAME?: string;
+  SMTP_SSL_ENABLED?: string;
+  SMTP_STARTTLS_ENABLED?: string;
+  SEARCH_MINIMUM_SEMANTIC_SIMILARITY?: string;
 }
 
 type WorkerEnv = Env & RuntimeSecrets;
@@ -79,6 +87,8 @@ export class SubtitulaApiContainer extends Container<WorkerEnv> {
       this.env.SEARCH_EMBEDDING_MODEL ?? "@cf/baai/bge-m3",
     SEARCH_EMBEDDING_DIMENSIONS:
       this.env.SEARCH_EMBEDDING_DIMENSIONS ?? "1024",
+    SEARCH_MINIMUM_SEMANTIC_SIMILARITY:
+      this.env.SEARCH_MINIMUM_SEMANTIC_SIMILARITY ?? "0.32",
     SEARCH_EMBEDDING_MICRO_USD_PER_MILLION_INPUT_TOKENS:
       this.env.SEARCH_EMBEDDING_MICRO_USD_PER_MILLION_INPUT_TOKENS ?? "12000",
     SEARCH_ESTIMATED_CHARS_PER_TOKEN:
@@ -93,6 +103,14 @@ export class SubtitulaApiContainer extends Container<WorkerEnv> {
     FRONTEND_URL: this.env.FRONTEND_URL,
     EMAIL_PROVIDER: this.env.EMAIL_PROVIDER ?? "disabled",
     EMAIL_DELIVERY_REQUIRED: this.env.EMAIL_DELIVERY_REQUIRED ?? "false",
+    ...(this.env.SMTP_PASSWORD ? { SMTP_PASSWORD: this.env.SMTP_PASSWORD } : {}),
+    ...(this.env.APP_EMAIL_FROM ? { APP_EMAIL_FROM: this.env.APP_EMAIL_FROM } : {}),
+    ...(this.env.SMTP_HOST ? { SMTP_HOST: this.env.SMTP_HOST } : {}),
+    ...(this.env.SMTP_PORT ? { SMTP_PORT: this.env.SMTP_PORT } : {}),
+    ...(this.env.SMTP_USERNAME ? { SMTP_USERNAME: this.env.SMTP_USERNAME } : {}),
+    ...(this.env.SMTP_SSL_ENABLED ? { SMTP_SSL_ENABLED: this.env.SMTP_SSL_ENABLED } : {}),
+    ...(this.env.SMTP_STARTTLS_ENABLED
+      ? { SMTP_STARTTLS_ENABLED: this.env.SMTP_STARTTLS_ENABLED } : {}),
   };
 
   override async onStart(): Promise<void> {

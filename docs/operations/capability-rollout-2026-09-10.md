@@ -7,6 +7,15 @@ gated. This supersedes the 8 September suspension for development only.
 
 ## Verified state
 
+Latest runtime: all eight capabilities true; hybrid is in a bounded development
+comparison, with adoption conditional on its relevance/no-answer results. API Worker
+`e55d3682-d2aa-4349-b38d-f0b104d742ae`, immutable Spring image
+`sha256:19de9d46809bad21c1a10328fe9f00537f1e4696a34cbfeca0da7613e99b7e3c`;
+processor `f0fecadc-b612-445c-ae4d-cb066c165ed8`; frontend
+`c325ad16-69de-4c47-aacc-59a43aedfcf1`. Search evaluation continues.
+These are synthetic development smokes, not graduation of the full
+human-time, relevance, load, accessibility or governance pilot.
+
 - Reopened the three existing `workers.dev` routes. Preview URLs remain off.
 - The suspended API instance was confirmed inactive before resumption. Its first
   resumed health check returned OK after 31.6 seconds.
@@ -15,7 +24,9 @@ gated. This supersedes the 8 September suspension for development only.
   the existing immutable Spring image. `/backend/capabilities` now returns
   durable upload, normalized transcript and exception review true. The later
   agenda deployment `f90cff28-d1d7-45cd-9646-875792c0f3d4` and a verified restart
-  also enabled automatic agenda. Guide, publication, lexical and hybrid remain false.
+  also enabled automatic agenda. Guide, publication and lexical were subsequently
+  enabled sequentially after the preceding hosted smoke; hybrid was then enabled
+  for the paired comparison after the indexed lexical baseline passed.
 - `HOSTED_OPERATIONS_TOKEN` is installed as a dedicated API Worker Secret and
   saved in Bitwarden item `Subtitula — Development container operations`, ID
   `b2482aed-8bce-4650-91be-b4c101260a24`. It is not passed to Spring. No existing
@@ -68,7 +79,8 @@ gated. This supersedes the 8 September suspension for development only.
   The user clarified that the product is Galician-first with Spanish as its only
   alternative. New code defaults explicitly to `glg`, supports only `glg`/`spa`,
   and rejects other input before the provider call. A two-option upload selector
-  defaults to Galego. API/frontend deployment of this restriction is next.
+  defaults to Galego. API/frontend deployment and the two-option Chrome selector
+  are verified; the second Spanish pilot submits and transcribes as `spa`.
   Existing transcript metadata is historical and is not silently rewritten.
 
 ## Docker recovery
@@ -88,23 +100,112 @@ This recovers project startup; it does not patch Docker Desktop's own launcher.
 
 ## Checks and remaining work
 
-- Spring/PostgreSQL: 83 tests passed, including both upload paths' language scope.
-- Processor: 39 tests passed, including lifecycle authorization, project language
+- Spring/PostgreSQL: 85 tests passed, including both upload paths' language scope,
+  idempotent starts, immutable guide entities and racing index dispatch.
+- Processor: 45 tests passed, including lifecycle authorization, project language
   and name-warning regressions. Both Worker typechecks passed.
-- Frontend: 302 tests, Next build and OpenNext deployment dry-run passed.
+- Frontend: 308 tests and Next/OpenNext build passed; includes polling regression
+  cases and immediate lexical indexing with hybrid disabled.
 - API complete image/Worker/processor dry-run passed after the language changes.
 - Processor `3e56f470-8699-4caf-9156-250138eab9b9` deployed the language/name
   fixes and restored `*/5 * * * *` and `17 3 * * *` schedules. Deployment output
   confirms both triggers and all three Workflow bindings.
-- Continue review completion, automatic agenda, structured guide and publication
-  sequentially, then a labelled Galician/Spanish relevance/no-answer comparison
-  before hybrid. Automated synthetic smoke does not graduate human task-study,
+- Review, agenda, guides and both language publications are verified; a labelled
+  Galician/Spanish relevance/no-answer comparison is in progress for hybrid.
+  Automated synthetic smoke does not graduate human task-study,
   normal-length media, accessibility, load, restore or governance gates.
 - Final credential rotations are reserved for the user after development, per
   their 10 September instruction. Retain ignored recovery material until the
   user's rotation/recovery check is complete; never commit or print it.
 - Keep Omarchy compatibility work separate. Do not provision production or
   purchase a domain/plan. Production readiness follows the canonical launch annex.
+
+## Hosted review, guide and publication evidence
+
+- Primary Galician project `4ce077be-933e-480d-a953-3d44b6a2fe97`, recording
+  `fa2d77f3-63e7-40ec-92e1-b0e6285c24b2`, ingest
+  `cdb7391f-3542-4c92-8a43-bd7100d6abb5`: actual ElevenLabs/webhook success,
+  14 Galician segments, 51.779 s, 3,165 micro-USD configured estimate.
+  Omitting project language selected `glg`. Missing-object completion returned
+  409; after the actual PUT, two completions returned the same job/recording.
+- An independent uploaded cancellation fixture was aborted, then S3 HEAD returned
+  404; the primary recording remained readable. A stale signed webhook returned
+  401, and the original delivery replay returned duplicate=true without modifying
+  the reviewed revision or text.
+- Chrome required only the unknown-speaker decision. It remains unidentified.
+  Optional name warnings did not block completion. No full transcript review or
+  human timing study is claimed. Spanish original agenda-only enrichment succeeded
+  in 12.57 s; Galician agenda+guide succeeded after hosted schema retries.
+- First Galician guide `c65b63d5-f22e-41cf-bdda-4b6cf9784f23` has five cited topics
+  and one explicitly evidenced water-pipe agreement, confirmed in Chrome. The
+  negative library agreement was not promoted. The first successful guide needed
+  roughly 16 minutes including retries, outside the desired latency; fixes are
+  still being validated. A boundary one sentence early is corrected in
+  `monotonic-anchors-v2` and a publication correction is in progress.
+- Publication `5d972cbe-99b4-4b1f-aecf-0e07dffddf7b`, version 1, is public at
+  `/transparencia/sesion-ficticia-en-galego-auga-e-biblioteca-proba-de-capacidades-4ce077be`.
+  Anonymous DTO fields were checked for private-state leakage. Its returned,
+  version-pinned media URL delivered HTTP 206 / 1,024 bytes. Lexical indexing job
+  `236976d5-39e6-459b-abab-5b3ddff062b2` succeeded; `tubaxes` returns seven
+  evidence-linked records while a correction is being prepared.
+- Correct Spanish pilot `6408afb4-b3fb-4bb0-830a-531f29ff8def`, ingest
+  `7e7e01da-6c5b-43c7-9c4d-ddf818206c67`, exposed a lost start response:
+  Spring had committed but Workflow retried stale versions. Start now returns
+  the already-committed transition without another event/attempt. Explicit 409
+  JSON prevents Spring's protected error dispatch masking conflicts as 401.
+  Both stale rejection and recovered versions were verified live. Restarting
+  that Workflow from its start step completed with the same job, attempt 1 and
+  preserved recording. Its no-agenda guide is being validated.
+- Frontend updates the project status after review/publication/retry actions.
+  It now offers durable-media access retry instead of claiming the recording
+  exists only on this device. A direct processor deployment accidentally omitted
+  the derived R2 endpoint; the canonical deployment wrapper restored it and
+  signed playback was rechecked. Always use `npm run deploy:dev` in the processor
+  with `CLOUDFLARE_ACCOUNT_ID`, never bare Wrangler deploy.
+- Cloudflare's GLM now returns a chat-completion envelope; incomplete output is
+  rejected. Runtime citation validation is retained and unsupported grammar
+  `uniqueItems` is checked locally. The model's named JSON-schema contract and
+  reasoning controls are under live verification. Primary references:
+  [GLM contract](https://developers.cloudflare.com/workers-ai/models/glm-4.7-flash/)
+  and [reasoning controls](https://github.com/cloudflare/ai/blob/main/packages/workers-ai-provider/README.md).
+
+## Correction recovery and search preparation
+
+- GLM `guide-v3` uses its named schema envelope and disables thinking. Four real
+  Galician windows generated and validated in about 79 seconds; Spanish extraction
+  completed successfully with three correctly separated topics, an explicit library
+  agreement and no invented transport agreement. References remain linked to the
+  actual frozen transcript, preserving unidentified voices.
+- An unchanged-text correction exposed reused topic/contribution/decision IDs.
+  IDs now include project, revision, generation settings and validated output.
+  Spring rejects existing entity IDs before any write, retaining exact duplicate
+  retry behavior. Regression checks cover all three entity types and preservation
+  of a confirmed decision. ERROR dispatches retain their real status; a direct
+  unauthenticated `/error` request is still protected.
+- The blocked Galician Workflow was terminated, then its four existing real model
+  artifacts were reassembled with the corrected deterministic IDs and persisted
+  once through the signed internal API. No model or STT call was repeated for this
+  recovery. Public version 1 was byte-for-byte equal before and after recovery.
+- Galician publication version 2 is `2890b42f-ee7f-4ca6-81b4-945806bc68ea`, with
+  a visible correction note. Spanish publication is
+  `3055738d-4739-4437-95ea-430728522cd0`. Anonymous DTO and HTTP 206 / 1,024-byte
+  source playback checks passed for both. Human confirmation was limited to the
+  explicitly evidenced candidate agreement in each synthetic session.
+- A first search run started before the five-minute scheduler had indexed the
+  corrected Galician publication. It scored 3/16 and is retained as a readiness
+  failure, not the relevance baseline. The UI now dispatches both lexical and
+  semantic jobs immediately after publishing or rebuilding. Scheduler/browser
+  races reuse the admitted Workflow rather than returning a spurious 503.
+- Once both lexical indexes completed, the 22 preregistered cases yielded 13/16
+  task success, all 6 no-answer cases correct, no HTTP failures, warm p95 1,174 ms.
+  The evaluator now counts each distinct evidence reference once in nDCG, avoiding
+  inflated credit from several result kinds citing the same segment. Original
+  query labels are versioned in `scripts/fixtures/hosted-search-cases-2026-09-10.json`.
+- Production preparation is executable offline with `scripts/prepare-production.mjs`:
+  isolated production names/bindings, mandatory verified mail, same approved image
+  digest and same-origin OAuth gateway; routes, schedules and capabilities remain
+  disabled. Two isolation/digest/input tests pass. No resources or payments were
+  created. See the updated custom-domain launch annex.
 
 ## Development container controls
 

@@ -72,6 +72,16 @@ test("computes retrieval, no-answer, and latency metrics without query text", ()
   assert.equal("query" in metrics, false);
 });
 
+test("does not inflate nDCG when a topic and its transcript cite the same evidence", () => {
+  const metrics = computeMetrics([
+    outcome("duplicate", "exact_quote", false, ["o:s1:e1"], [
+      result("s1", "e1"), result("s1", "e1"), result("s1", "e1"),
+    ], 10),
+  ], "hybrid");
+  assert.equal(metrics.ndcgAt20, 1);
+  assert.equal(metrics.recallAt20, 1);
+});
+
 function outcome(id, intent, expectedNoAnswer, references, results, latencyMs) {
   return {
     evaluationCase: {

@@ -3,6 +3,7 @@ package gal.subtitula.api.config;
 import gal.subtitula.api.oauth.OAuthSuccessHandler;
 import gal.subtitula.api.ratelimit.RateLimitFilter;
 import gal.subtitula.api.transparency.internal.InternalRequestAuthenticationFilter;
+import jakarta.servlet.DispatcherType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -70,6 +71,7 @@ public class SecurityConfig {
             .addFilterBefore(internalRequestFilter, UsernamePasswordAuthenticationFilter.class)
             .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(reg -> reg
+                .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                 .requestMatchers(
                     "/ping",
                     "/capabilities",

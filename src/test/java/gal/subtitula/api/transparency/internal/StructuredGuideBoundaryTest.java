@@ -5,6 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gal.subtitula.api.project.ProjectRepository;
 import gal.subtitula.api.support.AbstractIntegrationTest;
 import gal.subtitula.api.transparency.lifecycle.InstitutionalProjectStatus;
+import gal.subtitula.api.transparency.lifecycle.ProcessingJobType;
+import gal.subtitula.api.transparency.lifecycle.ProcessingStage;
+import gal.subtitula.api.transparency.processing.ProcessingJob;
+import gal.subtitula.api.transparency.processing.ProcessingJobRepository;
 import gal.subtitula.api.transparency.transcript.EvidenceSegment;
 import gal.subtitula.api.transparency.transcript.EvidenceSegmentRepository;
 import gal.subtitula.api.transparency.transcript.Speaker;
@@ -35,6 +39,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestPropertySource(properties = {
     "app.capabilities.durable-institutional-upload=true",
@@ -60,6 +65,9 @@ class StructuredGuideBoundaryTest extends AbstractIntegrationTest {
 
     @Autowired
     EvidenceSegmentRepository segments;
+
+    @Autowired
+    ProcessingJobRepository jobs;
 
     @Test
     void automaticGuideRequiresFrozenEvidenceAndKeepsHumanChecksSmall()
@@ -298,6 +306,42 @@ class StructuredGuideBoundaryTest extends AbstractIntegrationTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.projectStatus").value("ready"))
             .andExpect(jsonPath("$.job.state").value("succeeded"));
+
+        // Simulate the lifecycle of a later correction. A non-duplicate payload
+        // must never merge topic, contribution or confirmed-decision IDs from
+        // the saved guide, even when its transcript content is unchanged.
+        project = projects.findById(projectId).orElseThrow();
+        project.transitionTo(InstitutionalProjectStatus.PUBLISHED);
+        project.transitionTo(InstitutionalProjectStatus.REVIEW_REQUIRED);
+        project.transitionTo(InstitutionalProjectStatus.ENRICHING);
+        project = projects.saveAndFlush(project);
+        var nextJob = ProcessingJob.queued(projectId, ProcessingJobType.ENRICH,
+            "correction-" + UUID.randomUUID(), ProcessingStage.ALIGNING_AGENDA);
+        nextJob.start(ProcessingStage.ALIGNING_AGENDA);
+        nextJob = jobs.saveAndFlush(nextJob);
+        JsonNode savedGuide = json(mockMvc.perform(
+                get("/projects/" + projectId + "/guide").cookie(owner))
+            .andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
+        for (int collision = 0; collision < 3; collision++) {
+            var conflicting = guide.deepCopy();
+            conflicting.put("contentHash", "e".repeat(64));
+            conflicting.put("expectedJobVersion", nextJob.getVersion());
+            conflicting.put("expectedProjectVersion", project.getVersion());
+            var nextTopic = (com.fasterxml.jackson.databind.node.ObjectNode)
+                conflicting.get("topics").get(0);
+            nextTopic.put("id", (collision == 0 ? topicId : UUID.randomUUID()).toString());
+            ((com.fasterxml.jackson.databind.node.ObjectNode) nextTopic.get("contributions").get(0))
+                .put("id", (collision == 1 ? contributionId : UUID.randomUUID()).toString());
+            ((com.fasterxml.jackson.databind.node.ObjectNode) nextTopic.get("decisions").get(0))
+                .put("id", (collision == 2 ? decisionId : UUID.randomUUID()).toString());
+            mockMvc.perform(signed("POST", "/internal/processing/jobs/"
+                    + nextJob.getId() + "/guide", conflicting.toString()))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.error").value("processing_conflict"));
+            assertEquals(savedGuide, json(mockMvc.perform(
+                    get("/projects/" + projectId + "/guide").cookie(owner))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString()));
+        }
     }
 
     private JsonNode createDraft(Cookie owner) throws Exception {

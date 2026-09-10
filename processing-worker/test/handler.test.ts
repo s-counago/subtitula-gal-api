@@ -157,7 +157,50 @@ describe("processing HTTP boundary", () => {
     });
   });
 
-  it("authorizes a reopened project and returns a short-lived private R2 URL", async () => {
+  it("rejects another project's enrichment job before changing it", async () => {
+    const projectId = "11111111-1111-4111-8111-111111111111";
+    const jobId = "22222222-2222-4222-8222-222222222222";
+    const createBatch = vi.fn();
+    const apiFetch = vi.fn(async (request: Request) => {
+      const path = new URL(request.url).pathname;
+      if (path === `/projects/${projectId}`) {
+        return Response.json({ id: projectId });
+      }
+      expect(request.method).toBe("GET");
+      expect(path).toBe(`/internal/processing/jobs/${jobId}/enrichment-context`);
+      return Response.json({ projectId: "44444444-4444-4444-8444-444444444444" });
+    });
+    const env = {
+      ...testEnv(),
+      ENVIRONMENT: "development",
+      API_ORIGIN: "https://api.test",
+      INTERNAL_API_HMAC_SECRET: "test-internal-signature-secret",
+      API_SERVICE: { fetch: apiFetch },
+      MUTATION_RATE_LIMITER: { limit: async () => ({ success: true }) },
+      ENRICH_SESSION: { createBatch },
+    } as unknown as ProcessingEnv;
+    const response = await worker.fetch(new Request(
+      `http://processing.test/processing/projects/${projectId}/enrichment`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          origin: "http://localhost:3000",
+          cookie: "XSRF-TOKEN=test-token; SESSION=owner-session",
+          "x-xsrf-token": "test-token",
+        },
+        body: JSON.stringify({
+          jobId,
+          attemptId: "33333333-3333-4333-8333-333333333333",
+        }),
+      },
+    ), env);
+    expect(response.status).toBe(404);
+    await expect(response.json()).resolves.toEqual({ error: "project_not_found" });
+    expect(apiFetch).toHaveBeenCalledTimes(2);
+    expect(createBatch).not.toHaveBeenCalled();
+  });
+
+  it.each(["development", "production"])("authorizes a reopened %s project through its binding and returns a short-lived private R2 URL", async (environment) => {
     const projectId = "11111111-1111-4111-8111-111111111111";
     const apiFetch = vi.fn(async (request: Request) => {
       const path = new URL(request.url).pathname;
@@ -176,7 +219,7 @@ describe("processing HTTP boundary", () => {
     });
     const env = {
       ...testEnv(),
-      ENVIRONMENT: "development",
+      ENVIRONMENT: environment,
       API_ORIGIN: "https://api.test",
       INTERNAL_API_HMAC_SECRET: "test-internal-signature-secret",
       API_SERVICE: { fetch: apiFetch },

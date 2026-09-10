@@ -1,0 +1,9 @@
+{
+  "accountId": "00000000000000000000000000000000",
+  "frontendHost": "app.example.invalid",
+  "apiHost": "api.example.invalid",
+  "processingHost": "processing.example.invalid",
+  "sender": "no-reply@example.invalid",
+  "apiImage": "registry.cloudflare.com/00000000000000000000000000000000/validated-api@sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "elevenlabsWebhookId": "replace-with-production-webhook-id"
+}

@@ -3,7 +3,7 @@ import type {
   EnrichmentSegment,
 } from "../types";
 
-export const AGENDA_ALIGNMENT_VERSION = "monotonic-anchors-v1";
+export const AGENDA_ALIGNMENT_VERSION = "monotonic-anchors-v2";
 
 export type AgendaAlignmentDraft = {
   agendaItemId: string;
@@ -163,12 +163,17 @@ function anchorCandidates(
   );
   const scored = segments.map((segment, index) => {
     const overlap = [...itemTerms].filter((term) => segmentTokens[index].has(term));
-    const base = itemTerms.size === 0 ? 0 : overlap.length / itemTerms.size;
+    const ownTerms = tokens(segment.text);
+    const direct = [...itemTerms].filter((term) => ownTerms.has(term));
+    // Neighbouring evidence helps fragmented titles, but must not place the
+    // boundary in a preceding sentence that never mentions this agenda item.
+    const base = itemTerms.size === 0 ? 0
+      : (0.85 * direct.length + 0.15 * overlap.length) / itemTerms.size;
     const exact = normalize(segment.text).includes(normalize(item.title)) ? 0.35 : 0;
     return {
       index,
       score: Math.min(1, base + exact),
-      terms: overlap,
+      terms: direct,
       fallback: false,
     };
   });

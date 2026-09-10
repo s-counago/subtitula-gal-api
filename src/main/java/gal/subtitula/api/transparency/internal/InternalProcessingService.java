@@ -587,6 +587,22 @@ public class InternalProcessingService {
     public JobContextResponse startJob(UUID jobId, StartJobCommand command) {
         ProcessingJob job = job(jobId);
         Project project = project(job.getProjectId());
+        if (job.getType() != ProcessingJobType.INGEST) {
+            throw conflict("Job is not an ingestion job");
+        }
+        // Workflow retries reuse the context read before this transaction. Return
+        // the committed transition without another event or version increment.
+        // A later attempt has advanced both versions further and must not match.
+        boolean currentVersions = job.getVersion() == command.expectedJobVersion()
+            && project.getVersion() == command.expectedProjectVersion();
+        boolean justCommittedVersions = job.getVersion() == command.expectedJobVersion() + 1
+            && project.getVersion() == command.expectedProjectVersion() + 1;
+        if (job.getState() == ProcessingJobState.RUNNING
+                && job.getCurrentStage() == ProcessingStage.SUBMITTING_PROVIDER
+                && project.getStatus() == InstitutionalProjectStatus.TRANSCRIBING
+                && (currentVersions || justCommittedVersions)) {
+            return jobContext(jobId);
+        }
         checkVersion(job.getVersion(), command.expectedJobVersion(), "processing job");
         checkVersion(project.getVersion(), command.expectedProjectVersion(), "project");
         if (job.getState() != ProcessingJobState.RUNNING) {
@@ -1034,6 +1050,7 @@ public class InternalProcessingService {
         List<IngestGuideCommand.Topic> requestedTopics =
             command.topics() == null ? List.of() : command.topics();
         validateGuide(requestedTopics, byAgenda, bySegment, projectSpeakers);
+        rejectExistingGuideEntityIds(requestedTopics);
 
         job.advance(ProcessingStage.ALIGNING_AGENDA);
         agendaAlignments.deleteByTranscriptRevisionId(revision.getId());
@@ -1228,6 +1245,26 @@ public class InternalProcessingService {
             null,
             null,
             job.getWorkflowInstanceId()));
+    }
+
+    private void rejectExistingGuideEntityIds(List<IngestGuideCommand.Topic> topics) {
+        List<UUID> topicIds = new ArrayList<>();
+        List<UUID> contributionIds = new ArrayList<>();
+        List<UUID> decisionIds = new ArrayList<>();
+        for (IngestGuideCommand.Topic topic : topics) {
+            topicIds.add(topic.id());
+            if (topic.contributions() != null) {
+                topic.contributions().forEach(value -> contributionIds.add(value.id()));
+            }
+            if (topic.decisions() != null) {
+                topic.decisions().forEach(value -> decisionIds.add(value.id()));
+            }
+        }
+        if (!guideTopics.findAllById(topicIds).isEmpty()
+                || !guideContributions.findAllById(contributionIds).isEmpty()
+                || !guideDecisions.findAllById(decisionIds).isEmpty()) {
+            throw conflict("Guide entity identifiers already belong to a saved guide");
+        }
     }
 
     private void validateAlignments(

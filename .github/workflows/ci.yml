@@ -37,6 +37,7 @@ jobs:
       - run: npm run typecheck:worker
       - run: npm run test:processing-worker
       - run: npm run test:search-evaluation
+      - run: npm run test:production-config
       - run: npm run deploy:dev:dry-run
       - run: ./mvnw -B -DskipTests compile
       - run: ./mvnw -B test

@@ -263,6 +263,21 @@ class DurableIngestionBoundaryTest extends AbstractIntegrationTest {
             .andExpect(jsonPath("$.stage").value("submitting_provider"))
             .andReturn().getResponse().getContentAsString());
 
+        Integer startedEvents = jdbc.queryForObject(
+            "select count(*) from processing_events where job_id = ?",
+            Integer.class, jobId);
+        mockMvc.perform(signed("POST", startPath, startBody))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.jobVersion").value(started.get("jobVersion").asLong()))
+            .andExpect(jsonPath("$.projectVersion").value(started.get("projectVersion").asLong()));
+        org.assertj.core.api.Assertions.assertThat(jdbc.queryForObject(
+            "select count(*) from processing_events where job_id = ?",
+            Integer.class, jobId)).isEqualTo(startedEvents);
+        mockMvc.perform(signed("POST", startPath,
+                "{\"expectedJobVersion\":0,\"expectedProjectVersion\":0}"))
+            .andExpect(status().isConflict())
+            .andExpect(jsonPath("$.error").value("processing_conflict"));
+
         String failurePath = "/internal/processing/jobs/" + jobId + "/failed";
         String failureBody = mapper.createObjectNode()
             .put("errorCode", "provider_unavailable")
@@ -291,6 +306,11 @@ class DurableIngestionBoundaryTest extends AbstractIntegrationTest {
             .andExpect(jsonPath("$.state").value("running"))
             .andExpect(jsonPath("$.stage").value("submitting_provider"))
             .andReturn().getResponse().getContentAsString());
+
+        // The start command from the original Workflow cannot admit a new attempt.
+        mockMvc.perform(signed("POST", startPath, startBody))
+            .andExpect(status().isConflict())
+            .andExpect(jsonPath("$.error").value("processing_conflict"));
 
         String providerRequestId = "scribe-request-123";
         String providerPath =

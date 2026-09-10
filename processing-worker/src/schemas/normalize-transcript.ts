@@ -47,6 +47,7 @@ const COMMON_SENTENCE_STARTERS = new Set([
   "una", "uno", "unos", "unas", "unha", "unhas", "uns", "tras", "pero", "porén",
   "primeiro", "primeira", "primer", "primero", "primera", "segundo", "segunda",
   "terceiro", "terceira", "tercer", "tercero", "tercera",
+  "non", "antes", "proponse", "propónse", "levantase", "levántase",
 ]);
 
 export function normalizeTranscript(

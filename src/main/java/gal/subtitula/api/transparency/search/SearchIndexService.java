@@ -120,11 +120,17 @@ public class SearchIndexService {
                 || workflowInstanceId.length() > 255) {
             throw new IllegalStateException("Index Workflow ID is invalid");
         }
-        job.assignWorkflow(workflowInstanceId);
+        // The scheduler and browser can race to dispatch this same queued job.
+        // Reuse its admitted Workflow rather than rejecting the second caller.
+        if (job.getWorkflowInstanceId() == null
+                || job.getState() == ProcessingJobState.FAILED_RETRYABLE) {
+            job.assignWorkflow(workflowInstanceId);
+        }
         jobs.flush();
         return new LexicalIndexResponse(
             publication.getProjectId(),
-            capabilities.hybridSearch());
+            capabilities.hybridSearch(),
+            job.getWorkflowInstanceId());
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

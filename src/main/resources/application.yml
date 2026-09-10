@@ -72,6 +72,7 @@ app:
     analytics-hmac-secret: ${SEARCH_ANALYTICS_HMAC_SECRET:}
     embedding-model: ${SEARCH_EMBEDDING_MODEL:@cf/baai/bge-m3}
     embedding-dimensions: ${SEARCH_EMBEDDING_DIMENSIONS:1024}
+    minimum-semantic-similarity: ${SEARCH_MINIMUM_SEMANTIC_SIMILARITY:0.32}
     embedding-microusd-per-million-input-tokens: ${SEARCH_EMBEDDING_MICRO_USD_PER_MILLION_INPUT_TOKENS:12000}
     estimated-chars-per-token: ${SEARCH_ESTIMATED_CHARS_PER_TOKEN:3}
   cors:

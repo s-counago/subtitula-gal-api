@@ -295,7 +295,7 @@ async function startPublicationIndex(
   }
   const api = new InternalApi(env);
   await api.assertProjectAccess(request, body.projectId);
-  const workflowInstanceId =
+  let workflowInstanceId =
     `index-${body.jobId}-${body.attemptId}`;
   try {
     const prepared = await api.prepareLexicalWorkflow(
@@ -307,6 +307,7 @@ async function startPublicationIndex(
     if (prepared.projectId !== body.projectId) {
       throw new HttpError(404, "publication_not_found");
     }
+    workflowInstanceId = prepared.workflowInstanceId ?? workflowInstanceId;
     await env.INDEX_PUBLICATION.createBatch([{
       id: workflowInstanceId,
       params: {
@@ -700,8 +701,11 @@ async function startEnrichment(
   const api = new InternalApi(env);
   await api.assertProjectAccess(request, projectId);
   const workflowInstanceId = `enrich-${body.jobId}-${body.attemptId}`;
+  const context = await api.enrichmentContext(body.jobId);
+  if (context.projectId !== projectId) {
+    throw new HttpError(404, "project_not_found");
+  }
   try {
-    const context = await api.enrichmentContext(body.jobId);
     await api.startEnrichment(body.jobId, {
       workflowInstanceId,
       expectedJobVersion: context.jobVersion,

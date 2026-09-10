@@ -310,7 +310,13 @@ class PublicationSnapshotBoundaryTest extends AbstractIntegrationTest {
                 "POST",
                 embeddingBase + "/lexical-workflow",
                 lexicalBody))
-            .andExpect(status().isOk());
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.workflowInstanceId").value(workflowInstanceId));
+        mockMvc.perform(signed("POST", embeddingBase + "/lexical-workflow",
+                mapper.createObjectNode().put("projectId", projectId.toString())
+                    .put("workflowInstanceId", "racing-dispatch-" + UUID.randomUUID()).toString()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.workflowInstanceId").value(workflowInstanceId));
         mockMvc.perform(signed(
                 "POST",
                 embeddingBase + "/lexical-index",

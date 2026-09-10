@@ -11,6 +11,13 @@ import java.util.Map;
 @RestControllerAdvice
 public class ApiExceptionHandler {
 
+    @ExceptionHandler(gal.subtitula.api.transparency.internal.InternalProcessingConflictException.class)
+    ResponseEntity<Map<String, String>> internalProcessingConflict() {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
+            "error", "processing_conflict",
+            "message", "Refresh the processing context and try again."));
+    }
+
     @ExceptionHandler(gal.subtitula.api.project.UnsupportedTranscriptionLanguageException.class)
     ResponseEntity<Map<String, String>> unsupportedTranscriptionLanguage() {
         return ResponseEntity.badRequest().body(Map.of(
