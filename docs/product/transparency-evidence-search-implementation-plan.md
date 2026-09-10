@@ -85,6 +85,10 @@ instead of shifting it to municipal staff.
 
 ## 3. Explicit non-goals
 
+Transcription is Galician-first, defaulting explicitly to `glg`. Spanish (`spa`)
+is the only optional alternative, confirmed by the user on 10 September 2026.
+Do not add other transcription languages or automatic language selection.
+
 - Do not replace the official minutes, agreements, electronic office, or document
   management system.
 - Do not call an automatic guide an official `acta`.
@@ -1120,7 +1124,7 @@ Only one phase should be “in progress.” Update this table after every comple
 | 5 — publication and public session | Implemented and boundary-tested locally | immutable snapshot, stable public page, playback/documents |
 | 6 — lexical public search | Implemented locally; labelled-corpus gate pending | exact/FTS/trigram search, filters, within-session/global UX |
 | 7 — hybrid search | Implemented dark; relevance/cost gate pending | embeddings, pgvector candidates, RRF, measured rollout |
-| 8 — pilot hardening | In progress | retry/rate-limit/cleanup/reindex/cost implemented; hosted load, accessibility and governance gates pending |
+| 8 — pilot hardening | In progress | real hosted ingest/webhook/Range and review UI smoke verified 10 September; downstream activation, hosted load, human task studies, accessibility and governance gates pending |
 
 ### Phase 0 — baseline and contracts
 
@@ -1461,6 +1465,7 @@ Rollback:
 
 | Date | Change | Reason |
 |---|---|---|
+| 2026-09-10 | Resumed authorized development rollout; real hosted ingest and browser review smoke; Windows Docker recovery; authenticated dev lifecycle controls; processor language/name-warning fixes | Current evidence in `../operations/capability-rollout-2026-09-10.md`. No phase graduated from synthetic smoke; production remains gated. |
 | 2026-09-08 | Recovered September Windows commits and unversioned flow diagrams; consolidated continuity and capability/credential inventory | No phase graduated or hosted capability enabled. September sessions report PlanetScale extensions and R2 account activation complete, with local E2E and hosted provisioning still pending. Separate Omarchy navigation/coherence work explicitly deferred by the user; see `../operations/continuity-2026-09-08.md`. |
 | 2026-07-29 | Initial canonical plan | Consolidates durable ingestion, evidence model, minimal human review, structured guide, public publication, and hybrid search discussion |
 | 2026-07-29 | Phase 0 completed; Phase 1 started | Captured a sanitized real Scribe v2 contract and metrics, fixed current provider assumptions, versioned schemas/API/UX contracts, added fail-closed flags and evaluation seeds, and passed 67 API tests plus 175 frontend tests/build |

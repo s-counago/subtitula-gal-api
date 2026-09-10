@@ -41,7 +41,7 @@
   "env": {
     "development": {
       "name": "subtitula-api-dev",
-      "workers_dev": false,
+      "workers_dev": true,
       "preview_urls": false,
       "vars": {
         "SPRING_PROFILES_ACTIVE": "dev",
@@ -54,8 +54,8 @@
         "ELEVENLABS_LANGUAGE_HINT": "glg",
         "CAPABILITY_DURABLE_INSTITUTIONAL_UPLOAD": "true",
         "CAPABILITY_NORMALIZED_TRANSCRIPT": "true",
-        "CAPABILITY_EXCEPTION_REVIEW": "false",
-        "CAPABILITY_AUTOMATIC_AGENDA": "false",
+        "CAPABILITY_EXCEPTION_REVIEW": "true",
+        "CAPABILITY_AUTOMATIC_AGENDA": "true",
         "CAPABILITY_STRUCTURED_GUIDE": "false",
         "CAPABILITY_PUBLIC_PUBLICATION": "false",
         "CAPABILITY_LEXICAL_SEARCH": "false",

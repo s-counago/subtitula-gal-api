@@ -13,6 +13,31 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class CreateProjectTest extends AbstractIntegrationTest {
 
     @Test
+    void spanishRequiresExplicitSelectionAndOtherLanguagesNeverReachScribe() throws Exception {
+        Cookie session = registerAndSession("selected-language@example.com");
+        var file = new MockMultipartFile("file", "clip.mp4", "video/mp4", new byte[]{1});
+        var previous = transcriber.next;
+        try {
+            transcriber.next = new TranscriptionResult("spa", previous.words());
+            mockMvc.perform(multipart("/projects").file(file).param("language", "spa")
+                    .with(csrf()).cookie(session))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.language").value("spa"));
+            assertThat(transcriber.calls).last().extracting(c -> c.languageHint()).isEqualTo("spa");
+            int callsBefore = transcriber.calls.size();
+            for (String language : java.util.List.of("eng", "fra", "auto")) {
+                mockMvc.perform(multipart("/projects").file(file).param("language", language)
+                        .with(csrf()).cookie(session))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.error").value("unsupported_transcription_language"));
+            }
+            assertThat(transcriber.calls).hasSize(callsBefore);
+        } finally {
+            transcriber.next = previous;
+        }
+    }
+
+    @Test
     void uploadCreatesProjectWithTranscribedWords() throws Exception {
         Cookie session = registerAndSession("creator@example.com");
         var file = new MockMultipartFile("file", "clip.mp4", "video/mp4", new byte[]{1, 2, 3});

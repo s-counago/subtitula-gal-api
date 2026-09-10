@@ -36,10 +36,11 @@ public class ProjectController {
                                   @RequestParam("file") MultipartFile file,
                                   @RequestParam(value = "name", required = false) String name,
                                   @RequestParam(value = "style", required = false) String styleJson,
-                                  @RequestParam(value = "workflowMode", required = false) String workflowMode)
+                                  @RequestParam(value = "workflowMode", required = false) String workflowMode,
+                                  @RequestParam(value = "language", required = false) String language)
             throws Exception {
         JsonNode style = (styleJson == null || styleJson.isBlank()) ? null : mapper.readTree(styleJson);
-        return ProjectResponse.from(service.createFromUpload(principal.userId(), file, name, style, workflowMode));
+        return ProjectResponse.from(service.createFromUpload(principal.userId(), file, name, style, workflowMode, language));
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -51,7 +52,7 @@ public class ProjectController {
         return ProjectResponse.from(service.createInstitutionalDraft(
             principal.userId(),
             request.name(),
-            request.language() == null || request.language().isBlank() ? "glg" : request.language(),
+            request.language(),
             request.sessionDate(),
             request.body(),
             request.location(),

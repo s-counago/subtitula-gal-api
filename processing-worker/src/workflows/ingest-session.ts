@@ -68,7 +68,7 @@ export class IngestSessionWorkflow extends WorkflowEntrypoint<
             return await submitTranscription(this.env, sourceUrl, {
               jobId: event.payload.jobId,
               workflowInstanceId: event.instanceId,
-            });
+            }, context.languageCode);
           } catch (error) {
             if (error instanceof ProviderError && !error.retryable) {
               throw new NonRetryableError(error.code);

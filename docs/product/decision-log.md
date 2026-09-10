@@ -2,6 +2,8 @@
 
 | Fecha | Estado | Decisión / hipótesis | Razón actual | Qué la validará o invalidará |
 |---|---|---|---|---|
+| 2026-09-10 | Adoptada por instrucción explícita | Gallego es el idioma principal y predeterminado; castellano es la única alternativa de transcripción. No hay selección automática ni otros idiomas. | Mantiene el foco del producto confirmado por el usuario. El idioma del proyecto debe llegar a Scribe en ambos caminos de subida. | Selector con exactamente dos opciones; API y processor rechazan otros idiomas antes de llamar al proveedor; smoke principal en gallego y secundario en castellano. |
+| 2026-09-10 | Adoptada | Control de pausa/reanudación únicamente de desarrollo, autenticado con un secreto específico y lectura del estado real del contenedor. | Cambiar variables del Worker no reinicia Spring; cerrar rutas públicas no prueba que el proceso se detuvo. | La pausa persiste, `/ping` devuelve 503 sin arrancar Spring y el cliente confirma `running:false`; credencial aislada y copia de recuperación en Bitwarden. |
 | 2026-07-12 | Adoptada | Un solo producto y editor para creador e institución. | Ambos necesitan el mismo objeto fundamental: medio, transcript, segmentos, subtítulos y salida. | Menos abandono y menos código duplicado; pruebas de tarea con ambos perfiles. |
 | 2026-07-12 | Adoptada | La intención se elige al entrar, pero se puede cambiar en el proyecto. | El modo configura ayudas y metadatos; no debe encerrar al usuario. | Usuarios capaces de reutilizar un vídeo sin crear duplicados. |
 | 2026-07-12 | Adoptada | Transparencia pública es una superficie abierta y separada del login. | La ciudadanía debe poder consultar sin convertirse en cliente de SaaS. | Tasa de éxito de búsqueda y enlaces compartidos. |

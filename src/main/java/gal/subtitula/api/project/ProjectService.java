@@ -1,7 +1,6 @@
 package gal.subtitula.api.project;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,17 +15,15 @@ public class ProjectService {
 
     private final ProjectRepository projects;
     private final TranscriptionClient transcription;
-    private final String languageHint;
 
-    public ProjectService(ProjectRepository projects, TranscriptionClient transcription,
-                          @Value("${app.elevenlabs.language-hint:}") String languageHint) {
+    public ProjectService(ProjectRepository projects, TranscriptionClient transcription) {
         this.projects = projects;
         this.transcription = transcription;
-        this.languageHint = languageHint;
     }
 
     @Transactional
-    public Project createFromUpload(UUID userId, MultipartFile file, String name, JsonNode style, String workflowMode) {
+    public Project createFromUpload(UUID userId, MultipartFile file, String name, JsonNode style, String workflowMode, String language) {
+        String languageHint = TranscriptionLanguage.select(language);
         byte[] media;
         try {
             media = file.getBytes();   // in-request only — never persisted
@@ -35,7 +32,7 @@ public class ProjectService {
         }
         TranscriptionResult result = transcription.transcribe(
             media, file.getOriginalFilename(), file.getContentType(),
-            (languageHint == null || languageHint.isBlank()) ? null : languageHint);
+            languageHint);
 
         double durationSec = result.words().stream().mapToDouble(Word::end).max().orElse(0);
         String projectName = (name == null || name.isBlank())
@@ -99,7 +96,7 @@ public class ProjectService {
         return projects.save(Project.createInstitutionalDraft(
             userId,
             name,
-            language,
+            TranscriptionLanguage.select(language),
             sessionDate,
             sessionBody,
             location,

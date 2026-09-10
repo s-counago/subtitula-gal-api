@@ -11,6 +11,13 @@ import java.util.Map;
 @RestControllerAdvice
 public class ApiExceptionHandler {
 
+    @ExceptionHandler(gal.subtitula.api.project.UnsupportedTranscriptionLanguageException.class)
+    ResponseEntity<Map<String, String>> unsupportedTranscriptionLanguage() {
+        return ResponseEntity.badRequest().body(Map.of(
+            "error", "unsupported_transcription_language",
+            "message", "Só se admite galego ou castelán."));
+    }
+
     @ExceptionHandler(EmailAlreadyRegisteredException.class)
     ResponseEntity<Map<String, String>> conflict(EmailAlreadyRegisteredException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT)

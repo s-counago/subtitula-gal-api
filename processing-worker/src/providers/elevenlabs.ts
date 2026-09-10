@@ -50,11 +50,16 @@ export async function submitTranscription(
   env: ProcessingEnv,
   sourceUrl: string,
   metadata: { jobId: string; workflowInstanceId: string },
+  languageCode?: string | null,
 ): Promise<{ requestId: string }> {
+  const selectedLanguage = languageCode?.trim().toLowerCase() || "glg";
+  if (selectedLanguage !== "glg" && selectedLanguage !== "spa") {
+    throw new ProviderError("provider_rejected", false);
+  }
   const form = new FormData();
   form.set("model_id", env.ELEVENLABS_MODEL_ID);
   form.set("source_url", sourceUrl);
-  form.set("language_code", env.ELEVENLABS_LANGUAGE_HINT);
+  form.set("language_code", selectedLanguage);
   form.set("diarize", "true");
   form.set("timestamps_granularity", "word");
   form.set("tag_audio_events", "true");

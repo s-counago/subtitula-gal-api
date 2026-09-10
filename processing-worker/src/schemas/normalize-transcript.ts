@@ -40,6 +40,14 @@ export type NormalizedTranscript = {
 const MAX_SEGMENT_MS = 30_000;
 const MAX_SEGMENT_CHARS = 500;
 const LOW_LOGPROBABILITY = -1;
+// Capitalization at the beginning of a sentence is not itself a name signal.
+// Keep unfamiliar tokens (including names such as María) and names elsewhere.
+const COMMON_SENTENCE_STARTERS = new Set([
+  "esta", "este", "estas", "estos", "estes", "esa", "ese", "esas", "eses", "esos",
+  "una", "uno", "unos", "unas", "unha", "unhas", "uns", "tras", "pero", "porén",
+  "primeiro", "primeira", "primer", "primero", "primera", "segundo", "segunda",
+  "terceiro", "terceira", "tercer", "tercero", "tercera",
+]);
 
 export function normalizeTranscript(
   transcription: ElevenLabsTranscription,
@@ -69,7 +77,12 @@ export function normalizeTranscript(
       return;
     }
     const properNames = [...new Set(
-      text.match(/\b[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}\b/g) ?? [],
+      [...text.matchAll(/(?<!\p{L})\p{Lu}\p{Ll}{2,}(?!\p{L})/gu)]
+        .filter((match) => {
+          const sentenceStart = /(?:^|[.!?…])\s*[¿¡"'«»]*\s*$/.test(text.slice(0, match.index));
+          return !sentenceStart || !COMMON_SENTENCE_STARTERS.has(match[0].toLowerCase());
+        })
+        .map((match) => match[0]),
     )].slice(0, 20);
     segments.push({
       sequence: segments.length,

@@ -67,6 +67,22 @@ describe("speaker-aware transcript normalization", () => {
     expect(() => normalizeTranscript({ text: "only a blob" }))
       .toThrow("transcript_words_missing");
   });
+
+  it("does not turn routine agenda and sentence starters into name warnings", () => {
+    const lines = [
+      "Primer punto: biblioteca.", "Segundo punto: transporte.",
+      "Terceiro punto: preguntas.", "Tras el debate, se aprueba.",
+      "Una intervención pregunta.", "Esta es una prueba para Subtitula.",
+    ];
+    const result = normalizeTranscript({ words: lines.map((text, i) => word(text, i, i + 1, "speaker_0")) });
+    expect(result.segments.map((segment) => segment.signals.properNameCandidates))
+      .toEqual([[], [], [], [], [], ["Subtitula"]]);
+  });
+
+  it("preserves accented names at sentence starts and within evidence", () => {
+    const result = normalizeTranscript({ words: [word("Ángela falou con María en Ézaro.", 0, 1, "speaker_0")] });
+    expect(result.segments[0].signals.properNameCandidates).toEqual(["Ángela", "María", "Ézaro"]);
+  });
 });
 
 function word(

@@ -35,6 +35,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 })
 class DurableIngestionBoundaryTest extends AbstractIntegrationTest {
 
+    @Test
+    void institutionalDraftDefaultsToGalicianAndAcceptsOnlyGalicianOrSpanish() throws Exception {
+        Cookie owner = registerAndSession("draft-languages@example.com");
+        for (String language : java.util.List.of("", "glg", "spa")) {
+            mockMvc.perform(post("/projects").cookie(owner).with(csrf())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("{\"name\":\"Proba\",\"language\":\"" + language + "\"}"))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.language").value(language.isEmpty() ? "glg" : language));
+        }
+        mockMvc.perform(post("/projects").cookie(owner).with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"name\":\"Proba\",\"language\":\"eng\"}"))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.error").value("unsupported_transcription_language"));
+    }
+
     private static final HexFormat HEX = HexFormat.of();
 
     @Autowired

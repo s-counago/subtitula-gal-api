@@ -1,5 +1,32 @@
 # Last session
 
+## Current handoff — 10 September 2026
+
+**Development resumed by explicit user request. The suspension below is historical.**
+Read [the current rollout evidence](docs/operations/capability-rollout-2026-09-10.md).
+The three public development routes are restored. Production remains gated and
+new payments require explicit authorization. GitHub deployment gates remain false
+while both `feature/transparency-evidence-search-integrated` branches are validated.
+
+Real R2 upload, ElevenLabs/webhook transcription, Range playback and a fresh Chrome
+editor login are verified. Runtime capabilities: durable upload, normalized
+transcript, exception review and automatic agenda true; four downstream capabilities false.
+API Worker `643943bf-b9db-44ba-b4aa-55fd46bcf9e2` adds authenticated development
+container controls. Its secret is installed and backed up in Bitwarden.
+Windows Docker recovery is integrated in the frontend launcher; stopped-start,
+healthy repeat passed. Current language-scope changes pass 83 API, 39 processor
+and 302 frontend tests plus builds/dry-runs; deploy is next. Product scope is
+Galician by default and Spanish only, without other languages or auto-selection.
+
+Next: deploy the two-language changes, finish the synthetic review and test agenda,
+guide, publication and search in order. A synthetic smoke does not prove the
+normal-session human-time/relevance/load/governance pilot gates. Keep Omarchy separate.
+The user will perform final credential rotations after development. The operations
+token was already replaced after verification-output exposure; the prior value is
+confirmed invalid and its replacement matches the saved Bitwarden recovery copy.
+
+## Historical handoff — 8 September 2026
+
 **Current override: hosted development is suspended at the user's request.**
 Read [the suspension record](docs/operations/hosted-suspension-2026-09-08.md)
 before the historical recovery notes below. Public/preview routes and Cron are

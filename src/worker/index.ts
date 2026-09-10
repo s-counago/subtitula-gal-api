@@ -1,4 +1,5 @@
 import { Container, getContainer } from "@cloudflare/containers";
+import { handleOperations, OPERATIONS_PATH } from "./operations";
 
 interface RuntimeSecrets {
   DB_URL: string;
@@ -9,6 +10,7 @@ interface RuntimeSecrets {
   ELEVENLABS_API_KEY: string;
   INTERNAL_API_HMAC_SECRET: string;
   SEARCH_ANALYTICS_HMAC_SECRET?: string;
+  HOSTED_OPERATIONS_TOKEN?: string;
 }
 
 type WorkerEnv = Env & RuntimeSecrets;
@@ -19,6 +21,28 @@ export class SubtitulaApiContainer extends Container<WorkerEnv> {
   pingEndpoint = "/ping";
   sleepAfter = "10m";
   enableInternet = true;
+
+  async operationsStatus(): Promise<{ suspended: boolean; running: boolean }> {
+    return {
+      suspended: (await this.ctx.storage.get<boolean>("operations:suspended")) === true,
+      running: this.ctx.container?.running === true,
+    };
+  }
+
+  async setSuspended(suspended: boolean): Promise<void> {
+    await this.ctx.storage.put("operations:suspended", suspended);
+    if (suspended) await this.stop();
+  }
+
+  override async fetch(request: Request): Promise<Response> {
+    if (await this.ctx.storage.get<boolean>("operations:suspended")) {
+      return Response.json({ error: "development_suspended" }, {
+        status: 503,
+        headers: { "cache-control": "no-store", "retry-after": "3600" },
+      });
+    }
+    return super.fetch(request);
+  }
 
   envVars: Record<string, string> = {
     SPRING_PROFILES_ACTIVE: this.env.SPRING_PROFILES_ACTIVE,
@@ -71,7 +95,12 @@ export class SubtitulaApiContainer extends Container<WorkerEnv> {
     EMAIL_DELIVERY_REQUIRED: this.env.EMAIL_DELIVERY_REQUIRED ?? "false",
   };
 
-  override onStart(): void {
+  override async onStart(): Promise<void> {
+    // A request admitted before suspension may finish starting afterwards.
+    if (await this.ctx.storage.get<boolean>("operations:suspended")) {
+      await this.stop();
+      return;
+    }
     console.log(JSON.stringify({ event: "subtitula_api_container_started" }));
   }
 
@@ -94,6 +123,13 @@ export class SubtitulaApiContainer extends Container<WorkerEnv> {
 
 export default {
   async fetch(request: Request, env: WorkerEnv): Promise<Response> {
+    if (new URL(request.url).pathname.startsWith(OPERATIONS_PATH)) {
+      if (env.SPRING_PROFILES_ACTIVE !== "dev") {
+        return new Response(null, { status: 404 });
+      }
+      return handleOperations(request, env.HOSTED_OPERATIONS_TOKEN,
+        () => getContainer(env.API_CONTAINER, "development-singleton"));
+    }
     const container = getContainer(env.API_CONTAINER, "development-singleton");
     return container.fetch(request);
   },
