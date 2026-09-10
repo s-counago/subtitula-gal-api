@@ -2,6 +2,8 @@ package gal.subtitula.api.auth;
 
 import gal.subtitula.api.support.AbstractIntegrationTest;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.RequestDispatcher;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
@@ -23,6 +25,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(properties = "app.ratelimit.capacity=1000")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 class CsrfProtectionTest extends AbstractIntegrationTest {
+    @Test
+    void errorDispatchPreservesStatusWithoutExposingDirectErrorRoute() throws Exception {
+        mockMvc.perform(get("/error"))
+            .andExpect(status().isUnauthorized());
+        mockMvc.perform(get("/error")
+                .with(request -> { request.setDispatcherType(DispatcherType.ERROR); return request; })
+                .requestAttr(RequestDispatcher.ERROR_STATUS_CODE, 500))
+            .andExpect(status().isInternalServerError());
+    }
 
     @Test
     void postWithoutCsrfTokenIsForbidden() throws Exception {

@@ -1,0 +1,36 @@
+{
+  "scope": "Synthetic development calibration; labels written from authored source recordings, before the paired search run. Not a representative institutional gold set.",
+  "acceptance": {
+    "lexicalTaskSuccessAt20Minimum": 0.8,
+    "hybridTaskSuccessAt20GainMinimum": 0.1,
+    "correctNoAnswerRateMinimum": 1,
+    "requestFailuresMaximum": 0,
+    "lexicalWarmP95MsMaximum": 5000,
+    "hybridWarmP95MsMaximum": 8000,
+    "hybridMrrRegressionMaximum": 0.05
+  },
+  "cases": [
+    {"id":"gl01","locale":"gl","query":"renovar as tubaxes da rúa do Río","intent":"exact_quote","pilot":"pilotGl","evidenceContains":["propón renovar"]},
+    {"id":"gl02","locale":"gl","query":"cando comezará a obra?","intent":"when","pilot":"pilotGl","evidenceContains":["primeiro luns de novembro"]},
+    {"id":"gl03","locale":"gl","query":"reducir as perdas na rede de abastecemento","intent":"paraphrase","pilot":"pilotGl","evidenceContains":["propón renovar"]},
+    {"id":"gl04","locale":"gl","query":"sala de estudo os domingos","intent":"exact_quote","pilot":"pilotGl","evidenceContains":["abrir unha sala de estudo"]},
+    {"id":"gl05","locale":"gl","query":"bibliotca municipal","intent":"typo","pilot":"pilotGl","evidenceContains":["biblioteca municipal"]},
+    {"id":"gl06","locale":"gl","query":"Río","intent":"name","pilot":"pilotGl","evidenceContains":["rúa do Río"]},
+    {"id":"gl07","locale":"gl","query":"estudar durante a fin de semana","intent":"paraphrase","pilot":"pilotGl","evidenceContains":["sala de estudo"]},
+    {"id":"gl08","locale":"gl","query":"informe sobre o persoal necesario","intent":"exact_quote","pilot":"pilotGl","evidenceContains":["informe sobre o persoal"]},
+    {"id":"gl09","locale":"gl","query":"quen respondeu sobre o inicio das obras?","intent":"who","pilot":"pilotGl","evidenceContains":["responde que empezará"],"note":"Evidence must retain the unidentified voice; the test does not authorize inventing a person's name."},
+    {"id":"gl10","locale":"gl","query":"proposta aprobada por unanimidade","intent":"decision","pilot":"pilotGl","evidenceContains":["aprobada por unanimidade"]},
+    {"id":"gl11","locale":"gl","query":"tubaxes","intent":"date","pilot":"pilotGl","filters":{"dateFrom":"2026-09-10","dateTo":"2026-09-10","language":"glg"},"evidenceContains":["propón renovar"]},
+    {"id":"es01","locale":"es","query":"reparación de las conducciones de agua","intent":"bilingual","pilot":"pilotGl","evidenceContains":["propón renovar"]},
+    {"id":"es02","locale":"es","query":"ampliar la frecuencia del autobús","intent":"exact_quote","pilot":"pilotEs","evidenceContains":["ampliar la frecuencia"]},
+    {"id":"es03","locale":"es","query":"primer sábado de octubre","intent":"when","pilot":"pilotEs","evidenceContains":["primer sábado de octubre"]},
+    {"id":"gl12","locale":"gl","query":"máis viaxes entre a estación e o centro sanitario","intent":"bilingual","pilot":"pilotEs","evidenceContains":["ampliar la frecuencia"]},
+    {"id":"gl13","locale":"gl","query":"horario de apertura para persoas que traballan","intent":"bilingual","pilot":"pilotEs","evidenceContains":["facilitar el estudio"]},
+    {"id":"gl14","locale":"gl","query":"proxecto dun aeroporto internacional","intent":"no_answer","expectedNoAnswer":true},
+    {"id":"gl15","locale":"gl","query":"taxa de residuos industriais","intent":"no_answer","expectedNoAnswer":true},
+    {"id":"gl16","locale":"gl","query":"subvencións para explotacións gandeiras","intent":"no_answer","expectedNoAnswer":true},
+    {"id":"es04","locale":"es","query":"construcción de una piscina olímpica","intent":"no_answer","expectedNoAnswer":true},
+    {"id":"es05","locale":"es","query":"licencias de pesca marítima","intent":"no_answer","expectedNoAnswer":true},
+    {"id":"gl17","locale":"gl","query":"biblioteca","intent":"no_answer_date","filters":{"dateFrom":"2027-01-01","dateTo":"2027-12-31"},"expectedNoAnswer":true}
+  ]
+}

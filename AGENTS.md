@@ -1,5 +1,11 @@
 # Repository guide
 
+The user resumed hosted development on 10 September 2026 for the capability
+rollout. Public development routes are restored; previews stay disabled.
+GitHub deployment gates remain false while the integration branches are validated.
+Production stays gated and new payments require explicit authorization. See
+`docs/operations/capability-rollout-2026-09-10.md` for current runtime evidence.
+
 This is the Spring Boot API repository. Its sibling frontend is `../subtitula-gal`; the workspace parent is not a Git repository. `develop` represents hosted development and `main` represents production. The `develop` workflow deploys the API Worker and Spring Container when the GitHub development variable `DEPLOY_ENABLED` is `true`; production remains gated.
 
 The canonical local launcher lives in the frontend repository: use `..\subtitula-gal\start-up.ps1` on native Windows, or `../subtitula-gal/start-up.sh` on Linux/WSL 2. Docker Desktop is required for PostgreSQL, Mailpit, and Testcontainers. Keep `mvnw` and shell scripts on LF line endings.
@@ -47,3 +53,9 @@ The API routes do not have an `/api` prefix. Health is `GET /ping`. Run `.\mvnw.
 The target compute is Cloudflare Containers. Containers are not persistent VMs: all disk is ephemeral, so never run PostgreSQL, use R2/FUSE as a PostgreSQL data directory, or store uploads there. Spring connects directly over JDBC/TLS to PlanetScale PostgreSQL provisioned through Cloudflare. This intentionally preserves JPA, Flyway, Spring Session JDBC, PostgreSQL SQL, and Testcontainers parity. Hyperdrive is not used because it is a Workers-only accelerator for an existing database, not a JDBC endpoint for the Spring Container. Future durable files belong in R2.
 
 Read `last_session.md` for the concise current handoff. Read `docs/operations/environment-contract.md`, `docs/operations/secrets-setup.md`, and `docs/operations/cloudflare-architecture.md` before changing deployment or runtime secrets.
+
+Before changing institutional sessions, durable media, transcript review, agenda
+alignment, structured guides, publication, public transparency, or search, read
+`docs/product/transparency-evidence-search-implementation-plan.md` completely. It is the
+canonical cross-repository plan; its minimal-human-review constraint and phase gates
+supersede older plan fragments.

@@ -14,6 +14,7 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.utility.DockerImageName;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -23,8 +24,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @Import(AbstractIntegrationTest.EmailTestConfig.class)
 public abstract class AbstractIntegrationTest {
 
+    protected static final String INTERNAL_HMAC_SECRET =
+        "test-internal-hmac-secret-at-least-32-bytes";
+
     public static final PostgreSQLContainer<?> POSTGRES =
-            new PostgreSQLContainer<>("postgres:17");
+            new PostgreSQLContainer<>(
+                DockerImageName.parse("pgvector/pgvector:pg17")
+                    .asCompatibleSubstituteFor("postgres"));
 
     static {
         POSTGRES.start();
@@ -35,8 +41,11 @@ public abstract class AbstractIntegrationTest {
         registry.add("spring.datasource.url", POSTGRES::getJdbcUrl);
         registry.add("spring.datasource.username", POSTGRES::getUsername);
         registry.add("spring.datasource.password", POSTGRES::getPassword);
+        registry.add("spring.datasource.hikari.maximum-pool-size", () -> 5);
+        registry.add("spring.datasource.hikari.minimum-idle", () -> 0);
         registry.add("spring.security.oauth2.client.registration.google.client-id", () -> "test-client-id");
         registry.add("spring.security.oauth2.client.registration.google.client-secret", () -> "test-client-secret");
+        registry.add("app.processing.internal-hmac-secret", () -> INTERNAL_HMAC_SECRET);
     }
 
     @Autowired

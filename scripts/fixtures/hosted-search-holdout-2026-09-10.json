@@ -1,0 +1,19 @@
+{
+  "scope": "Additional synthetic development queries labelled before their first search run, after the calibration threshold was fixed at 0.48. No representative institutional pilot is claimed.",
+  "cases": [
+    {"id":"h01","locale":"gl","query":"Que se decidiu sobre as fugas de auga na rúa do Río?","intent":"decision","pilot":"pilotGl","evidenceContains":["propón renovar","aprobada por unanimidade"]},
+    {"id":"h02","locale":"gl","query":"En que mes está previsto iniciar a renovación das tubaxes?","intent":"when","pilot":"pilotGl","evidenceContains":["primeiro luns de novembro"]},
+    {"id":"h03","locale":"gl","query":"un lugar para estudar durante a época de exames","intent":"paraphrase","pilot":"pilotGl","evidenceContains":["sala de estudo"]},
+    {"id":"h04","locale":"gl","query":"Que trámite falta antes de decidir sobre a apertura dos domingos?","intent":"paraphrase","pilot":"pilotGl","evidenceContains":["informe sobre o persoal"]},
+    {"id":"h05","locale":"es","query":"¿Qué día de la semana se abrirá la biblioteca municipal?","intent":"when","pilot":"pilotEs","evidenceContains":["los sábados de diez a dos"]},
+    {"id":"h06","locale":"es","query":"¿Cuándo empezará el nuevo horario?","intent":"when","pilot":"pilotEs","evidenceContains":["primer sábado de octubre"]},
+    {"id":"h07","locale":"es","query":"¿Qué conexión de autobús se quiere reforzar?","intent":"paraphrase","pilot":"pilotEs","evidenceContains":["ampliar la frecuencia"]},
+    {"id":"h08","locale":"gl","query":"Houbo votación favorable sobre o novo horario dos sábados?","intent":"bilingual","pilot":"pilotEs","evidenceContains":["aprobada por unanimidad"]},
+    {"id":"h09","locale":"gl","query":"A ampliación do servizo de autobús quedou aprobada?","intent":"bilingual","pilot":"pilotEs","evidenceContains":["No se adopta ningún acuerdo"]},
+    {"id":"h10","locale":"gl","query":"Que se respondeu cando preguntaron polas obras da rúa do Río?","intent":"who","pilot":"pilotGl","evidenceContains":["responde que empezará"]},
+    {"id":"h11","locale":"gl","query":"subida do imposto de circulación","intent":"no_answer","expectedNoAnswer":true},
+    {"id":"h12","locale":"gl","query":"instalación dunha rede de fibra óptica rural","intent":"no_answer","expectedNoAnswer":true},
+    {"id":"h13","locale":"es","query":"plan de protección del litoral","intent":"no_answer","expectedNoAnswer":true},
+    {"id":"h14","locale":"es","query":"normativa de alquiler turístico","intent":"no_answer","expectedNoAnswer":true}
+  ]
+}

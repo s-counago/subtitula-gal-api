@@ -1,5 +1,11 @@
 # Contrato operativo de entornos
 
+**8 septiembre 2026: development suspendido por petición del usuario.**
+Las puertas de despliegue están en `false`; rutas públicas, previews y Cron
+desactivados. Véase [registro de suspensión](hosted-suspension-2026-09-08.md).
+Las instrucciones de despliegue siguientes describen cómo funciona el sistema,
+no autorizan reactivarlo.
+
 Este documento traduce la estrategia de ramas a un despliegue seguro. No contiene secretos ni habilita proveedores.
 
 ## Flujo de Git
@@ -24,19 +30,33 @@ La única excepción temporal es de transporte de correo, elegida por variable y
 
 No existe fallback hospedado.
 
-El frontend de dev se construye con `NEXT_PUBLIC_API_URL=/backend`, `NEXT_PUBLIC_EMAIL_DELIVERY_ENABLED=false` y `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true`. Oculta temporalmente verificación y recuperación por correo, pero habilita contraseña, Google y el resto de la aplicación. Local habilita ambas capacidades; el futuro prod también las habilitará después de incorporar dominio y correo.
+El frontend de dev se construye con `NEXT_PUBLIC_API_URL=/backend`,
+`NEXT_PUBLIC_PROCESSING_URL=/processing`,
+`NEXT_PUBLIC_EMAIL_DELIVERY_ENABLED=false` y
+`NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true`. Oculta temporalmente verificación y
+recuperación por correo, pero habilita contraseña, Google y el resto de la
+aplicación. Local habilita ambas capacidades; el futuro prod también las
+habilitará después de incorporar dominio y correo.
 
 ## URLs de la fase actual
 
 Al crear una cuenta de Workers, Cloudflare asigna `<account-subdomain>.workers.dev`. Cada Worker queda en `<worker-name>.<account-subdomain>.workers.dev`; no hace falta comprar ni incorporar una zona DNS.
 
-| Entorno | Frontend | API | Callback OAuth de Google |
-|---|---|---|---|
-| Local | `http://localhost:3000` | `http://localhost:8080` | `http://localhost:8080/login/oauth2/code/google` |
-| Desarrollo remoto | `https://subtitula-web-dev.s-counago00.workers.dev` | `https://subtitula-api-dev.s-counago00.workers.dev` | `https://subtitula-web-dev.s-counago00.workers.dev/backend/login/oauth2/code/google` |
-| Producción real | Definida en el [anexo de lanzamiento](custom-domain-launch-annex.md) | Definida en el anexo | Definida en el anexo |
+| Entorno | Frontend | API | Processor | Callback OAuth de Google |
+|---|---|---|---|---|
+| Local | `http://localhost:3000` | `http://localhost:8080` | `http://localhost:8787` | `http://localhost:8080/login/oauth2/code/google` |
+| Desarrollo remoto | `https://subtitula-web-dev.s-counago00.workers.dev` | `https://subtitula-api-dev.s-counago00.workers.dev` | `https://subtitula-processing-dev.s-counago00.workers.dev` (pendiente de provisionar) | `https://subtitula-web-dev.s-counago00.workers.dev/backend/login/oauth2/code/google` |
+| Producción real | Definida en el [anexo de lanzamiento](custom-domain-launch-annex.md) | Definida en el anexo | Definida en el anexo | Definida en el anexo |
 
-Los Workers son `subtitula-web-dev` y `subtitula-api-dev`. Como `workers.dev` está en la Public Suffix List, sus dos hostnames son sitios distintos para cookies. El navegador llama al gateway same-origin `/backend/*` del frontend; este elimina `/backend` y reenvía al API Worker mediante el service binding `API_SERVICE`. No se usa `fetch()` público entre Workers de la misma zona porque Cloudflare lo rechaza con error 1042. Las rutas Spring siguen siendo `/ping`, `/register`, etc. y no ganan un prefijo `/api`.
+Los Workers son `subtitula-web-dev`, `subtitula-api-dev` y, cuando se ejecute
+el gate de transparencia, `subtitula-processing-dev`. Como `workers.dev` está
+en la Public Suffix List, sus hostnames son sitios distintos para cookies. El
+navegador llama a los gateways same-origin `/backend/*` y `/processing/*` del
+frontend. Estos usan respectivamente `API_SERVICE` y `PROCESSING_SERVICE`.
+El processor usa a su vez `API_SERVICE` para comandos HMAC internos. No se usa
+`fetch()` público entre Workers de la misma zona porque Cloudflare lo rechaza
+con error 1042. Las rutas Spring siguen siendo `/ping`, `/register`, etc. y no
+ganan un prefijo `/api`.
 
 `workers.dev` es adecuado para desarrollo y una demo pre-lanzamiento, no para producción crítica. La configuración de producción y sus credenciales siguen aisladas, pero no se provisiona la base HA ni se habilita el despliegue hasta activar el dominio del anexo. Si se necesita un ensayo de promoción antes, se pueden reservar temporalmente `subtitula-web-prod` y `subtitula-api-prod` bajo el mismo `workers.dev`, sin tratarlos como lanzamiento público.
 
@@ -72,8 +92,12 @@ Google funciona localmente y en hosted dev. La misma configuración Spring lee `
 2. Hecho: PlanetScale, Flyway/JDBC/TLS, gateway, CSRF, cookie/sesión, registro, logout y login hospedados.
 3. Hecho: `DEPLOY_ENABLED=true`; credenciales runtime instaladas en Cloudflare y bootstrap eliminado de GitHub.
 4. Hecho: registro y entrega local capturada por Mailpit.
-5. Pendiente: probar carga/transcripción real y registrar latencia/cuota/coste.
+5. Hecho en baseline: contrato real Scribe v2 sanitizado y coste/latencia
+   documentados. Pendiente: smoke hosted del nuevo camiño R2/Workflow.
 6. Hecho: inicio y callback de Google atraviesan el gateway same-origin; `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true`.
+7. Pendiente: habilitar pgvector en PlanetScale antes de que Flyway ejecute V17,
+   crear R2/processor/Workflows y seguir
+   [el runbook do piloto](transparency-pilot-runbook.md).
 
 ## Qué se pospone
 

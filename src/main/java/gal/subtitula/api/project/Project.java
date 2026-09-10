@@ -1,11 +1,13 @@
 package gal.subtitula.api.project;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import gal.subtitula.api.transparency.lifecycle.InstitutionalProjectStatus;
 import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -55,11 +57,43 @@ public class Project {
     @Column(name = "approved_at")
     private Instant approvedAt;
 
+    @Column(name = "organization_id")
+    private UUID organizationId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private InstitutionalProjectStatus status;
+
+    @Column(name = "session_date")
+    private LocalDate sessionDate;
+
+    @Column(name = "session_body")
+    private String sessionBody;
+
+    @Column
+    private String location;
+
+    @Column(name = "session_type")
+    private String sessionType;
+
+    @Column(name = "failure_code")
+    private String failureCode;
+
+    @Column(name = "failure_message", length = 500)
+    private String failureMessage;
+
+    @Column(name = "archived_at")
+    private Instant archivedAt;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @Version
+    @Column(nullable = false)
+    private long version;
 
     protected Project() {}
 
@@ -75,9 +109,64 @@ public class Project {
         p.style = style;
         p.speedFactor = 1.0;
         p.workflowMode = workflowMode;
+        p.status = "institution".equals(workflowMode)
+            ? InstitutionalProjectStatus.REVIEW_REQUIRED
+            : InstitutionalProjectStatus.READY;
         p.createdAt = Instant.now();
         p.updatedAt = p.createdAt;
         return p;
+    }
+
+    public static Project createInstitutionalDraft(
+            UUID userId,
+            String name,
+            String language,
+            LocalDate sessionDate,
+            String sessionBody,
+            String location,
+            String sessionType) {
+        Project project = create(
+            userId,
+            name,
+            language,
+            0,
+            List.of(),
+            null,
+            "institution");
+        project.status = InstitutionalProjectStatus.DRAFT;
+        project.sessionDate = sessionDate;
+        project.sessionBody = sessionBody;
+        project.location = location;
+        project.sessionType = sessionType;
+        return project;
+    }
+
+    public void transitionTo(InstitutionalProjectStatus target) {
+        if (status == target) {
+            return;
+        }
+        if (!status.canTransitionTo(target)) {
+            throw new IllegalStateException("Invalid project transition " + status + " -> " + target);
+        }
+        status = target;
+        if (target != InstitutionalProjectStatus.PROCESSING_FAILED) {
+            failureCode = null;
+            failureMessage = null;
+        }
+    }
+
+    public void fail(String code, String safeMessage) {
+        if (status != InstitutionalProjectStatus.PROCESSING_FAILED) {
+            if (status == InstitutionalProjectStatus.ARCHIVED
+                    || status == InstitutionalProjectStatus.PUBLISHED
+                    || status == InstitutionalProjectStatus.READY
+                    || status == InstitutionalProjectStatus.REVIEW_REQUIRED) {
+                throw new IllegalStateException("Project cannot fail from " + status);
+            }
+            status = InstitutionalProjectStatus.PROCESSING_FAILED;
+        }
+        failureCode = code;
+        failureMessage = safeMessage;
     }
 
     @PreUpdate void touch() { this.updatedAt = Instant.now(); }
@@ -105,6 +194,16 @@ public class Project {
     public boolean isApproved() { return approvedAt != null; }
     /** Approval is one-way: a second call must not move the recorded instant. */
     public void approve() { if (approvedAt == null) this.approvedAt = Instant.now(); }
+    public UUID getOrganizationId() { return organizationId; }
+    public InstitutionalProjectStatus getStatus() { return status; }
+    public LocalDate getSessionDate() { return sessionDate; }
+    public String getSessionBody() { return sessionBody; }
+    public String getLocation() { return location; }
+    public String getSessionType() { return sessionType; }
+    public String getFailureCode() { return failureCode; }
+    public String getFailureMessage() { return failureMessage; }
+    public Instant getArchivedAt() { return archivedAt; }
     public Instant getCreatedAt() { return createdAt; }
     public Instant getUpdatedAt() { return updatedAt; }
+    public long getVersion() { return version; }
 }

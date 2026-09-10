@@ -41,6 +41,8 @@
   "env": {
     "development": {
       "name": "subtitula-api-dev",
+      "workers_dev": true,
+      "preview_urls": false,
       "vars": {
         "SPRING_PROFILES_ACTIVE": "dev",
         "EMAIL_PROVIDER": "disabled",
@@ -50,6 +52,19 @@
         "DB_POOL_CONNECTION_TIMEOUT_MS": "10000",
         "ELEVENLABS_MODEL_ID": "scribe_v2",
         "ELEVENLABS_LANGUAGE_HINT": "glg",
+        "CAPABILITY_DURABLE_INSTITUTIONAL_UPLOAD": "true",
+        "CAPABILITY_NORMALIZED_TRANSCRIPT": "true",
+        "CAPABILITY_EXCEPTION_REVIEW": "true",
+        "CAPABILITY_AUTOMATIC_AGENDA": "true",
+        "CAPABILITY_STRUCTURED_GUIDE": "true",
+        "CAPABILITY_PUBLIC_PUBLICATION": "true",
+        "CAPABILITY_LEXICAL_SEARCH": "true",
+        "CAPABILITY_HYBRID_SEARCH": "true",
+        "SEARCH_EMBEDDING_MODEL": "@cf/baai/bge-m3",
+        "SEARCH_EMBEDDING_DIMENSIONS": "1024",
+        "SEARCH_MINIMUM_SEMANTIC_SIMILARITY": "0.48",
+        "SEARCH_EMBEDDING_MICRO_USD_PER_MILLION_INPUT_TOKENS": "12000",
+        "SEARCH_ESTIMATED_CHARS_PER_TOKEN": "3",
         "CORS_ORIGINS": "https://subtitula-web-dev.s-counago00.workers.dev",
         "FRONTEND_URL": "https://subtitula-web-dev.s-counago00.workers.dev",
         "GOOGLE_REDIRECT_URI": "https://subtitula-web-dev.s-counago00.workers.dev/backend/login/oauth2/code/google"

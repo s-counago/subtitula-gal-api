@@ -1,7 +1,6 @@
 package gal.subtitula.api.project;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -9,23 +8,22 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.UUID;
+import java.time.LocalDate;
 
 @Service
 public class ProjectService {
 
     private final ProjectRepository projects;
     private final TranscriptionClient transcription;
-    private final String languageHint;
 
-    public ProjectService(ProjectRepository projects, TranscriptionClient transcription,
-                          @Value("${app.elevenlabs.language-hint:}") String languageHint) {
+    public ProjectService(ProjectRepository projects, TranscriptionClient transcription) {
         this.projects = projects;
         this.transcription = transcription;
-        this.languageHint = languageHint;
     }
 
     @Transactional
-    public Project createFromUpload(UUID userId, MultipartFile file, String name, JsonNode style, String workflowMode) {
+    public Project createFromUpload(UUID userId, MultipartFile file, String name, JsonNode style, String workflowMode, String language) {
+        String languageHint = TranscriptionLanguage.select(language);
         byte[] media;
         try {
             media = file.getBytes();   // in-request only — never persisted
@@ -34,7 +32,7 @@ public class ProjectService {
         }
         TranscriptionResult result = transcription.transcribe(
             media, file.getOriginalFilename(), file.getContentType(),
-            (languageHint == null || languageHint.isBlank()) ? null : languageHint);
+            languageHint);
 
         double durationSec = result.words().stream().mapToDouble(Word::end).max().orElse(0);
         String projectName = (name == null || name.isBlank())
@@ -84,6 +82,25 @@ public class ProjectService {
     private static boolean touchesContent(gal.subtitula.api.project.dto.ProjectUpdateRequest req) {
         return req.words() != null || req.style() != null || req.speedFactor() != null
             || req.baseBox() != null || req.segments() != null;
+    }
+
+    @Transactional
+    public Project createInstitutionalDraft(
+            UUID userId,
+            String name,
+            String language,
+            LocalDate sessionDate,
+            String sessionBody,
+            String location,
+            String sessionType) {
+        return projects.save(Project.createInstitutionalDraft(
+            userId,
+            name,
+            TranscriptionLanguage.select(language),
+            sessionDate,
+            sessionBody,
+            location,
+            sessionType));
     }
 
     private static String normalizeWorkflowMode(String workflowMode) {

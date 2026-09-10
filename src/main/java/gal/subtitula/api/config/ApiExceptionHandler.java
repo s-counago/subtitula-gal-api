@@ -11,6 +11,20 @@ import java.util.Map;
 @RestControllerAdvice
 public class ApiExceptionHandler {
 
+    @ExceptionHandler(gal.subtitula.api.transparency.internal.InternalProcessingConflictException.class)
+    ResponseEntity<Map<String, String>> internalProcessingConflict() {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
+            "error", "processing_conflict",
+            "message", "Refresh the processing context and try again."));
+    }
+
+    @ExceptionHandler(gal.subtitula.api.project.UnsupportedTranscriptionLanguageException.class)
+    ResponseEntity<Map<String, String>> unsupportedTranscriptionLanguage() {
+        return ResponseEntity.badRequest().body(Map.of(
+            "error", "unsupported_transcription_language",
+            "message", "Só se admite galego ou castelán."));
+    }
+
     @ExceptionHandler(EmailAlreadyRegisteredException.class)
     ResponseEntity<Map<String, String>> conflict(EmailAlreadyRegisteredException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
@@ -56,5 +70,48 @@ public class ApiExceptionHandler {
     ResponseEntity<Map<String, String>> fontNotFound() {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
             .body(Map.of("error", "not_found", "message", "Font not found."));
+    }
+
+    @ExceptionHandler(gal.subtitula.api.transparency.review.ReviewConflictException.class)
+    ResponseEntity<Map<String, String>> reviewConflict() {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+            .body(Map.of(
+                "error", "review_conflict",
+                "message", "Refresh the review state and try again."));
+    }
+
+    @ExceptionHandler(gal.subtitula.api.transparency.TransparencyStateConflictException.class)
+    ResponseEntity<Map<String, String>> transparencyConflict() {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+            .body(Map.of(
+                "error", "transparency_conflict",
+                "message", "Refresh the session state and try again."));
+    }
+
+    @ExceptionHandler(gal.subtitula.api.transparency.search.SearchRequestException.class)
+    ResponseEntity<Map<String, String>> invalidSearch(
+            gal.subtitula.api.transparency.search.SearchRequestException exception) {
+        return ResponseEntity.badRequest()
+            .body(Map.of(
+                "error", "invalid_search",
+                "message", exception.getMessage()));
+    }
+
+    @ExceptionHandler(gal.subtitula.api.transparency.search.SearchUnavailableException.class)
+    ResponseEntity<Map<String, String>> searchUnavailable() {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+            .body(Map.of(
+                "error", "search_unavailable",
+                "message", "Public search is temporarily unavailable."));
+    }
+
+    @ExceptionHandler(gal.subtitula.api.transparency.capability.CapabilityDisabledException.class)
+    ResponseEntity<Map<String, String>> capabilityDisabled(
+            gal.subtitula.api.transparency.capability.CapabilityDisabledException exception) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body(Map.of(
+                "error", "capability_disabled",
+                "capability", exception.capability(),
+                "message", "This capability is not enabled in this environment."));
     }
 }

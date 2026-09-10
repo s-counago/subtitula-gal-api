@@ -1,9 +1,6 @@
-Exit code: 0
-Wall time: 0.7 seconds
-Output:
 # Subtitula — centro de producto y mercado
 
-**Estado:** borrador operativo · **Actualizado:** 13 de julio de 2026
+**Estado:** borrador operativo · **Actualizado:** 30 de julio de 2026
 
 Este directorio convierte la conversación de estrategia en un artefacto que se puede mantener. No sustituye a Linear o GitHub Issues cuando haya equipo: por ahora sirve de fuente de verdad legible y de briefing para diseño y desarrollo.
 
@@ -15,6 +12,13 @@ La entrada comercial es la accesibilidad y el ahorro operativo; el valor públic
 
 ## Contenido
 
+- [Continuidad consolidada del 8 de septiembre](../operations/continuity-2026-09-08.md): conversaciones de Claude, tabla de capacidades, claves pendientes y trabajo de Omarchy aplazado.
+- [Arquitectura y flujos](architecture-flows.md): diagramas Mermaid recuperados de la conversación de agosto.
+- [Sala de control](subtitula-sala-de-control.html): visualización de nueve flujos, recuperada de septiembre; es una instantánea explicativa, no un monitor live.
+- [Plan canónico de evidencia, enriquecimiento y búsqueda](transparency-evidence-search-implementation-plan.md): implementación completa y por fases de vídeo durable, revisión humana mínima, guía estructurada, publicación y búsqueda híbrida. Toda sesión futura que trabaje en este flujo debe empezar aquí.
+- [Contrato API de transparencia v1](transparency-api-contract-v1.md): formas HTTP, precondiciones y DTOs públicos/internos.
+- [Contrato UX de transparencia](transparency-ux-acceptance.md): escenarios de tarea, textos gallegos y accesibilidad.
+- [Línea base Scribe v2](scribe-v2-provider-baseline.md): fixture público sanitizado, métricas y comportamiento observado.
 - [Refactor de interfaz](product-refactor.md): arquitectura, pantallas y modelo de datos para los tres flujos.
 - [Backlog priorizado](backlog.md): trabajo de producto, tecnología, investigación y validación.
 - [Mercado y competidores](market-watch.md): proveedores, productos análogos, precios públicos y huecos por investigar.
@@ -23,6 +27,7 @@ La entrada comercial es la accesibilidad y el ahorro operativo; el valor públic
 - [Contrato operativo de entornos](../operations/environment-contract.md): ramas, GitHub Environments, URLs y requisitos para desplegar.
 - [Arquitectura Cloudflare-first](../operations/cloudflare-architecture.md): cómputo, base de datos, correo, almacenamiento y orden de migración.
 - [Configuración de secretos](../operations/secrets-setup.md): runbook paso a paso para obtener, custodiar, instalar y rotar cada valor de local, dev y producción.
+- [Runbook del piloto de transparencia](../operations/transparency-pilot-runbook.md): prerrequisitos de pgvector/R2, rollout por capacidades, métricas, retención, restore y rollback.
 - [Anexo de lanzamiento](../operations/custom-domain-launch-annex.md): dominio propio, correo hospedado, Google público y producción cuando el piloto lo justifique.
 - [Tablero operativo](dashboard.html): vista navegable de tareas, investigación, mercado, decisiones y documentos.
 - [Instantánea de datos del tablero](dashboard-data.json): fichero intercambiable para conservar cambios entre ordenadores.

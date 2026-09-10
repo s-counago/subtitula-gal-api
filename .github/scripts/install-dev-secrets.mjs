@@ -39,6 +39,10 @@ const requiredSendKeys = [
   "GOOGLE_CLIENT_ID_DEV",
   "GOOGLE_CLIENT_SECRET_DEV",
   "ELEVENLABS_API_KEY_DEV",
+  "ELEVENLABS_WEBHOOK_SECRET_DEV",
+  "INTERNAL_API_HMAC_SECRET_DEV",
+  "R2_S3_ACCESS_KEY_ID_DEV",
+  "R2_S3_SECRET_ACCESS_KEY_DEV",
 ];
 for (const key of requiredSendKeys) {
   if (!supplied.get(key)) throw new Error(`Bitwarden Send is missing required field ${key}.`);
@@ -56,9 +60,14 @@ const workerSecrets = {
   GOOGLE_CLIENT_ID: supplied.get("GOOGLE_CLIENT_ID_DEV"),
   GOOGLE_CLIENT_SECRET: supplied.get("GOOGLE_CLIENT_SECRET_DEV"),
   ELEVENLABS_API_KEY: supplied.get("ELEVENLABS_API_KEY_DEV"),
+  INTERNAL_API_HMAC_SECRET: supplied.get("INTERNAL_API_HMAC_SECRET_DEV"),
 };
+const searchAnalyticsSecret = supplied.get("SEARCH_ANALYTICS_HMAC_SECRET_DEV");
+if (searchAnalyticsSecret) {
+  workerSecrets.SEARCH_ANALYTICS_HMAC_SECRET = searchAnalyticsSecret;
+}
 
-const uploaded = spawnSync(
+const uploadedApi = spawnSync(
   process.platform === "win32" ? "npx.cmd" : "npx",
   ["wrangler", "secret", "bulk", "--env", "development"],
   {
@@ -68,8 +77,40 @@ const uploaded = spawnSync(
     stdio: ["pipe", "inherit", "inherit"],
   },
 );
-if (uploaded.status !== 0) {
+if (uploadedApi.status !== 0) {
   throw new Error("Cloudflare rejected the development Worker secret upload.");
 }
 
-console.log(`Installed ${Object.keys(workerSecrets).length} development Worker secrets.`);
+const processingSecrets = {
+  ELEVENLABS_API_KEY: supplied.get("ELEVENLABS_API_KEY_DEV"),
+  ELEVENLABS_WEBHOOK_SECRET: supplied.get("ELEVENLABS_WEBHOOK_SECRET_DEV"),
+  INTERNAL_API_HMAC_SECRET: supplied.get("INTERNAL_API_HMAC_SECRET_DEV"),
+  R2_S3_ACCESS_KEY_ID: supplied.get("R2_S3_ACCESS_KEY_ID_DEV"),
+  R2_S3_SECRET_ACCESS_KEY: supplied.get("R2_S3_SECRET_ACCESS_KEY_DEV"),
+};
+const uploadedProcessing = spawnSync(
+  process.platform === "win32" ? "npx.cmd" : "npx",
+  [
+    "wrangler",
+    "secret",
+    "bulk",
+    "--config",
+    "processing-worker/wrangler.jsonc",
+    "--env",
+    "development",
+  ],
+  {
+    input: JSON.stringify(processingSecrets),
+    encoding: "utf8",
+    env: process.env,
+    stdio: ["pipe", "inherit", "inherit"],
+  },
+);
+if (uploadedProcessing.status !== 0) {
+  throw new Error("Cloudflare rejected the processing Worker secret upload.");
+}
+
+console.log(
+  `Installed ${Object.keys(workerSecrets).length} API and `
+    + `${Object.keys(processingSecrets).length} processing Worker secrets.`,
+);

@@ -55,6 +55,26 @@ server:
         same-site: lax
 
 app:
+  capabilities:
+    durable-institutional-upload: ${CAPABILITY_DURABLE_INSTITUTIONAL_UPLOAD:false}
+    normalized-transcript: ${CAPABILITY_NORMALIZED_TRANSCRIPT:true}
+    exception-review: ${CAPABILITY_EXCEPTION_REVIEW:false}
+    automatic-agenda: ${CAPABILITY_AUTOMATIC_AGENDA:false}
+    structured-guide: ${CAPABILITY_STRUCTURED_GUIDE:false}
+    public-publication: ${CAPABILITY_PUBLIC_PUBLICATION:false}
+    lexical-search: ${CAPABILITY_LEXICAL_SEARCH:false}
+    hybrid-search: ${CAPABILITY_HYBRID_SEARCH:false}
+  processing:
+    internal-hmac-secret: ${INTERNAL_API_HMAC_SECRET:}
+  search:
+    # Blank disables query/click persistence. When configured, only a keyed
+    # digest and bounded filter metadata are stored; raw query text is never stored.
+    analytics-hmac-secret: ${SEARCH_ANALYTICS_HMAC_SECRET:}
+    embedding-model: ${SEARCH_EMBEDDING_MODEL:@cf/baai/bge-m3}
+    embedding-dimensions: ${SEARCH_EMBEDDING_DIMENSIONS:1024}
+    minimum-semantic-similarity: ${SEARCH_MINIMUM_SEMANTIC_SIMILARITY:0.32}
+    embedding-microusd-per-million-input-tokens: ${SEARCH_EMBEDDING_MICRO_USD_PER_MILLION_INPUT_TOKENS:12000}
+    estimated-chars-per-token: ${SEARCH_ESTIMATED_CHARS_PER_TOKEN:3}
   cors:
     allowed-origins: ${CORS_ORIGINS:http://localhost:3000}
   frontend:
