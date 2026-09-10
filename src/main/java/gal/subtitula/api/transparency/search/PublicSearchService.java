@@ -426,7 +426,8 @@ public class PublicSearchService {
         List<String> bounded = keywords.stream().limit(24).toList();
         String keywordPhrase = String.join(" ", bounded);
         String tsQuery = bounded.stream()
-            .map(token -> token + ":*")
+            // Short words are complete terms: "plan" must not match "plantea".
+            .map(token -> token.length() >= 5 ? token + ":*" : token)
             .collect(java.util.stream.Collectors.joining(" | "));
         return new PreparedQuery(
             original,

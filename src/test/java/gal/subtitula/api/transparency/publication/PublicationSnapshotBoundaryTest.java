@@ -454,6 +454,13 @@ class PublicationSnapshotBoundaryTest extends AbstractIntegrationTest {
                 "$.publicSearch.estimatedHybridQueryCost[0].microunits")
                 .value(org.hamcrest.Matchers.greaterThan(0)));
 
+        jdbc.update("update search_documents set search_vector = to_tsvector('simple', ?) "
+            + "where publication_id = ? and document_kind = 'TOPIC'",
+            "Se plantea ampliar la frecuencia del autobús", UUID.fromString(publicationId));
+        mockMvc.perform(get("/public/search").param("q", "plan de protección del litoral"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.total").value(0));
+
         JsonNode reindex = json(mockMvc.perform(post(
                 "/projects/" + projectId + "/publications/"
                     + publicationId + "/reindex")
