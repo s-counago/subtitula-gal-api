@@ -1,6 +1,49 @@
 # Last session
 
-## Current handoff — 10 September 2026
+## Current handoff — 22 September 2026 — claims integration RFC
+
+The user requested a new PR to plan integration of the isolated claims-extraction
+and Jev documentary-evidence experiments. Read the
+[architecture proposal](docs/product/claims-evidence-integration-plan.md) and
+[portable lab baseline](docs/product/claims-evidence-lab-baseline-2026-09-22.md).
+This branch contains documentation only. No migration, application change, new
+capability, provider inference, purchase or deployment is included.
+
+The proposal extends Spring and the existing processing Worker with independent
+optional jobs, immutable claim/document/evidence versions and explicit provider
+attempt accounting. Missing Jev access does not block the first proposed slice:
+private replay of a saved extraction tied to a frozen revision, with a source-minute
+link and existing owner authorization. Implement that slice only in a subsequent
+implementation PR; this RFC does not implement it or graduate any pilot gate.
+
+The user explicitly confirmed Luna through the OpenAI API, using application API
+credentials rather than the ChatGPT account/subscription. The proposed adapter uses
+Responses and preserves Luna xhigh. Jev is TypeSafe AI's evaluator. The historical
+extraction lab used Codex subscription access and needs reevaluation over the API.
+Jev has 24 semantic fixtures, ten simulated failure scenarios and no real inference.
+All 16 offline lab tests passed again on 22 September. The lab files are outside
+this repository; their hashes and limitations are recorded in the baseline.
+
+**Current operational state supersedes the 10 September entry below:** hosted
+development was suspended on 21 September at the user's request for cost control.
+The workspace shutdown record and current workspace instructions report the API
+Container stopped, processor schedules and all three public/preview routes disabled,
+and development deployment gates disabled. DB/R2/secrets/subscriptions remain.
+Resume only on a new user request. The local suspension changes and evidence in the
+original checkout are deliberately not folded into this design branch.
+
+The branch was created from `origin/develop` at `a0b8cde` in an isolated worktree.
+Both original application checkouts contain unrelated user changes and remain
+untouched. Frontend implementation belongs to a later PR against its own repository.
+
+Validation: all 85 API tests passed with local PostgreSQL 17/pgvector Testcontainers;
+all 16 offline Jev lab tests passed. Local links in both new documents and Markdown
+fences were checked; `git diff --check` passed. GitHub repository and development
+environment deployment/processing gates were read and remain `false`. No hosted
+endpoint was called. These checks validate the baseline and documentation, not an
+implemented claims feature or Jev model quality.
+
+## Historical handoff — 10 September 2026
 
 **Development resumed and all eight capabilities are enabled by the user's explicit request.**
 Read [the complete rollout evidence](docs/operations/capability-rollout-2026-09-10.md). The 8 September suspension below

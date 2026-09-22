@@ -9,6 +9,15 @@ hardening and hosted graduation gates remain
 
 **Supersedes:** any interpretation of `product-refactor.md` that requires two exhaustive human review passes
 
+**Proposed extension, 22 September 2026:** the
+[claims and documentary evidence integration RFC](claims-evidence-integration-plan.md)
+maps the isolated experiments onto this architecture. It is a design proposal, not
+an implemented capability or a new phase in progress. Its
+[lab baseline](claims-evidence-lab-baseline-2026-09-22.md) distinguishes real extraction
+runs from simulated Jev tests. Existing human-review and pilot gates remain binding.
+Hosted development remains suspended following the user's 21 September cost-control
+request; this proposal does not authorize resuming it.
+
 This is the canonical cross-session implementation plan for turning an institutional
 project into a durable, public, searchable plenary session. It combines:
 
@@ -1126,6 +1135,11 @@ Only one phase should be “in progress.” Update this table after every comple
 | 7 — hybrid search | Implemented dark; relevance/cost gate pending | embeddings, pgvector candidates, RRF, measured rollout |
 | 8 — pilot hardening | In progress | real hosted ingest/webhook/Range and review UI smoke verified 10 September; downstream activation, hosted load, human task studies, accessibility and governance gates pending |
 
+Claims extraction and documentary assessment are a proposed extension in the
+[integration RFC](claims-evidence-integration-plan.md), not a completed slice of
+phases 4–8. Its first suggested implementation uses private replay against a frozen
+revision and does not require Jev access. No phase status changes with this RFC.
+
 ### Phase 0 — baseline and contracts
 
 API repository:
@@ -1465,6 +1479,7 @@ Rollback:
 
 | Date | Change | Reason |
 |---|---|---|
+| 2026-09-22 | Added proposed claims/documentary-evidence integration and portable lab baseline | User requested architectural planning and a new PR. Separate optional jobs, immutable provenance and provider-independent replay; no runtime changes, Jev inference, phase graduation or hosted resumption. |
 | 2026-09-10 | Resumed authorized development rollout; real hosted ingest and browser review smoke; Windows Docker recovery; authenticated dev lifecycle controls; processor language/name-warning fixes | Current evidence in `../operations/capability-rollout-2026-09-10.md`. No phase graduated from synthetic smoke; production remains gated. |
 | 2026-09-08 | Recovered September Windows commits and unversioned flow diagrams; consolidated continuity and capability/credential inventory | No phase graduated or hosted capability enabled. September sessions report PlanetScale extensions and R2 account activation complete, with local E2E and hosted provisioning still pending. Separate Omarchy navigation/coherence work explicitly deferred by the user; see `../operations/continuity-2026-09-08.md`. |
 | 2026-07-29 | Initial canonical plan | Consolidates durable ingestion, evidence model, minimal human review, structured guide, public publication, and hybrid search discussion |
