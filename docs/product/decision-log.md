@@ -53,3 +53,13 @@
 | Negocio responsable | renovación de piloto, coste de soporte por entidad, margen por sesión sin recortar revisión necesaria |
 
 No usar visitas al portal como única métrica de éxito: la transparencia se consulta a menudo por necesidad puntual. La medida relevante es si, cuando surge esa necesidad, la respuesta se encuentra y se puede comprobar.
+
+## 23 septiembre 2026 — coherencia del transcript institucional
+
+Adoptada en las PR #2 de frontend y API: el texto revisado y los límites de cada
+segmento son la fuente de previsualización, descarga y captions públicos. No se
+simula una nueva alineación de palabras después de editar. Las descargas dependen
+de una revisión congelada y no de la publicación o del enriquecimiento opcional.
+`clearSpeaker` distingue retirar una asignación de no modificarla. Se mantienen
+los gates del piloto y la suspensión del entorno alojado. F1 y los nuevos dominios
+de afirmaciones/corpus/Jev siguen pendientes según el informe de frontend.

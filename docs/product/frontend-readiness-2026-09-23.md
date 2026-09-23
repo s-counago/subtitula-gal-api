@@ -2,6 +2,37 @@
 
 **Auditoría del 23 de septiembre de 2026**, dentro de la [PR de diseño #2](https://github.com/s-counago/subtitula-gal-api/pull/2). Complementa la [arquitectura de afirmaciones y cotejo](claims-evidence-integration-plan.md). No implementa cambios de interfaz ni habilita servicios.
 
+## Actualización de implementación del mismo día
+
+La [PR frontend #2](https://github.com/s-counago/subtitula-gal/pull/2) implementa
+F0-A/F0-B y parte de F1. Su [registro de implementación](https://github.com/s-counago/subtitula-gal/blob/fix/institutional-transcript-outputs/docs/institutional-transcript-outputs.md)
+detalla límites y validación. El diagnóstico siguiente conserva la evidencia de
+la base anterior; ya no describe por completo el estado de esas ramas.
+
+Implementado: proyección única del texto revisado para preview, SRT/VTT y captions
+públicos; descarga TXT; transcript accesible tras congelar; corrección voluntaria de
+tramos sin aviso; errores recuperables; estados reales; datos y permiso documental;
+paginación de sesión; enlaces de versión/instante y presentación de campos públicos.
+Las versiones actuales conservan búsqueda del servidor, las históricas tienen
+búsqueda literal local para evitar mezclar publicaciones.
+
+Esta PR API incorpora además `clearSpeaker` en `SegmentReviewRequest`: permite
+quitar la asignación sin cambiar el significado histórico de `speakerId: null`.
+La API debe preceder al frontend al desplegar. No hay migración ni activación de
+servicios. Las pruebas cubren permisos, versión obsoleta, petición contradictoria
+y persistencia en la revisión congelada.
+
+Verificación: 326 tests frontend, build Next.js, OpenNext/Wrangler dry-run y 85 tests
+API con Testcontainers. Chromium local comprobó edición/cierre/descarga, carga
+nativa de VTT, salto a 1,5 s y vista móvil con API y audio sintéticos. No sustituye
+el piloto, E2E alojado ni una grabación real larga. Persisten un error y una
+advertencia previos de ESLint documentados en el registro frontend.
+
+Pendientes: F1 completo, metadatos editables, CRUD de documentos existentes,
+filtros del archivo sin consulta, filtros de voz/agenda, búsqueda histórica del
+servidor, múltiples jobs, calidad de preguntas naturales, SEO y pruebas de usuario.
+Afirmaciones/corpus/Luna API/Jev continúan en diseño. No se gradúa ninguna fase.
+
 ## 1. Diagnóstico
 
 **El frontend ya consume las ocho capacidades institucionales existentes. El retraso principal está en completar y ordenar la experiencia, no en construir ocho pantallas desde cero.** Hay diferencias importantes entre las tres vertientes:

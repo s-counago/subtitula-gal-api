@@ -186,7 +186,10 @@ public class ReviewService {
             .orElseThrow(() -> conflict("Evidence segment not found"));
         checkVersion(segment.getVersion(), request.expectedVersion(), "segment");
         String text = boundedRequired(request.text(), MAX_SEGMENT_TEXT);
-        UUID speakerId = request.speakerId() == null
+        if (request.clearSpeaker() && request.speakerId() != null) {
+            throw conflict("Cannot assign and clear a speaker together");
+        }
+        UUID speakerId = request.clearSpeaker() ? null : request.speakerId() == null
             ? segment.getSpeakerId()
             : speaker(projectId, request.speakerId()).getId();
         UUID priorSpeakerId = segment.getSpeakerId();

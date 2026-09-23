@@ -1,6 +1,29 @@
 # Last session
 
-## Current handoff — 23 September 2026 — frontend readiness audit
+## Current handoff — 23 September 2026 — institutional frontend fixes
+
+The user authorized implementing the frontend audit fixes. Frontend draft PR #2:
+https://github.com/s-counago/subtitula-gal/pull/2, branch
+`fix/institutional-transcript-outputs`, worktree `../institutional-frontend`.
+It implements F0-A/F0-B and part of F1: reviewed transcript projection, persistent
+transcript, unflagged text correction, frozen SRT/VTT/TXT downloads, public captions,
+version/instant links, paging, real lifecycle labels and document metadata/permission.
+Read its `docs/institutional-transcript-outputs.md` for remaining scope and caveats.
+
+API PR #2 now also has a backward-compatible runtime fix: `clearSpeaker: true`
+explicitly removes a segment's speaker; omitted/false preserves the old null behavior.
+Contradictory clear/assign requests fail, and ownership/revision checks remain intact.
+No schema change. Deploy API before frontend when hosting is explicitly resumed.
+The Luna/OpenAI API and TypeSafe AI Jev design remains in this PR, not implemented.
+
+Verified locally: 326 frontend tests, Next.js build, OpenNext/Wrangler dry-run,
+85 API tests with Testcontainers, and Chromium UI checks with synthetic local API
+and audio fixtures. A pre-existing lint error and warning remain. These checks do
+not graduate the institutional pilot or replace E2E with a real long recording.
+Original dirty worktrees are untouched. All three GitHub deployment gates were
+read on 23 September and remain false. Hosted services were not accessed/restarted.
+
+## Historical handoff — 23 September 2026 — frontend readiness audit
 
 The user requested an assessment of how the creator, institutional operator and
 public transparency frontends compare with the implemented backend. Read the
