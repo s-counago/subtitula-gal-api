@@ -1,6 +1,105 @@
 # Last session
 
-## Current handoff — 10 September 2026
+## Current handoff — 23 September 2026 — institutional frontend fixes
+
+The user authorized implementing the frontend audit fixes. Frontend draft PR #2:
+https://github.com/s-counago/subtitula-gal/pull/2, branch
+`fix/institutional-transcript-outputs`, worktree `../institutional-frontend`.
+It implements F0-A/F0-B and part of F1: reviewed transcript projection, persistent
+transcript, unflagged text correction, frozen SRT/VTT/TXT downloads, public captions,
+version/instant links, paging, real lifecycle labels and document metadata/permission.
+Read its `docs/institutional-transcript-outputs.md` for remaining scope and caveats.
+
+API PR #2 now also has a backward-compatible runtime fix: `clearSpeaker: true`
+explicitly removes a segment's speaker; omitted/false preserves the old null behavior.
+Contradictory clear/assign requests fail, and ownership/revision checks remain intact.
+No schema change. Deploy API before frontend when hosting is explicitly resumed.
+The Luna/OpenAI API and TypeSafe AI Jev design remains in this PR, not implemented.
+
+Verified locally: 326 frontend tests, Next.js build, OpenNext/Wrangler dry-run,
+85 API tests with Testcontainers, and Chromium UI checks with synthetic local API
+and audio fixtures. A pre-existing lint error and warning remain. These checks do
+not graduate the institutional pilot or replace E2E with a real long recording.
+Original dirty worktrees are untouched. All three GitHub deployment gates were
+read on 23 September and remain false. Hosted services were not accessed/restarted.
+
+## Historical handoff — 23 September 2026 — frontend readiness audit
+
+The user requested an assessment of how the creator, institutional operator and
+public transparency frontends compare with the implemented backend. Read the
+[readiness report and prioritized slices](docs/product/frontend-readiness-2026-09-23.md).
+This updates draft API PR #2; the branch remains documentation only.
+
+The eight existing capabilities already have frontend consumers. Critical gaps:
+normalized review does not refresh the subtitle editor projection; `transcriptWords`
+prefers original word timings/text over reviewed text; modern exception review has
+no subtitle download; the public video has no captions track. A no-network execution
+of the real projection function reproduced reviewed `San Paulo` becoming original
+`San Pedro`. Other findings are static code analysis, not new browser reproductions.
+
+Proposed next frontend slice: F0-A, reviewed transcript/preview coherence, persistent
+transcript access and actionable errors, then F0-B exports and public captions.
+F1 improves status, metadata, documents and citizen navigation. Several needs require
+API changes; claims/corpus/Jev are not implemented backend features awaiting a UI.
+The RFC now records this preparation and the need for status of concurrent analyses
+instead of relying on the current single-job processing DTO.
+
+Inspected frontend `8bee2b3` and backend `a0b8cde`, matching origin/develop after fetch.
+Frontend validation: 309 tests in 50 files passed, with a non-failing jsdom navigation
+warning; production build passed. Existing tests do not cover the entire normalized
+review/preview/export journey. No browser E2E or new provider evaluation was run.
+The API's 85 tests also passed again with local PostgreSQL/pgvector Testcontainers.
+Previous PR commit `e78021a` has green GitHub verification. Original checkouts and
+their uncommitted changes are preserved. Hosted development remains suspended.
+
+The inspected product handles uploaded recordings, not live streaming/captioning.
+An optional clarification about the user's word "transmission" is pending; live
+support would require a separate scope, not a frontend-only connection.
+
+## Historical handoff — 22 September 2026 — claims integration RFC
+
+The user requested a new PR to plan integration of the isolated claims-extraction
+and Jev documentary-evidence experiments. Read the
+[architecture proposal](docs/product/claims-evidence-integration-plan.md) and
+[portable lab baseline](docs/product/claims-evidence-lab-baseline-2026-09-22.md).
+This branch contains documentation only. No migration, application change, new
+capability, provider inference, purchase or deployment is included.
+
+The proposal extends Spring and the existing processing Worker with independent
+optional jobs, immutable claim/document/evidence versions and explicit provider
+attempt accounting. Missing Jev access does not block the first proposed slice:
+private replay of a saved extraction tied to a frozen revision, with a source-minute
+link and existing owner authorization. Implement that slice only in a subsequent
+implementation PR; this RFC does not implement it or graduate any pilot gate.
+
+The user explicitly confirmed Luna through the OpenAI API, using application API
+credentials rather than the ChatGPT account/subscription. The proposed adapter uses
+Responses and preserves Luna xhigh. Jev is TypeSafe AI's evaluator. The historical
+extraction lab used Codex subscription access and needs reevaluation over the API.
+Jev has 24 semantic fixtures, ten simulated failure scenarios and no real inference.
+All 16 offline lab tests passed again on 22 September. The lab files are outside
+this repository; their hashes and limitations are recorded in the baseline.
+
+**Current operational state supersedes the 10 September entry below:** hosted
+development was suspended on 21 September at the user's request for cost control.
+The workspace shutdown record and current workspace instructions report the API
+Container stopped, processor schedules and all three public/preview routes disabled,
+and development deployment gates disabled. DB/R2/secrets/subscriptions remain.
+Resume only on a new user request. The local suspension changes and evidence in the
+original checkout are deliberately not folded into this design branch.
+
+The branch was created from `origin/develop` at `a0b8cde` in an isolated worktree.
+Both original application checkouts contain unrelated user changes and remain
+untouched. Frontend implementation belongs to a later PR against its own repository.
+
+Validation: all 85 API tests passed with local PostgreSQL 17/pgvector Testcontainers;
+all 16 offline Jev lab tests passed. Local links in both new documents and Markdown
+fences were checked; `git diff --check` passed. GitHub repository and development
+environment deployment/processing gates were read and remain `false`. No hosted
+endpoint was called. These checks validate the baseline and documentation, not an
+implemented claims feature or Jev model quality.
+
+## Historical handoff — 10 September 2026
 
 **Development resumed and all eight capabilities are enabled by the user's explicit request.**
 Read [the complete rollout evidence](docs/operations/capability-rollout-2026-09-10.md). The 8 September suspension below

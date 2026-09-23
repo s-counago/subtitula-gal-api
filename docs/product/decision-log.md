@@ -2,6 +2,9 @@
 
 | Fecha | Estado | Decisión / hipótesis | Razón actual | Qué la validará o invalidará |
 |---|---|---|---|---|
+| 2026-09-23 | Propuesta para revisión | [Cerrar la coherencia y salidas del frontend institucional antes de conectar el panel de afirmaciones](frontend-readiness-2026-09-23.md); mantener creador, operario y transparencia como tres experiencias del mismo producto. | Las ocho capacidades existentes ya tienen consumo en UI, pero la revisión moderna carece de descarga, el preview puede conservar texto ASR y el vídeo público no lleva captions. Corpus/cotejo siguen siendo desarrollo nuevo de ambos lados. | Recorrido revisión → preview → descarga/publicación de la misma revisión; estados/errores claros, consulta ciudadana con fuentes/versiones y pruebas con usuarios. No cambia fases ni habilita hospedaje. |
+| 2026-09-22 | Adoptada por instrucción explícita | La integración de Luna se hará mediante la API de OpenAI, con credenciales de la aplicación y sin reutilizar la cuenta/suscripción de ChatGPT. Jev es el evaluador de TypeSafe AI. | El usuario confirmó ambos proveedores y el límite de autenticación durante la planificación. El transporte Codex del laboratorio queda como evidencia histórica. | Adaptador API, credenciales aisladas, consumo por operación y reevaluación de Luna xhigh; sin fallback a autenticación de ChatGPT. |
+| 2026-09-22 | Propuesta para revisión | [Integrar extracción, corpus y cotejo como trabajos opcionales en Spring y el processor actuales](claims-evidence-integration-plan.md), con versiones inmutables y Jev como adaptador sustituible. Empezar con replay privado; mantener Luna xhigh como preferencia experimental a revalidar. | Reutiliza permisos, transcripciones, PostgreSQL/R2 y Workflows; evita que una clave ausente o un fallo de cotejo bloquee la publicación. La extracción tiene resultados reales; Jev aún solo preparación y tests simulados. | Contratos y permisos, aislamiento de fallos, intentos inciertos sin reenvío automático, corpus versionado, muestra independiente y gates de coste/calidad/tiempo humano. No activa capacidades ni cambia las fases vigentes. |
 | 2026-09-10 | Adoptada por instrucción explícita | Gallego es el idioma principal y predeterminado; castellano es la única alternativa de transcripción. No hay selección automática ni otros idiomas. | Mantiene el foco del producto confirmado por el usuario. El idioma del proyecto debe llegar a Scribe en ambos caminos de subida. | Selector con exactamente dos opciones; API y processor rechazan otros idiomas antes de llamar al proveedor; smoke principal en gallego y secundario en castellano. |
 | 2026-09-10 | Adoptada | Control de pausa/reanudación únicamente de desarrollo, autenticado con un secreto específico y lectura del estado real del contenedor. | Cambiar variables del Worker no reinicia Spring; cerrar rutas públicas no prueba que el proceso se detuvo. | La pausa persiste, `/ping` devuelve 503 sin arrancar Spring y el cliente confirma `running:false`; credencial aislada y copia de recuperación en Bitwarden. |
 | 2026-07-12 | Adoptada | Un solo producto y editor para creador e institución. | Ambos necesitan el mismo objeto fundamental: medio, transcript, segmentos, subtítulos y salida. | Menos abandono y menos código duplicado; pruebas de tarea con ambos perfiles. |
@@ -50,3 +53,13 @@
 | Negocio responsable | renovación de piloto, coste de soporte por entidad, margen por sesión sin recortar revisión necesaria |
 
 No usar visitas al portal como única métrica de éxito: la transparencia se consulta a menudo por necesidad puntual. La medida relevante es si, cuando surge esa necesidad, la respuesta se encuentra y se puede comprobar.
+
+## 23 septiembre 2026 — coherencia del transcript institucional
+
+Adoptada en las PR #2 de frontend y API: el texto revisado y los límites de cada
+segmento son la fuente de previsualización, descarga y captions públicos. No se
+simula una nueva alineación de palabras después de editar. Las descargas dependen
+de una revisión congelada y no de la publicación o del enriquecimiento opcional.
+`clearSpeaker` distingue retirar una asignación de no modificarla. Se mantienen
+los gates del piloto y la suspensión del entorno alojado. F1 y los nuevos dominios
+de afirmaciones/corpus/Jev siguen pendientes según el informe de frontend.

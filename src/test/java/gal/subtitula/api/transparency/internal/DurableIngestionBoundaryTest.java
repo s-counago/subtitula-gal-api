@@ -471,6 +471,49 @@ class DurableIngestionBoundaryTest extends AbstractIntegrationTest {
             .andExpect(jsonPath("$.reviewState").value("reviewed"))
             .andExpect(jsonPath("$.version").value(1));
 
+        String segmentPath = "/projects/" + projectId + "/segments/" + firstSegment.get("id").asText();
+        String keepSpeaker = mapper.createObjectNode()
+            .put("text", "Falamos do orzamento municipal.")
+            .putNull("speakerId")
+            .put("expectedVersion", 1)
+            .put("reviewSessionId", reviewSessionId)
+            .toString();
+        mockMvc.perform(patch(segmentPath).with(csrf()).cookie(owner)
+                .contentType(MediaType.APPLICATION_JSON).content(keepSpeaker))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.speakerId").value(firstSpeaker.get("id").asText()))
+            .andExpect(jsonPath("$.version").value(1));
+
+        String contradictorySpeaker = mapper.createObjectNode()
+            .put("text", "Falamos do orzamento municipal.")
+            .put("speakerId", firstSpeaker.get("id").asText())
+            .put("clearSpeaker", true)
+            .put("expectedVersion", 1)
+            .put("reviewSessionId", reviewSessionId)
+            .toString();
+        mockMvc.perform(patch(segmentPath).with(csrf()).cookie(owner)
+                .contentType(MediaType.APPLICATION_JSON).content(contradictorySpeaker))
+            .andExpect(status().isConflict());
+
+        String clearSpeaker = mapper.createObjectNode()
+            .put("text", "Falamos do orzamento municipal.")
+            .put("clearSpeaker", true)
+            .put("expectedVersion", 1)
+            .put("reviewSessionId", reviewSessionId)
+            .toString();
+        Cookie reviewOutsider = registerAndSession("review-outsider@example.com");
+        mockMvc.perform(patch(segmentPath).with(csrf()).cookie(reviewOutsider)
+                .contentType(MediaType.APPLICATION_JSON).content(clearSpeaker))
+            .andExpect(status().isNotFound());
+        mockMvc.perform(patch(segmentPath).with(csrf()).cookie(owner)
+                .contentType(MediaType.APPLICATION_JSON).content(clearSpeaker))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.speakerId").doesNotExist())
+            .andExpect(jsonPath("$.version").value(2));
+        mockMvc.perform(patch(segmentPath).with(csrf()).cookie(owner)
+                .contentType(MediaType.APPLICATION_JSON).content(clearSpeaker))
+            .andExpect(status().isConflict());
+
         for (JsonNode issue : queue.get("issues")) {
             if (!"required".equals(issue.get("severity").asText())) {
                 continue;
@@ -516,11 +559,12 @@ class DurableIngestionBoundaryTest extends AbstractIntegrationTest {
             .andExpect(jsonPath("$.projectStatus").value("ready"))
             .andExpect(jsonPath("$.resolvedCount").value(1))
             .andExpect(jsonPath("$.dismissedCount").value(1))
-            .andExpect(jsonPath("$.manualEditCount").value(2));
+            .andExpect(jsonPath("$.manualEditCount").value(4));
 
         mockMvc.perform(get("/projects/" + projectId + "/transcript").cookie(owner))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.revision.state").value("frozen"))
+            .andExpect(jsonPath("$.segments[0].speakerId").doesNotExist())
             .andExpect(jsonPath("$.segments[0].text")
                 .value("Falamos do orzamento municipal."))
             .andExpect(jsonPath("$.speakers[1].identityState").value("unknown"));
@@ -540,7 +584,7 @@ class DurableIngestionBoundaryTest extends AbstractIntegrationTest {
             .andExpect(jsonPath("$.review.sessionCount").value(1))
             .andExpect(jsonPath("$.review.resolvedIssueCount").value(1))
             .andExpect(jsonPath("$.review.dismissedIssueCount").value(1))
-            .andExpect(jsonPath("$.review.manualEditCount").value(2))
+            .andExpect(jsonPath("$.review.manualEditCount").value(4))
             .andExpect(jsonPath("$.processing.configuredGrossCost[0].currency")
                 .value("USD"))
             .andExpect(jsonPath("$.processing.configuredGrossCost[0].microunits")
