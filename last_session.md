@@ -1,6 +1,39 @@
 # Last session
 
-## Current handoff — 22 September 2026 — claims integration RFC
+## Current handoff — 23 September 2026 — frontend readiness audit
+
+The user requested an assessment of how the creator, institutional operator and
+public transparency frontends compare with the implemented backend. Read the
+[readiness report and prioritized slices](docs/product/frontend-readiness-2026-09-23.md).
+This updates draft API PR #2; the branch remains documentation only.
+
+The eight existing capabilities already have frontend consumers. Critical gaps:
+normalized review does not refresh the subtitle editor projection; `transcriptWords`
+prefers original word timings/text over reviewed text; modern exception review has
+no subtitle download; the public video has no captions track. A no-network execution
+of the real projection function reproduced reviewed `San Paulo` becoming original
+`San Pedro`. Other findings are static code analysis, not new browser reproductions.
+
+Proposed next frontend slice: F0-A, reviewed transcript/preview coherence, persistent
+transcript access and actionable errors, then F0-B exports and public captions.
+F1 improves status, metadata, documents and citizen navigation. Several needs require
+API changes; claims/corpus/Jev are not implemented backend features awaiting a UI.
+The RFC now records this preparation and the need for status of concurrent analyses
+instead of relying on the current single-job processing DTO.
+
+Inspected frontend `8bee2b3` and backend `a0b8cde`, matching origin/develop after fetch.
+Frontend validation: 309 tests in 50 files passed, with a non-failing jsdom navigation
+warning; production build passed. Existing tests do not cover the entire normalized
+review/preview/export journey. No browser E2E or new provider evaluation was run.
+The API's 85 tests also passed again with local PostgreSQL/pgvector Testcontainers.
+Previous PR commit `e78021a` has green GitHub verification. Original checkouts and
+their uncommitted changes are preserved. Hosted development remains suspended.
+
+The inspected product handles uploaded recordings, not live streaming/captioning.
+An optional clarification about the user's word "transmission" is pending; live
+support would require a separate scope, not a frontend-only connection.
+
+## Historical handoff — 22 September 2026 — claims integration RFC
 
 The user requested a new PR to plan integration of the isolated claims-extraction
 and Jev documentary-evidence experiments. Read the

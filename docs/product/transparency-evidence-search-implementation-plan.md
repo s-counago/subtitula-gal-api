@@ -18,6 +18,11 @@ runs from simulated Jev tests. Existing human-review and pilot gates remain bind
 Hosted development remains suspended following the user's 21 September cost-control
 request; this proposal does not authorize resuming it.
 
+The [23 September frontend audit](frontend-readiness-2026-09-23.md) maps the creator,
+institutional operator and public transparency journeys to the actual API. It
+identifies existing UI integration, missing workflow connections and backend
+dependencies; F0/F1 are proposed slices, not new active canonical phases.
+
 This is the canonical cross-session implementation plan for turning an institutional
 project into a durable, public, searchable plenary session. It combines:
 
@@ -1479,6 +1484,7 @@ Rollback:
 
 | Date | Change | Reason |
 |---|---|---|
+| 2026-09-23 | Added frontend/API readiness audit and F0/F1 preparation before claims UI integration | Existing capabilities have consumers, but reviewed-text projection, modern institutional export, public captions, state/metadata handling and civic presentation need work. No runtime changes or phase graduation. |
 | 2026-09-22 | Added proposed claims/documentary-evidence integration and portable lab baseline | User requested architectural planning and a new PR. Separate optional jobs, immutable provenance and provider-independent replay; no runtime changes, Jev inference, phase graduation or hosted resumption. |
 | 2026-09-10 | Resumed authorized development rollout; real hosted ingest and browser review smoke; Windows Docker recovery; authenticated dev lifecycle controls; processor language/name-warning fixes | Current evidence in `../operations/capability-rollout-2026-09-10.md`. No phase graduated from synthetic smoke; production remains gated. |
 | 2026-09-08 | Recovered September Windows commits and unversioned flow diagrams; consolidated continuity and capability/credential inventory | No phase graduated or hosted capability enabled. September sessions report PlanetScale extensions and R2 account activation complete, with local E2E and hosted provisioning still pending. Separate Omarchy navigation/coherence work explicitly deferred by the user; see `../operations/continuity-2026-09-08.md`. |

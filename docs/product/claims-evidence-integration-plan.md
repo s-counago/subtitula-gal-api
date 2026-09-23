@@ -6,6 +6,8 @@
 
 **Decisión confirmada por el usuario:** integrar Luna mediante la API de OpenAI, con credenciales de la aplicación. El acceso de ChatGPT utilizado en el experimento queda como procedencia histórica. Jev se refiere al evaluador de **TypeSafe AI**.
 
+**Revisión del 23 de septiembre:** la [auditoría de las tres vertientes del frontend](frontend-readiness-2026-09-23.md) distingue capacidades conectadas, huecos de interfaz y contratos todavía ausentes. Las ocho capacidades previas tienen consumo en el front; antes del panel de afirmaciones hay que cerrar la coherencia entre transcript revisado, preview y descarga. Afirmaciones/cotejos continúan siendo desarrollo nuevo de ambos lados.
+
 Este anexo desarrolla el [plan canónico](transparency-evidence-search-implementation-plan.md), que conserva sus fases y requisitos de revisión mínima. La solicitud del 22 de septiembre abre la planificación de una integración antes aplazada; no da por aprobada su salida pública. El desarrollo hospedado continúa suspendido desde el 21 de septiembre. No se reactivan contenedores, rutas, Cron, despliegues ni pagos.
 
 ## 1. Experiencia que queremos construir
@@ -178,6 +180,8 @@ Una consulta exhaustiva («todas las propuestas sobre vivienda») requiere pagin
 
 ## 7. API y editor: superficie propuesta
 
+La [auditoría del frontend](frontend-readiness-2026-09-23.md) fija los recorridos de creador, operario y ciudadanía, con prioridades F0/F1. Reutilizar componentes visuales no obliga a guardar el transcript institucional mediante el estado heredado `Project.words` del creador.
+
 Rutas orientativas, pendientes del contrato del primer incremento:
 
 | Operación | Contrato propuesto |
@@ -190,6 +194,8 @@ Rutas orientativas, pendientes del contrato del primer incremento:
 | Consultar cotejos | `GET /projects/{projectId}/claims/{occurrenceId}/assessments`, historial y estado operativo |
 
 Los endpoints reutilizan sesión, CSRF, permisos de proyecto y límites existentes. El cliente no decide organización, claves de almacenamiento, URLs del proveedor ni versión de política ejecutable. Los callbacks internos conservan autenticación HMAC y validación estricta de pertenencia y versiones. No se exponen rutas públicas nuevas en el primer incremento.
+
+El `/processing` actual devuelve un solo `job`. Antes de ejecutar guía, extracción y cotejo en paralelo, acordar una consulta de estado por análisis/job con IDs, revisión, etapa y motivo de espera. La UI debe distinguir «sesión lista» de «cotejo pendiente» y no deducir que terminar el último job significa que todas las etapas han finalizado.
 
 En `subtitula-gal`, ampliar `components/editor/institution-workspace.tsx` y las superficies existentes de enriquecimiento/publicación. Una sección «Afirmacións» permite abrir el minuto, consultar la interpretación y desplegar sus fuentes. «Documentos» muestra ingesta y versiones. Gallego predeterminado y castellano como alternativa; no cambiar el contrato de idiomas por las fixtures multilingües.
 
@@ -204,6 +210,7 @@ Esta RFC no abre una segunda fase canónica en progreso ni gradúa el piloto act
 | Incremento | Resultado revisable | Dependencia / condición de salida |
 |---|---|---|
 | D0 — esta PR | Arquitectura, inventario, evidencia y decisiones propuestas | Revisión del diseño; ninguna llamada a proveedores |
+| F0 — preparación del frontend existente | Transcript institucional coherente con preview, lectura/edición puntual, descarga y captions públicos | Ver bloques F0-A/F0-B de la auditoría. F0-A precede al panel integrado de I1; contratos/replay backend pueden prepararse sin esperar a Jev |
 | I1 — recorrido privado con replay | Contratos versionados, migración mínima de runs/apariciones/interpretaciones, aislamiento de jobs y panel con citas para una revisión congelada | Fixtures portables sin secretos, pruebas de permisos/versiones/idempotencia y publicación sin extracción. **No necesita Jev** |
 | I2 — extractor real acotado | Adaptador OpenAI Responses para Luna xhigh, ventanas y ledger de intentos/consumo | Clave API y presupuesto disponibles; regresiones del laboratorio, contrato API y muestra independiente. Sin autenticación de ChatGPT |
 | I3 — corpus y recuperación | Versiones/pasajes, importación revisada, consultas internas y paquetes congelados | Permisos/procedencia, tablas/fechas, recall de evidencia y abstención evaluados. Puede prepararse sin I2 ni Jev usando replay |
@@ -213,7 +220,7 @@ Esta RFC no abre una segunda fase canónica en progreso ni gradúa el piloto act
 
 I1 no obliga a introducir todas las tablas propuestas. I3 añade las del corpus; I4 añade las del cotejo. Los paquetes se definen antes de llamar a Jev. La inferencia de I2/I4 espera a disponer de credenciales y presupuesto autorizado; este plan permite avanzar en contratos, replay, UI y corpus sin ellos.
 
-El primer cambio de código recomendado es **una afirmación importada mediante replay, asociada a una revisión congelada, visible solo para su propietario y enlazada al minuto correcto**. Su prueba de aceptación incluye repetir la importación sin duplicados, rechazar referencias ajenas y comprobar que publicar la transcripción sigue funcionando si el job auxiliar falla. Esa PR incorporará el contrato API antes de su PR dependiente de frontend.
+El primer incremento del nuevo dominio sigue siendo **una afirmación importada mediante replay, asociada a una revisión congelada, visible solo para su propietario y enlazada al minuto correcto**. Su prueba de aceptación incluye repetir la importación sin duplicados, rechazar referencias ajenas y comprobar que publicar la transcripción sigue funcionando si el job auxiliar falla. Esa PR incorporará el contrato API antes de su PR dependiente de frontend. En el frontend se recomienda comenzar por F0-A para que el panel consuma una representación correcta del transcript y no replique sus problemas actuales.
 
 ## 9. Evaluación y pruebas de aceptación
 
