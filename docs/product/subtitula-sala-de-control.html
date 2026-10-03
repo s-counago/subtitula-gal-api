@@ -1,7 +1,9 @@
 <title>Sala de Control Subtitula</title>
-<!-- Historical explanatory artifact from 2 September 2026, recovered on 8 September.
-     The local=true upload flag refers to C:/Users/Sejio/subtitula only.
-     Current continuity: ../operations/continuity-2026-09-08.md. Not a live monitor. -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Updated 10 September 2026 from capability-rollout-2026-09-10.md.
+     Development was verified with synthetic sessions. This is an explanatory
+     snapshot, not a live monitor or certification of production readiness. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
@@ -58,6 +60,9 @@
   }
   .brand h1 em { font-style: normal; color: var(--accent); }
   .brand p { margin: 8px 0 0; color: var(--muted); max-width: 62ch; }
+  .rollout { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 18px; margin: 16px 0 0; color: var(--muted); }
+  .rollout strong { color: var(--ok); }
+  .rollout a { white-space: nowrap; }
   .eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); }
 
   .deck {
@@ -105,7 +110,7 @@
     display: flex; flex-direction: column;
   }
   .monitor-bar {
-    display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 14px;
+    display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 14px;
     border-bottom: 1px solid var(--line); font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--faint);
   }
   .monitor-bar b { color: var(--muted); font-weight: 500; }
@@ -146,7 +151,8 @@
   .tick[aria-current="step"]::before { background: var(--accent); transform: scaleY(1.7); box-shadow: 0 0 10px rgba(242,212,92,.6); }
   .tick:hover::before { background: var(--muted); }
   .tick[aria-current="step"]:hover::before { background: var(--accent-2); }
-  .scrub-labels { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 11px; color: var(--faint); margin-top: 4px; }
+  .scrub-labels { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; font-family: var(--mono); font-size: 11px; color: var(--faint); margin-top: 4px; }
+  #scrub-right { overflow-wrap: anywhere; }
   .scrub-labels b { color: var(--muted); font-weight: 500; }
 
   /* Status strip */
@@ -199,11 +205,13 @@
   .sw.box.ext { border-style: dashed; border-color: #5f5480; }
 
   .caps { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; font-family: var(--mono); font-size: 12px; align-items: center; }
-  .caps .k { color: var(--muted); }
+  .caps .k { color: var(--muted); font-family: var(--body); font-size: 14px; }
+  .cap-link { border: 0; background: none; color: inherit; font: inherit; text-align: left; padding: 5px 0; cursor: pointer; }
+  .cap-link:hover { color: var(--accent); text-decoration: underline; }
+  .cap-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   .caps .v { justify-self: end; border-radius: 4px; padding: 1px 8px; font-size: 11px; }
   .caps .v.on { background: rgba(87,201,163,.18); color: var(--ok); }
   .caps .v.off { background: var(--bg); color: var(--faint); border: 1px solid var(--line); }
-  .caps .v.local { background: var(--accent-dim); color: var(--accent); }
 
   footer { margin-top: 26px; color: var(--faint); font-size: 12.5px; border-top: 1px solid var(--line); padding-top: 14px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
   footer code { color: var(--muted); }
@@ -221,7 +229,7 @@
   }
 </style>
 
-<div class="shell">
+<div class="shell" lang="es">
   <header class="top">
     <div class="brand">
       <div class="eyebrow">subtitula-gal · subtitula-gal-api · processing-worker</div>
@@ -237,11 +245,18 @@
     </div>
   </header>
 
+  <div class="rollout" aria-label="Estado documentado del despliegue">
+    <strong>8 / 8 capacidades activas en desarrollo</strong>
+    <span>10 septiembre 2026 · pruebas con sesiones ficticias</span>
+    <span>Gallego por defecto · castellano opcional</span>
+    <a href="../operations/capability-rollout-2026-09-10.md">Ver comprobaciones</a>
+  </div>
+
   <nav class="tabs" role="tablist" aria-label="Canales" id="tabs"></nav>
 
   <div class="stage">
     <section class="monitor" aria-label="Mapa del sistema">
-      <div class="monitor-bar"><span>Monitor · <b id="flow-kicker"></b></span><span id="env-label">local · dev · prod</span></div>
+      <div class="monitor-bar"><span>Recorrido · <b id="flow-kicker"></b></span><span id="env-label">dev activo · prod pendiente</span></div>
       <svg class="map" viewBox="0 0 1000 660" id="map" role="img" aria-label="Diagrama de arquitectura con el paso activo resaltado">
         <defs>
           <marker id="head" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
@@ -268,8 +283,8 @@
   </div>
 
   <footer>
-    <span>Fuente: <code>develop</code> de ambos repos con <code>feature/transparency-evidence-search-integrated</code> fusionada · migraciones <code>V1–V18</code>.</span>
-    <span>Los textos entre comillas son la copia real de la interfaz en gallego.</span>
+    <span>Estado documentado a 10 septiembre 2026; no es un monitor en tiempo real. Ambos repos integrados en <code>develop</code> · migraciones <code>V1–V18</code>.</span>
+    <span>Producción pendiente de dominio y piloto institucional. <a href="architecture-flows.md">Diagramas de arquitectura</a> · <a href="transparency-evidence-search-implementation-plan.md">Plan y criterios pendientes</a></span>
   </footer>
 </div>
 
@@ -284,7 +299,7 @@
     { id: "browser", x: 100, y: 330, w: 140, h: 56, label: "Navegador", sub: "Next.js client · IndexedDB",
       owns: "La única superficie de trabajo: subida, editor, revisión, publicación y búsqueda pública. Guarda una copia privada del vídeo en IndexedDB (<code>lib/video-store.ts</code>) para reproducir sin pedir URLs firmadas.",
       tech: "Route groups <code>(public)</code> · <code>(auth)</code> · <code>(entry)</code> · <code>(creator)</code> · <code>(institution)</code> · <code>(marketing)/transparencia/[slug]</code>.",
-      env: "Local <code>localhost:3000</code> · dev <code>subtitula-web-dev…workers.dev</code> · prod dominio propio con <code>inst.</code> y <code>creator.</code> por subdominio." },
+      env: "Local <code>localhost:3000</code> · dev <code>subtitula-web-dev.s-counago00.workers.dev</code> activo · producción pendiente de dominio y anexo de lanzamiento." },
     { id: "web", x: 320, y: 330, w: 150, h: 56, label: "Web Worker", sub: "OpenNext · gateways",
       owns: "Sirve el frontend y ofrece dos gateways de mismo origen: <code>/backend/*</code> hacia Spring y <code>/processing/*</code> hacia el processor. Reenvía cuerpo en streaming, cookies, CSRF y reescribe redirecciones internas a <code>/backend</code>.",
       tech: "<code>app/backend/[...path]/route.ts</code> y <code>app/processing/[...path]/route.ts</code>. Bindings <code>API_SERVICE</code> y <code>PROCESSING_SERVICE</code>; fuera de workerd usa <code>API_ORIGIN</code> / <code>PROCESSING_ORIGIN</code>.",
@@ -300,49 +315,49 @@
     { id: "proc", x: 560, y: 470, w: 160, h: 56, label: "Processing Worker", sub: "Cloudflare Worker · :8787",
       owns: "Todo lo que toca bytes grandes o proveedores: URLs firmadas de R2, intents de subida, ElevenLabs y su webhook, orquestación de Workflows, Workers AI (guía y embeddings), rate limiting y cron de limpieza.",
       tech: "<code>processing-worker/src/index.ts</code> enruta por método+path; <code>internal-api.ts</code> firma cada comando hacia Spring con HMAC. Tres clases Workflow. Vars de coste por proveedor en <code>wrangler.jsonc</code>.",
-      env: "Local <code>subtitula-processing</code> con miniflare simulando R2 · dev <code>subtitula-processing-dev</code> (aún no existe: gate <code>PROCESSING_DEPLOY_ENABLED</code>). El binding <code>AI</code> es sólo remoto, por eso <code>wrangler dev</code> necesita login." },
+      env: "Local <code>subtitula-processing</code> con R2 simulado · dev <code>subtitula-processing-dev</code> desplegado, con sus tres Workflows y tareas programadas. Despliegue habilitado; previews apagadas. El binding <code>AI</code> es remoto." },
     { id: "r2", x: 830, y: 400, w: 160, h: 52, label: "R2 privado", sub: "subtitula-media-dev",
       owns: "Grabaciones originales, payloads crudos del proveedor y artefactos generados. Nunca es público: cada acceso es una URL firmada de corta duración o un proxy autenticado.",
       tech: "Clave <code>{env}/organizations/{org}/projects/{project}/recordings/{rec}/original</code>: sin nombres humanos, títulos ni municipios. CORS versionado en <code>r2-cors.development.json</code>.",
-      env: "Local: R2 de Wrangler y proxy Range (no hay credenciales S3) · dev: bucket privado + token S3 (por crear; R2 se habilitó en la cuenta el 2 de septiembre)." },
+      env: "Local: R2 de Wrangler y proxy Range · dev: <code>subtitula-media-dev</code> privado, credenciales S3 instaladas, PUT y reproducción HTTP 206 comprobados. Producción usará un bucket aislado aún no creado." },
     { id: "wf", x: 830, y: 500, w: 160, h: 46, label: "Workflows ×3", sub: "ingest · enrich · index",
       owns: "Orquestación durable con reintentos. Entre pasos sólo viajan IDs y claves de R2, nunca transcripciones. Los nombres de paso son deterministas.",
       tech: "<code>IngestSessionWorkflow</code>, <code>EnrichSessionWorkflow</code>, <code>IndexPublicationWorkflow</code>. Instancias con ID estable derivado del job para que un reintento no duplique trabajo.",
       env: "Local <code>subtitula-*-local</code> · dev <code>subtitula-ingest-dev</code>, <code>subtitula-enrich-dev</code>, <code>subtitula-index-dev</code>." },
     { id: "ai", x: 830, y: 592, w: 160, h: 46, label: "Workers AI", sub: "glm-4.7-flash · bge-m3",
       owns: "Extracción estructurada de la guía (JSON Schema, ventanas ≤24 000 caracteres) y embeddings multilingües de 1024 dimensiones para búsqueda semántica.",
-      tech: "<code>@cf/zai-org/glm-4.7-flash</code> con <code>guide-v1</code>; <code>@cf/baai/bge-m3</code> en lotes de 24. Coste estimado en micro-USD por millón de tokens, guardado en <code>processing_jobs</code>.",
+      tech: "<code>@cf/zai-org/glm-4.7-flash</code> con <code>guide-v3</code>, esquema JSON con nombre y razonamiento desactivado; <code>@cf/baai/bge-m3</code> en lotes de 24. Coste estimado en micro-USD guardado en <code>processing_jobs</code>.",
       env: "Mismo binding en local y dev, siempre remoto. Rate limit de búsqueda antes de embeber cualquier consulta." },
     { id: "eleven", x: 560, y: 600, w: 160, h: 46, label: "ElevenLabs", sub: "Scribe v2 · webhook", ext: true,
       owns: "Transcripción con diarización. En el camino institucional recibe una <code>source_url</code> firmada y responde por webhook; en el camino creador legacy Spring le sube el fichero en multipart y espera.",
-      tech: "<code>ELEVENLABS_MODEL_ID=scribe_v2</code>, <code>ELEVENLABS_LANGUAGE_HINT=glg</code>. Webhook verificado por HMAC sobre el cuerpo crudo, máximo 16 MB.",
-      env: "Clave y secreto de webhook por entorno. <code>ELEVENLABS_WEBHOOK_ID</code> sigue vacío en <code>wrangler.jsonc</code>." },
+      tech: "<code>scribe_v2</code>. El idioma procede del proyecto: <code>glg</code> por defecto o <code>spa</code>; no hay detección automática ni otros idiomas. Webhook verificado por HMAC sobre el cuerpo crudo, máximo 16 MB.",
+      env: "Clave de desarrollo restringida y webhook instalados. Transcripciones reales de proveedor completadas con audios ficticios en gallego y castellano; replay y firma caducada comprobados." },
     { id: "cron", x: 320, y: 470, w: 150, h: 46, label: "Cron", sub: "*/5 · 03:17", ext: false,
-      owns: "Dos disparadores sobre el processor: cada cinco minutos limpia subidas caducadas y reconcilia Workflows pendientes; a las 03:17 purga la analítica de búsqueda.",
+      owns: "Dos disparadores sobre el processor: cada cinco minutos limpia subidas caducadas y reconcilia Workflows pendientes; a las 03:17 UTC purga la analítica de búsqueda.",
       tech: "<code>scheduled()</code> en <code>index.ts</code>: <code>cleanupExpiredUploads</code>, <code>reconcilePendingWorkflows</code>, <code>cleanupSearchAnalytics</code>.",
-      env: "Sólo declarados en el entorno <code>development</code> del manifest; en local no hay cron." },
+      env: "Ambos disparadores activos y comprobados en desarrollo. En local no hay cron; producción conserva las tareas apagadas hasta el lanzamiento." },
     { id: "google", x: 320, y: 90, w: 150, h: 46, label: "Google OAuth", sub: "oauth2/authorization", ext: true,
       owns: "Inicio de sesión alternativo. Spring inicia y recibe el callback; el navegador nunca habla con Spring directamente.",
       tech: "<code>/backend/oauth2/authorization/google</code> → Google → <code>/backend/login/oauth2/code/google</code>. <code>GOOGLE_REDIRECT_URI</code> cambia host/ruta por entorno; tabla <code>oauth_accounts</code> (V5).",
-      env: "Local usa credenciales dummy que inyecta el lanzador si faltan." },
+      env: "Google habilitado en local y desarrollo; usa los clientes <code>subtitula-local-current</code> y <code>subtitula-development-current</code>. El inicio de sesión real requiere credenciales válidas." },
     { id: "mail", x: 830, y: 90, w: 160, h: 46, label: "Correo", sub: "Mailpit · Email Service", ext: true,
       owns: "Verificación de cuenta y restablecimiento de contraseña a través del puerto <code>EmailSender</code>.",
       tech: "<code>AuthMailService.sendVerification / sendReset</code> con tokens de un solo uso (V3, V4).",
-      env: "Local: SMTP contra Mailpit <code>:8025</code> · dev: <code>EMAIL_PROVIDER=disabled</code>, el fallo queda en logs · prod: Cloudflare Email Service con dominio propio." },
+      env: "Local: SMTP Mailpit <code>:1025</code>, bandeja <code>:8025</code> · dev: envío desactivado y controles de verificación/recuperación ocultos · producción: Cloudflare Email Service con dominio verificado, pendiente." },
   ];
   const NODE = Object.fromEntries(NODES.map((n) => [n.id, n]));
 
   const STATUSES = ["DRAFT", "UPLOADING", "UPLOADED", "TRANSCRIBING", "REVIEW_REQUIRED", "ENRICHING", "READY", "PUBLISHED", "ARCHIVED"];
 
   const CAPS = [
-    ["durableInstitutionalUpload", false, true],
-    ["normalizedTranscript", true, true],
-    ["exceptionReview", false, false],
-    ["automaticAgenda", false, false],
-    ["structuredGuide", false, false],
-    ["publicPublication", false, false],
-    ["lexicalSearch", false, false],
-    ["hybridSearch", false, false],
+    ["durableInstitutionalUpload", true, "1. Subida duradera"],
+    ["normalizedTranscript", true, "2. Transcripción normalizada"],
+    ["exceptionReview", true, "3. Revisión por excepciones"],
+    ["automaticAgenda", true, "4. Agenda automática"],
+    ["structuredGuide", true, "5. Guía estructurada"],
+    ["publicPublication", true, "6. Publicación pública"],
+    ["lexicalSearch", true, "7. Búsqueda literal"],
+    ["hybridSearch", true, "8. Búsqueda híbrida"],
   ];
 
   const KIND = {
@@ -378,7 +393,7 @@
           body: "<p><code>RegistrationService</code> guarda el usuario con la contraseña cifrada y falla con <code>EmailAlreadyRegisteredException</code> si el correo ya existe.</p>" },
         { from: "api", to: "mail", kind: "ext", title: "Correo de verificación",
           label: "verify", endpoint: "AuthMailService.sendVerification(user)\nPOST /auth/verify-email { token }  ·  POST /auth/resend-verification",
-          body: "<p>En local el correo llega a Mailpit; en dev remoto <code>EMAIL_PROVIDER=disabled</code> lanza un error visible en logs en lugar de simular una entrega; en producción usará Cloudflare Email Service con el dominio propio.</p><p><code>VerifyBanner</code> recuerda al usuario que verifique y permite reenviar.</p>" },
+          body: "<p>En local el correo llega a Mailpit; en desarrollo remoto el envío está desactivado y sus fallos quedan en logs sin impedir registro ni login. En producción usará Cloudflare Email Service con dominio propio.</p><p>El frontal de desarrollo oculta verificación y recuperación de contraseña con <code>NEXT_PUBLIC_EMAIL_DELIVERY_ENABLED=false</code>. En local, con la opción activa, permite comprobar el flujo completo.</p>" },
         { from: "browser", to: "api", kind: "http", title: "Login con sesión JDBC y CSRF por cookie",
           label: "login", endpoint: "POST /auth/login → SessionAuthService.login\nspring_session (V2) · 401, nunca redirect",
           body: "<p><code>SecurityConfig</code> usa <code>CookieCsrfTokenRepository.withHttpOnlyFalse()</code>: el token viaja en una cookie legible por JS y se materializa en cada respuesta. Las llamadas sin sesión reciben 401 en vez de una página de login.</p><p>Rutas públicas: <code>/ping</code>, <code>/auth/*</code>, <code>/capabilities</code>, <code>/public/*</code>, <code>/oauth2/**</code>, <code>/login/oauth2/**</code>; el resto exige sesión.</p>" },
@@ -387,7 +402,7 @@
           body: "<p>Spring inicia el flujo y recibe el callback a través del gateway. <code>GOOGLE_REDIRECT_URI</code> cambia el host por entorno sin tocar código; la cuenta se vincula en <code>oauth_accounts</code> (V5).</p>" },
         { from: "browser", to: "api", kind: "http", title: "Olvidé la contraseña",
           label: "reset", endpoint: "POST /auth/forgot-password { email }\nPOST /auth/reset-password { token, password }  ·  reset_tokens (V4)",
-          body: "<p>Mismo patrón que la verificación: token de un solo uso enviado por correo y consumido por <code>/reset-password</code>.</p>" },
+          body: "<p>Mismo patrón que la verificación: token de un solo uso enviado por correo y consumido por <code>/reset-password</code>. Disponible para pruebas de correo en local; su acceso está oculto en desarrollo alojado mientras no haya envío.</p>" },
         { from: "browser", to: "api", kind: "http", title: "La puerta: /projects decide la app",
           label: "entry", endpoint: "GET /projects → EntryRouter\ninstitution ∈ workflowMode ? /inst : lista > 0 ? /creator : «Con que traballas?»",
           body: "<p><code>components/app/entry-router.tsx</code> es el único sitio del producto donde las dos apps se nombran juntas. Una cuenta con sesiones plenarias va a <code>/inst</code>; con cualquier otro proyecto, a <code>/creator</code>; una cuenta vacía (o cuya lista falle) elige una vez.</p><p>Abrir un proyecto en la app equivocada redirige a la correcta conservando el ID: <code>workflowMode</code> es dato, no navegación.</p>" },
@@ -419,11 +434,11 @@
     },
     {
       id: "ingest", name: "Subida durable", kicker: "institución · fase 2",
-      intro: "El primer corte de transparencia y la capacidad que tienes activa en local: el vídeo va directo a R2, la transcripción es asíncrona y sobrevive a cerrar el navegador.",
+      intro: "Activa y comprobada en desarrollo: el vídeo va directo a R2, la transcripción es asíncrona y sobrevive a cerrar el navegador. Gallego por defecto; castellano como única alternativa.",
       steps: [
         { from: "browser", to: "api", kind: "http", title: "Borrador metadata-first",
           label: "draft", endpoint: "POST /projects  (application/json)\n{ name, sessionDate, sessionBody, sessionType, location, language }",
-          body: "<p><code>/inst/upload</code> crea primero el proyecto sin fichero (<code>createInstitutionalProjectDraft</code>). El multipart del creador queda como adaptador legacy en el mismo controlador.</p>", status: "DRAFT", gate: "durableInstitutionalUpload" },
+          body: "<p><code>/inst/upload</code> crea primero el proyecto sin fichero. El selector ofrece Galego (<code>glg</code>, por defecto) y Castelán (<code>spa</code>); el Worker usa el idioma autorizado del proyecto al llamar al proveedor. El multipart del creador se conserva en el mismo controlador.</p>", status: "DRAFT", gate: "durableInstitutionalUpload" },
         { from: "browser", to: "proc", kind: "gateway", title: "Intención de subida",
           label: "intent", endpoint: "POST /processing/upload-intents\n{ projectId, filename, sizeBytes, contentType, checksum? }",
           body: "<p>Pasa por el gateway <code>/processing/*</code> y <code>PROCESSING_SERVICE</code>. Antes de hacer nada externo el Worker exige mismo origen (<code>ALLOWED_ORIGIN</code>), eco de CSRF, y consume el <code>MUTATION_RATE_LIMITER</code> (10 por minuto).</p><p>Ficheros por encima de <code>MAX_UPLOAD_BYTES</code> (≈2 GB, el límite de <code>source_url</code> del proveedor) se rechazan con un mensaje útil antes de subir nada.</p>", gate: "durableInstitutionalUpload" },
@@ -453,12 +468,12 @@
           body: "<p>El esquema <code>normalize-transcript.ts</code> convierte la respuesta en comandos: una <code>transcript_revision</code> <code>WORKING</code> de origen <code>ASR</code>, hablantes <code>speaker_0…</code> en estado <code>UNKNOWN</code> y segmentos de evidencia que nunca cruzan un cambio de hablante, prefieren límites de frase y conservan timing por palabra.</p><p>Spring lo guarda en una transacción junto con las <code>review_issues</code> derivadas de las señales, y el proyecto queda en <code>REVIEW_REQUIRED</code>. Job: <code>SUCCEEDED</code>.</p>", status: "REVIEW_REQUIRED", stage: "PERSISTING_TRANSCRIPT", gate: "normalizedTranscript" },
         { from: "browser", to: "proc", kind: "gateway", title: "Si falla: estado seguro y reintento sin re-subir",
           label: "retry", endpoint: "record safe ingest failure → POST /internal/processing/jobs/{jobId}/failed { code }\nPOST /processing/projects/{projectId}/ingestion/retry",
-          body: "<p><code>ProcessingErrorCode</code> distingue reintentable (<code>PROVIDER_UNAVAILABLE</code>, <code>PROVIDER_TIMEOUT</code>, <code>R2_UNAVAILABLE</code>…) de terminal (<code>PROVIDER_REJECTED</code>, <code>WEBHOOK_SIGNATURE_INVALID</code>…). El proyecto va a <code>PROCESSING_FAILED</code> conservando el último artefacto.</p><p>«Tentar de novo» crea un Workflow nuevo sobre el mismo objeto de R2: el vídeo no vuelve a subirse. Es una de las tres pruebas manuales de la fase 0 pendientes.</p>", status: "PROCESSING_FAILED", gate: "durableInstitutionalUpload" },
+          body: "<p><code>ProcessingErrorCode</code> distingue reintentable (<code>PROVIDER_UNAVAILABLE</code>, <code>PROVIDER_TIMEOUT</code>, <code>R2_UNAVAILABLE</code>…) de terminal (<code>PROVIDER_REJECTED</code>, <code>WEBHOOK_SIGNATURE_INVALID</code>…). El proyecto va a <code>PROCESSING_FAILED</code> conservando el último artefacto.</p><p>«Tentar de novo» reutiliza el objeto de R2. En desarrollo se comprobó además la recuperación de una respuesta perdida al iniciar la transcripción: mismo job, sin duplicar intento ni volver a subir la grabación.</p>", status: "PROCESSING_FAILED", gate: "durableInstitutionalUpload" },
       ],
     },
     {
       id: "review", name: "Revisión", kicker: "sólo excepciones · fase 3",
-      intro: "La única puerta humana obligatoria. Nadie lee la transcripción entera: el editor salta sólo a lo que una persona debe comprobar.",
+      intro: "La revisión obligatoria se limita a las excepciones. No se exige leer la transcripción entera: el editor lleva al pasaje que necesita una decisión humana.",
       steps: [
         { from: "browser", to: "api", kind: "http", title: "El editor institucional abre la sesión",
           label: "open", endpoint: "GET /projects/{id}/processing · GET /projects/{id}/transcript · GET /projects/{id}/review-issues\nPOST /projects/{id}/review/open",
@@ -466,7 +481,7 @@
         { from: "api", to: "db", kind: "db", title: "La cola: «12 cousas por comprobar»",
           label: "queue", endpoint: "review_issues (V13)\nUNKNOWN_SPEAKER · SPEAKER_CHANGE · LOW_CONFIDENCE_SPAN · PROBABLE_PROPER_NAME\nGLOSSARY_MISMATCH · OVERLAP_OR_NOISE · MISSING_TIMING · INVALID_SEGMENT",
           body: "<p>Cada issue tiene severidad <code>REQUIRED</code> o <code>WARNING</code> y señales legibles por máquina. Se explica <em>por qué</em> mirar (audio pobre, solapamiento, nombre propio, desacuerdo de modelo), nunca una «precisión del 94 %».</p>", gate: "exceptionReview" },
-        { from: "browser", to: "browser", kind: "ui", title: "Reproducción privada sin URL firmada",
+        { from: "browser", to: "browser", kind: "ui", title: "Reproducción privada al reabrir la sesión",
           label: "media", endpoint: "IndexedDB primero · si no: GET /processing/projects/{id}/media-url → GET presignado renovable (900 s)\nlocal: GET|HEAD /processing/projects/{id}/media  (proxy Range)",
           body: "<p>Seleccionar un issue lleva el vídeo al pasaje, resalta las palabras y muestra el hablante y el contexto. Si el navegador no tiene copia local, el Worker autoriza contra Spring y entrega un GET firmado que se renueva al caducar; los bytes van de R2 al navegador sin pasar por el Container.</p>", gate: "exceptionReview" },
         { from: "browser", to: "api", kind: "http", title: "La acción mínima: editar, asignar, fusionar, confirmar",
@@ -497,7 +512,7 @@
           label: "align", endpoint: "align agenda and plan bounded windows → persist deterministic agenda alignment\nPOST /internal/processing/jobs/{jobId}/agenda   → agenda_alignments AUTOMATIC | UNRESOLVED",
           body: "<p>Sin IA: anclas explícitas (números de punto, frases de transición), pausas, cambios de hablante y similitud léxica, resueltos con programación dinámica monótona, span mínimo y sin solapes. Produce señales, no un porcentaje, y marca sólo transiciones ausentes, débiles o contradictorias para una comprobación rápida.</p><p>Objetivo para 10–15 puntos: 1–3 minutos humanos.</p>", stage: "ALIGNING_AGENDA", gate: "automaticAgenda" },
         { from: "proc", to: "ai", kind: "ai", title: "Extracción estructurada por ventanas",
-          label: "AI", endpoint: "@cf/zai-org/glm-4.7-flash · guide-v1 · GUIDE_MAX_WINDOW_CHARS=24000\nJSON Schema guide-extraction: topics[], contributions[], candidateDecisions[], evidenceSegmentIds[]",
+          label: "AI", endpoint: "@cf/zai-org/glm-4.7-flash · guide-v3 · GUIDE_MAX_WINDOW_CHARS=24000\nJSON Schema guide-extraction: topics[], contributions[], candidateDecisions[], evidenceSegmentIds[]",
           body: "<p>Nunca la sesión entera en un prompt: secciones acotadas por rango de agenda (o ventanas deterministas). El texto de transcripción y documentos entra como <em>datos</em>, no como instrucciones. Cada objeto debe citar IDs de segmentos.</p><p>El artefacto crudo se guarda en R2 privado para reproducibilidad; el coste se estima con <code>GUIDE_*_MICRO_USD_PER_MILLION_TOKENS</code>.</p>", stage: "GENERATING_GUIDE", gate: "structuredGuide" },
         { from: "wf", to: "api", kind: "workflow", title: "Validador determinista y guía persistida",
           label: "validate", endpoint: "validate and assemble evidence linked guide → persist validated guide\nPOST /internal/processing/jobs/{jobId}/guide   → session_guides GENERATED | EXCEPTIONS",
@@ -515,11 +530,11 @@
           label: "checklist", endpoint: "GET /projects/{id}/publication-checklist\nGET|POST /projects/{id}/documents   { type, officialUrl, title, issuingBody, documentDate, visibility }",
           body: "<p>Requerido: órgano, título, fecha, idioma; permiso y grabación; transcripción congelable; issues <code>REQUIRED</code> resueltas o hablante dejado explícitamente como desconocido; slug; procedencia de documentos; responsable. Opcional: agenda, guía, acuerdos confirmados.</p><p>Documentos: <code>AGENDA · NOTICE · MINUTES · PROPOSAL · AGREEMENT · OTHER</code>; se enlazan, no se sustituyen. El acta oficial sigue siendo el acta.</p>", status: "READY", gate: "publicPublication" },
         { from: "api", to: "db", kind: "db", title: "La transacción de publicar",
-          label: "publish", endpoint: "POST /projects/{id}/publications   { expectedVersion, publicSlug, correctionNote? }\nrevision WORKING→FROZEN · publication PUBLISHED{ revision, recording, guide, documents } · search_documents",
-          body: "<p>«Publicar a sesión» congela la revisión, crea una <code>publication</code> con slug inmutable que <em>fija</em> revisión, grabación, guía y documentos visibles, y en la misma transacción escribe los <code>search_documents</code> léxicos (kind <code>EVIDENCE · TOPIC · CONTRIBUTION · DOCUMENT_CHUNK</code>, <code>tsvector</code> ponderado + texto normalizado). Crea el job <code>INDEX</code>.</p><p>La sesión es pública y buscable literalmente al instante; lo semántico llega después sin bloquear.</p>", status: "PUBLISHED", gate: "publicPublication" },
+          label: "publish", endpoint: "POST /projects/{id}/publications   { expectedVersion, desiredSlug, correctionNote? }\nrevision WORKING→FROZEN · publication PUBLISHED{ revision, recording, guide, documents } · INDEX job",
+          body: "<p>«Publicar a sesión» congela la revisión y crea una publicación que fija grabación, guía y documentos visibles. La misma transacción encola el trabajo <code>INDEX</code> y devuelve <code>indexJobId</code>.</p><p>La página pública ya se puede abrir. La búsqueda se prepara después: el frontal arranca el Workflow de inmediato, incluso si la búsqueda híbrida está apagada, y muestra su estado sin prometer un índice todavía pendiente.</p>", status: "PUBLISHED", gate: "publicPublication" },
         { from: "browser", to: "proc", kind: "gateway", title: "Índice: proyección léxica y embeddings",
           label: "index", endpoint: "POST /processing/publications/{publicationId}/index → INDEX_PUBLICATION\nbuild durable lexical search projection → snapshot active public search documents → mark embedding projection started",
-          body: "<p>El Workflow confirma la proyección léxica (<code>lexical-workflow</code>, <code>lexical-index</code>) y toma un snapshot de los documentos activos. Si algo falla en léxico se registra con <code>lexical-index-failed</code> pero la publicación sigue viva.</p>", stage: "BUILDING_SEARCH_DOCUMENTS", gate: "lexicalSearch" },
+          body: "<p>El Workflow construye primero la proyección léxica y después, si está activa, la semántica. Si navegador y cron coinciden, se reutiliza la instancia ya admitida. Si falla la indexación léxica, el error queda registrado y la publicación sigue accesible; si falla sólo la semántica, sigue disponible la búsqueda literal.</p>", stage: "BUILDING_SEARCH_DOCUMENTS", gate: "lexicalSearch" },
         { from: "proc", to: "ai", kind: "ai", title: "bge-m3 en lotes de 24",
           label: "embed", endpoint: "@cf/baai/bge-m3 · 1024 dims · EMBEDDING_BATCH_SIZE=24\nPOST /internal/…/embeddings   { searchDocumentId, embedding[1024], model, contentHash }  → complete semantic search projection",
           body: "<p>Cada documento guarda modelo, versión y hash de contenido, así una re-indexación sólo embebe lo que cambió. Escaneo vectorial exacto: HNSW sólo cuando un <code>EXPLAIN ANALYZE</code> lo justifique (comentario literal de V17).</p><p>Fallo → <code>record safe embedding failure</code>: <code>EMBEDDING_UNAVAILABLE</code>, reintentable, la búsqueda literal sigue funcionando.</p>", stage: "GENERATING_EMBEDDINGS", gate: "hybridSearch" },
@@ -528,7 +543,7 @@
           body: "<p>«Corrixir a sesión» bifurca la última revisión congelada; el operador edita, resuelve issues nuevas, y el re-enriquecimiento es incremental por hash. Volver a publicar exige una «Nota pública da corrección» no vacía y crea la versión N+1; N pasa a <code>SUPERSEDED</code>. La URL estable muestra siempre la última activa con su nota.</p>", gate: "publicPublication" },
         { from: "browser", to: "api", kind: "http", title: "Retirar y reconstruir",
           label: "withdraw", endpoint: "POST /projects/{id}/publications/{publicationId}/withdraw   → WITHDRAWN, tombstone search_documents, bloquea media URLs\nPOST /projects/{id}/publications/{publicationId}/reindex   → 202 + jobId (sólo propietario)",
-          body: "<p>Retirar tumba todos los documentos de búsqueda al instante. Reindexar («Mantemento da busca → Reconstruír a busca») conserva identidades y clics de los documentos y limpia embeddings obsoletos; el reconciliador del cron arranca el Workflow pendiente. Es el camino de recuperación tras un restore.</p>", gate: "publicPublication" },
+          body: "<p>Retirar desactiva los documentos de búsqueda y bloquea nuevos accesos públicos a la sesión y a su grabación. Comprobado en desarrollo: ambas búsquedas devolvieron cero resultados y sesión/media respondieron 404.</p><p>Reindexar conserva identidades y clics y limpia embeddings obsoletos. El frontal arranca el trabajo de inmediato; el cron recupera los pendientes. El ensayo completo de restauración sigue pendiente para el piloto.</p>", gate: "publicPublication" },
       ],
     },
     {
@@ -546,7 +561,7 @@
           body: "<p>Sólo si <code>hybridSearch</code> está activa. Rate limit primero, IA después.</p>", gate: "hybridSearch" },
         { from: "proc", to: "api", kind: "hmac", title: "RRF en PostgreSQL, fail-open a léxico",
           label: "RRF", endpoint: "POST /internal/processing/search/hybrid   { queryEmbedding, q, filters }\ncandidatos léxicos ∪ candidatos vectoriales (exacto) → Reciprocal Rank Fusion k=60 → boosts → agrupar duplicados",
-          body: "<p>Mismo DTO que el léxico, con <code>matchReasons</code> que pueden añadir <code>RELATED_MEANING</code> a <code>EXACT_PHRASE</code>; las puntuaciones nunca salen. Cualquier fallo de IA o interno degrada al proxy de <code>/public/search</code>: la búsqueda literal es el suelo.</p><p>«Cuándo» devuelve ocurrencias cronológicas; «quién» agrupa hablantes. Ninguna necesita respuesta generada.</p>", gate: "hybridSearch" },
+          body: "<p>Combina candidatos léxicos y semánticos con similitud mínima <code>0.48</code>. Un tema relacionado también puede recuperar sus fragmentos citados, siempre dentro de la misma publicación activa y de su guía fijada.</p><p>Los resultados explican coincidencia literal o significado relacionado; no muestran puntuaciones internas. Si falla la parte semántica, se consulta <code>/public/search</code> para conservar el modo léxico. No se genera una respuesta sin fuentes.</p>", gate: "hybridSearch" },
         { from: "api", to: "browser", kind: "http", title: "Resultado = evidencia con destino",
           label: "results", endpoint: "{ searchDocumentId, publicSlug, publicationVersion, kind, evidenceSegmentId, sessionTitle,\n  excerpt, speakerLabel, startMs, endMs, evidenceHref: \"/transparencia/pleno-xullo-2026?t=1902\", matchReasons[] }",
           body: "<p>Tarjetas de evidencia, no burbujas de chat: fragmento, hablante (o «Persoa non identificada»), fecha, y «reproducir desde el minuto». El texto generado (temas, intervenciones) amplía el <em>recall</em>; la evidencia sigue siendo el destino.</p>", gate: "lexicalSearch" },
@@ -555,7 +570,7 @@
           body: "<p><code>/transparencia/[slug]</code>: título, órgano, fecha, estado de publicación/corrección, enlace al origen, vídeo, «Buscar nesta sesión». Debajo: índice por agenda, transcripción sincronizada con hablantes, la <b>«Guía da sesión»</b> etiquetada como asistida y con fuentes, y documentos con procedencia.</p><p>La URL lleva el estado: <code>?t=</code> busca el segundo, <code>?evidence=</code> resalta el pasaje, <code>?q=</code> conserva la búsqueda. Nunca autoplay con sonido.</p>", gate: "publicPublication" },
         { from: "browser", to: "api", kind: "http", title: "Clics sin perfilado",
           label: "clicks", endpoint: "POST /public/search/clicks   { queryEventId, searchDocumentId }\nqueryEventId es null si el HMAC de analítica está en blanco",
-          body: "<p>Cuando está activa, la API guarda sólo un digest con clave de la consulta, su longitud, filtros acotados, número de resultados, latencia, modo y coste estimado. Nunca la consulta cruda, la IP ni el user-agent. El cron de las 03:17 borra lo que supere <code>SEARCH_ANALYTICS_RETENTION_DAYS=90</code>.</p>", gate: "lexicalSearch" },
+          body: "<p>Cuando está activa, la API guarda sólo un digest con clave de la consulta, su longitud, filtros acotados, número de resultados, latencia, modo y coste estimado. Nunca la consulta cruda, la IP ni el user-agent. El cron de las 03:17 UTC borra lo que supere <code>SEARCH_ANALYTICS_RETENTION_DAYS=90</code>.</p>", gate: "lexicalSearch" },
       ],
     },
     {
@@ -574,36 +589,45 @@
         { from: "proc", to: "wf", kind: "workflow", title: "Reconciliar Workflows pendientes",
           label: "reconcile", endpoint: "POST /internal/processing/jobs/pending-workflows → INGEST_SESSION | ENRICH_SESSION | INDEX_PUBLICATION .create({ id: jobId })",
           body: "<p>Si Spring tiene un job en cola cuyo Workflow no llegó a crearse (caída del Worker, restore de base de datos, reindex solicitado), el reconciliador lo arranca. Como el ID de instancia deriva del job, no puede duplicarse.</p>" },
-        { from: "cron", to: "api", kind: "cron", title: "03:17: retención de analítica",
+        { from: "cron", to: "api", kind: "cron", title: "03:17 UTC: retención de analítica",
           label: "03:17", endpoint: "POST /internal/processing/cleanup/search-analytics   { olderThan: now − 90 días }",
           body: "<p>Purga las filas de eventos de búsqueda y clics más antiguas que <code>SEARCH_ANALYTICS_RETENTION_DAYS</code>. Es la única tarea exclusiva del cron diario.</p>" },
       ],
     },
     {
-      id: "caps", name: "Capacidades", kicker: "lanzamiento oscuro · fase 8",
-      intro: "Ocho interruptores en el servidor deciden qué existe. Lo apagado devuelve 404, no 403; el frontend falla cerrado; se enciende de uno en uno y en este orden.",
+      id: "caps", name: "Capacidades", kicker: "8 activas · validación en desarrollo",
+      intro: "De una grabación a una sesión pública con evidencia: las ocho funciones están activas y comprobadas con sesiones ficticias. El piloto institucional y el lanzamiento de producción siguen pendientes.",
       steps: [
-        { nodes: ["api", "browser"], kind: "http", title: "Descubrimiento que falla cerrado",
-          label: "discover", endpoint: "GET /capabilities   (anónimo)\n{ contractVersion: \"1.0.0\", durableInstitutionalUpload, normalizedTranscript, exceptionReview, automaticAgenda, structuredGuide, publicPublication, lexicalSearch, hybridSearch }",
-          body: "<p><code>TransparencyCapabilities</code> es un record con ocho booleanos ligado a <code>app.capabilities.*</code>, que en hosted vienen de las vars <code>CAPABILITY_*</code> de <code>wrangler.jsonc</code>: encender una es un commit y un deploy, auditable y revertible, sin interruptor de emergencia.</p><p><code>getTransparencyCapabilities()</code> devuelve todo <code>false</code> ante cualquier error; el frontend nunca infiere una capacidad por la presencia de datos. En el servidor, <code>CapabilityDisabledException</code> responde <b>404</b> «so disabled rollout slices are not reachable as dark APIs».</p>" },
-        { nodes: ["browser", "web", "proc", "r2", "api"], kind: "signed", title: "1 · durableInstitutionalUpload",
-          label: "upload", endpoint: "CAPABILITY_DURABLE_INSTITUTIONAL_UPLOAD   local=true · dev=false",
-          body: "<p>La que tienes activa en <code>.env</code> local. Abre el canal <b>Subida durable</b> completo: intents, PUT directo a R2, Workflow de ingestión, webhook y reintento. Es la primera en encenderse en hosted, y su prueba es subir y abandonar un fichero y ver que se limpia.</p>", gate: "durableInstitutionalUpload" },
-        { nodes: ["api", "db"], kind: "db", title: "normalizedTranscript · ya encendida",
-          label: "transcript", endpoint: "CAPABILITY_NORMALIZED_TRANSCRIPT   local=true · dev=true",
-          body: "<p>La única activa en hosted: el modelo de revisiones, hablantes y segmentos (V11) y el endpoint <code>GET /projects/{id}/transcript</code>, que devuelve proyectos legacy con la misma forma y <code>legacyAdapter=true</code>. Es segura porque no cambia ningún comportamiento visible del creador.</p>", gate: "normalizedTranscript" },
-        { nodes: ["browser", "api", "db"], kind: "http", title: "2 · exceptionReview",
-          label: "review", endpoint: "CAPABILITY_EXCEPTION_REVIEW   false",
-          body: "<p>Cola de issues, ediciones con versión, métricas de tiempo activo y la puerta «review/complete». Gate del piloto: medir el tiempo activo y comprobar que los hablantes desconocidos siguen desconocidos.</p>", gate: "exceptionReview" },
-        { nodes: ["proc", "wf", "ai", "api"], kind: "workflow", title: "3 · automaticAgenda, después structuredGuide",
-          label: "enrich", endpoint: "CAPABILITY_AUTOMATIC_AGENDA · CAPABILITY_STRUCTURED_GUIDE   false · false",
-          body: "<p>Las únicas dos que el runbook permite activar seguidas. Su gate de graduación es de campo: el enriquecimiento debe añadir 2–5 minutos humanos en sesiones normales, o la fase no se gradúa.</p>", gate: "structuredGuide" },
-        { nodes: ["browser", "api", "db", "r2"], kind: "http", title: "4 · publicPublication + lexicalSearch",
-          label: "publish", endpoint: "CAPABILITY_PUBLIC_PUBLICATION · CAPABILITY_LEXICAL_SEARCH   false · false",
-          body: "<p>Snapshots inmutables, página pública, Range y DTO allowlist; y sólo después la búsqueda literal. Antes de la híbrida hay que etiquetar un <em>gold set</em> real en gallego y castellano y ejecutar el evaluador de búsqueda.</p>", gate: "publicPublication" },
-        { nodes: ["proc", "ai", "db", "api"], kind: "ai", title: "5 · hybridSearch, la última",
-          label: "hybrid", endpoint: "CAPABILITY_HYBRID_SEARCH   false\nSEARCH_EMBEDDING_MODEL_ID=@cf/baai/bge-m3 · SEARCH_EMBEDDING_DIMENSIONS=1024",
-          body: "<p>Sólo si mejora materialmente el éxito de búsqueda sin empeorar no-respuesta, p95 de latencia, carga ni coste/margen. Rollback: apagar primero híbrida, luego léxica/publicación, luego guía/agenda; nunca revertir Flyway ni retirar V11–V18; conservar R2, artefactos, revisiones y jobs.</p>", gate: "hybridSearch" },
+        { nodes: ["browser", "api", "proc", "r2", "db", "wf", "ai", "eleven"], kind: "http", title: "Ocho funciones, un recorrido completo",
+          label: "resumen", endpoint: "Subir → transcribir → revisar excepciones → organizar → publicar → buscar\nGET /capabilities · contrato 1.0.0 · 8 valores true en desarrollo",
+          body: "<p>El sistema conserva la grabación, produce texto con tiempos y hablantes, señala lo que necesita revisión, organiza la sesión y permite publicarla y encontrar sus evidencias.</p><p><b>Gallego por defecto y castellano como única alternativa.</b> La revisión obligatoria se limita a las incidencias necesarias; agenda y guía no añaden una segunda lectura completa.</p><p>El estado mostrado fue verificado el <b>10 de septiembre de 2026</b>. Las ocho filas de abajo abren la explicación de cada capacidad.</p>" },
+        { from: "browser", to: "r2", nodes: ["browser", "web", "proc", "r2", "wf", "api"], kind: "signed", title: "1 · Subida duradera de grabaciones",
+          label: "subida", endpoint: "durableInstitutionalUpload = true · desarrollo",
+          body: "<p>Guarda el audio o vídeo en R2 privado y procesa en segundo plano, aunque cierres el navegador. Permite reabrir la sesión y reintentar usando la grabación ya subida.</p><p><b>Comprobado:</b> subida real, rechazo de objeto ausente, completar dos veces sin duplicar trabajo, cancelación y reproducción por rangos.</p>", gate: "durableInstitutionalUpload" },
+        { from: "proc", to: "api", nodes: ["eleven", "proc", "api", "db"], kind: "db", title: "2 · Transcripción normalizada",
+          label: "transcripción", endpoint: "normalizedTranscript = true · desarrollo",
+          body: "<p>Convierte el resultado de voz a texto en revisiones, fragmentos con tiempos y hablantes. Cada fragmento conserva una referencia que puede citarse desde la guía y la búsqueda.</p><p><b>Comprobado:</b> transcripciones del proveedor en gallego y castellano, 14 segmentos en cada sesión principal y voces conservadas como no identificadas cuando corresponde.</p>", gate: "normalizedTranscript" },
+        { from: "browser", to: "api", nodes: ["browser", "api", "db"], kind: "http", title: "3 · Revisión por excepciones",
+          label: "revisión", endpoint: "exceptionReview = true · desarrollo",
+          body: "<p>Lleva al pasaje que necesita una decisión: una voz desconocida, un nombre o un problema de texto. Sólo las incidencias obligatorias bloquean terminar; los avisos no exigen una lectura completa.</p><p><b>Comprobado en el navegador:</b> resolución del hablante desconocido sin inventar identidad y fin de revisión. Medir el ahorro de tiempo con operadores reales sigue pendiente.</p>", gate: "exceptionReview" },
+        { from: "wf", to: "api", nodes: ["proc", "wf", "api", "db"], kind: "workflow", title: "4 · Agenda automática",
+          label: "agenda", endpoint: "automaticAgenda = true · desarrollo",
+          body: "<p>Relaciona los puntos del orden del día con los tramos de la grabación, respetando su orden. Sólo las transiciones ambiguas requieren una comprobación rápida.</p><p><b>Comprobado:</b> alineación sobre la sesión ficticia gallega. El orden del día es opcional: sin él, la transcripción sigue siendo publicable y la guía puede organizarse por temas.</p>", gate: "automaticAgenda" },
+        { from: "proc", to: "ai", nodes: ["proc", "wf", "ai", "r2", "api"], kind: "ai", title: "5 · Guía estructurada con fuentes",
+          label: "guía", endpoint: "structuredGuide = true · desarrollo",
+          body: "<p>Genera temas, resúmenes e intervenciones enlazados con fragmentos concretos. Los posibles acuerdos se confirman u omiten; la guía asistida no sustituye al acta oficial.</p><p><b>Comprobado:</b> guías citadas en ambos idiomas, acuerdo explícito confirmado y ausencia de un acuerdo inventado. La meta de 2–5 minutos de trabajo humano adicional aún requiere un piloto real.</p>", gate: "structuredGuide" },
+        { from: "api", to: "db", nodes: ["browser", "api", "db", "r2"], kind: "http", title: "6 · Publicación pública versionada",
+          label: "publicación", endpoint: "publicPublication = true · desarrollo",
+          body: "<p>Crea una página accesible sin cuenta con grabación, transcripción y fuentes. Una corrección publica una versión nueva con nota visible; retirar impide nuevas consultas y accesos a la grabación.</p><p><b>Comprobado:</b> publicación y reproducción anónimas, corrección gallega a versión 2 conservando la versión 1 y retirada de una sesión de prueba independiente.</p>", gate: "publicPublication" },
+        { from: "api", to: "db", nodes: ["browser", "api", "db"], kind: "db", title: "7 · Búsqueda literal",
+          label: "literal", endpoint: "lexicalSearch = true · desarrollo",
+          body: "<p>Encuentra palabras, frases, nombres y variantes aproximadas, con filtros. Cada resultado abre su evidencia y el segundo correspondiente de la grabación.</p><p><b>Comprobado:</b> 13 de 16 consultas con respuesta resueltas en el conjunto principal; los seis temas ausentes no producen falsos resultados. Sólo se buscan publicaciones activas.</p>", gate: "lexicalSearch" },
+        { from: "proc", to: "api", nodes: ["browser", "proc", "ai", "api", "db"], kind: "ai", title: "8 · Búsqueda híbrida",
+          label: "híbrida", endpoint: "hybridSearch = true · desarrollo\nSimilitud mínima 0,48 · evidencia citada + búsqueda literal",
+          body: "<p>Combina palabras y significado para recuperar evidencia en gallego y castellano, con alternativa léxica si falla la parte semántica.</p><p><b>Pruebas anteriores:</b> 16/16 respuestas en el conjunto principal y 9/10 en el adicional; diez casos sin respuesta correctos y p95 en caliente inferior a 2,4 s. Una respuesta quedó fuera de los primeros 20 resultados.</p><p><b>Limitación nueva:</b> «quién habló de las pérdidas de las tuberías del agua?» devuelve cero resultados; «pérdidas en las tuberías de agua» devuelve siete documentos. Interpretar «quién» y agrupar por hablante sigue pendiente. Los nombres requieren una identidad explícita, nunca una deducción del texto.</p><p><a href=\"natural-language-speaker-search-2026-09-10.md\">Ver diagnóstico y criterios de la siguiente mejora</a>.</p>", gate: "hybridSearch" },
+        { nodes: ["api", "proc", "db", "r2"], kind: "http", title: "Lo que falta para producción",
+          label: "producción", endpoint: "Desarrollo activo · previews apagadas · producción bloqueada",
+          body: "<p>Estas pruebas con sesiones ficticias validan el funcionamiento en desarrollo. Quedan sesiones reales y de duración habitual, estudio de tiempos humanos, carga, accesibilidad, restauración y gobernanza.</p><p>La configuración de producción se prepara sin crear recursos: dominio y remitente verificado, base de datos y almacenamiento aislados, y promoción de la misma imagen aprobada. El lanzamiento necesita completar el anexo y autorizar cualquier nuevo pago.</p><p>Desactivar una capacidad conserva grabaciones, revisiones y trabajos; nunca exige borrar R2 ni revertir las migraciones.</p>" },
       ],
     },
   ];
@@ -611,7 +635,7 @@
   /* ------------------------------------------------------------------ */
   /* State                                                               */
   /* ------------------------------------------------------------------ */
-  const state = { flow: 0, step: 0, playing: false, timer: null, tcStart: 0, tcBase: 0, selectedNode: null };
+  const state = { flow: FLOWS.findIndex((f) => f.id === "caps"), step: 0, playing: false, timer: null, tcStart: 0, tcBase: 0, selectedNode: null };
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const STEP_MS = 4200;
 
@@ -629,6 +653,8 @@
     const saved = JSON.parse(localStorage.getItem("subtitula-sala") || "null");
     if (saved && FLOWS[saved.flow]) { state.flow = saved.flow; state.step = Math.min(saved.step || 0, FLOWS[saved.flow].steps.length - 1); }
   } catch (e) { /* storage unavailable */ }
+  const requestedFlow = FLOWS.findIndex((flow) => "#" + flow.id === window.location.hash);
+  if (requestedFlow >= 0) { state.flow = requestedFlow; state.step = 0; }
   const persist = () => { try { localStorage.setItem("subtitula-sala", JSON.stringify({ flow: state.flow, step: state.step })); } catch (e) { /* ignore */ } };
 
   /* ------------------------------------------------------------------ */
@@ -643,7 +669,7 @@
     const t = el("text", { x: n.x, y: n.y - 3, "text-anchor": "middle" }, g); t.textContent = n.label;
     const s = el("text", { class: "sub", x: n.x, y: n.y + 14, "text-anchor": "middle" }, g); s.textContent = n.sub;
     g.addEventListener("click", () => selectNode(n.id));
-    g.addEventListener("keydown", (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); selectNode(n.id); } });
+    g.addEventListener("keydown", (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); ev.stopPropagation(); selectNode(n.id); } });
     nodeEls[n.id] = g;
   }
 
@@ -774,7 +800,7 @@
     if (s.gate) {
       const cap = CAPS.find((c) => c[0] === s.gate);
       const onDev = cap && cap[1];
-      chips += chip("cap · " + s.gate + (onDev ? " · on" : " · dev off"), "gate" + (onDev ? "" : " off"));
+      chips += chip((cap ? cap[2] : s.gate) + (onDev ? " · activa en dev" : " · apagada en dev"), "gate" + (onDev ? "" : " off"));
     }
     if (s.stage) chips += chip("stage · " + s.stage, "warn");
     if (s.status) chips += chip("status → " + s.status, s.status === "PROCESSING_FAILED" ? "bad" : "ok");
@@ -801,8 +827,8 @@
     }
     const flow = FLOWS[state.flow];
     let caps = "";
-    for (const [k, dev, local] of CAPS) {
-      caps += '<span class="k">' + k + '</span><span class="v ' + (dev ? "on" : local ? "local" : "off") + '">' + (dev ? "dev on" : local ? "local only" : "off") + "</span>";
+    for (const [k, dev, label] of CAPS) {
+      caps += '<button type="button" class="k cap-link" data-cap="' + k + '">' + label + '</button><span class="v ' + (dev ? "on" : "off") + '">' + (dev ? "dev activa" : "dev apagada") + "</span>";
     }
     c.innerHTML =
       '<div class="stepno"><span>Sobre este canal</span><span>' + flow.steps.length + " pasos</span></div>" +
@@ -812,9 +838,18 @@
         '<span><i class="sw active"></i> paso activo</span><span><i class="sw ext"></i> proveedor externo</span>' +
         '<span><i class="sw box"></i> Cloudflare / propio</span><span><i class="sw box ext"></i> servicio externo</span>' +
       "</div>" +
-      '<h3 style="margin-top:14px">Capacidades hoy</h3><div class="caps">' + caps + "</div>" +
-      '<p class="hint" style="margin-top:10px">Apagado = 404 en Spring y todo-false en el frontend. Se enciende con un commit en <code>wrangler.jsonc</code>.</p>';
+      '<h3 style="margin-top:14px">Capacidades · 10 septiembre 2026</h3><div class="caps">' + caps + "</div>" +
+      '<p class="hint" style="margin-top:10px">Pulsa una función para recorrerla. Estado documentado de desarrollo; producción y piloto institucional pendientes. La configuración local puede ser distinta.</p>';
   }
+
+  $("context").addEventListener("click", (event) => {
+    const button = event.target.closest("[data-cap]");
+    if (!button) return;
+    const flow = FLOWS.findIndex((f) => f.id === "caps");
+    const step = FLOWS[flow].steps.findIndex((s) => s.gate === button.dataset.cap);
+    if (step < 0) return;
+    state.flow = flow; state.step = step; state.selectedNode = null; render();
+  });
 
   /* ------------------------------------------------------------------ */
   /* Transport                                                           */
@@ -854,6 +889,7 @@
   $("prev").addEventListener("click", () => setStep(state.step - 1));
   document.addEventListener("keydown", (ev) => {
     if (ev.target && /input|textarea/i.test(ev.target.tagName)) return;
+    if (ev.key === " " && ev.target?.closest?.("button, a")) return;
     if (ev.key === "ArrowRight") { ev.preventDefault(); setStep(state.step + 1); }
     else if (ev.key === "ArrowLeft") { ev.preventDefault(); setStep(state.step - 1); }
     else if (ev.key === " ") { ev.preventDefault(); state.playing ? stop() : play(); }

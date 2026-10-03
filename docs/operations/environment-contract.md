@@ -1,5 +1,10 @@
 # Contrato operativo de entornos
 
+**21 septiembre 2026: development suspendido por petición explícita del usuario.**
+Contenedor parado, Cron y rutas desactivados, despliegues automáticos bloqueados.
+Datos y suscripciones conservados. El [registro de suspensión](hosted-suspension-2026-09-21.md)
+supersede el estado operativo del 10 de septiembre descrito a continuación.
+
 **10 septiembre 2026: development reanudado por petición explícita del usuario.**
 Las tres rutas públicas y los Cron están activos; previews siguen desactivadas.
 Las ocho capacidades están en comprobación/uso sintético de desarrollo; el

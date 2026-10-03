@@ -1,0 +1,80 @@
+{
+  "observedOn": "2026-09-10",
+  "scope": "Public synthetic development diagnostic; recorded from observed responses, not a fresh run or full response capture",
+  "status": "development_follow_up_pending",
+  "origin": "https://subtitula-web-dev.s-counago00.workers.dev",
+  "endpoint": "/processing/search",
+  "filters": {},
+  "configuredMinimumSemanticSimilarity": 0.48,
+  "relevantEvidence": {
+    "publicationId": "2890b42f-ee7f-4ca6-81b4-945806bc68ea",
+    "publicationVersion": 2,
+    "publicSlug": "sesion-ficticia-en-galego-auga-e-biblioteca-proba-de-capacidades-4ce077be",
+    "evidenceSegmentId": "1b949ec3-e4af-479b-ab7d-467ad72ea8ab",
+    "startMs": 11179,
+    "endMs": 15939,
+    "speakerLabel": "Persoa non identificada",
+    "text": "A Presidencia propón renovar as tubaxes da rúa do Río para reducir as fugas."
+  },
+  "observations": [
+    {
+      "id": "natural-question-es",
+      "query": "quién habló de las pérdidas de las tuberías del agua?",
+      "requestedLimit": 10,
+      "httpStatus": 200,
+      "servedMode": "HYBRID",
+      "reportedTotalResults": 0,
+      "relevantEvidenceRank": null,
+      "finding": "False negative despite relevant published evidence"
+    },
+    {
+      "id": "topic-es",
+      "query": "pérdidas en las tuberías de agua",
+      "requestedLimit": 5,
+      "httpStatus": 200,
+      "servedMode": "HYBRID",
+      "reportedTotalResults": 7,
+      "relevantEvidenceRank": 3,
+      "relevantContributionRank": 2,
+      "finding": "Relevant Galician topic and source returned; speaker remains unidentified"
+    },
+    {
+      "id": "paraphrase-es",
+      "query": "reparación de las conducciones de agua",
+      "requestedLimit": 5,
+      "httpStatus": 200,
+      "servedMode": "HYBRID",
+      "reportedTotalResults": 7,
+      "relevantContributionRank": 3,
+      "finding": "Relevant Galician topic and contribution returned"
+    },
+    {
+      "id": "topic-gl",
+      "query": "perdas nas tubaxes de auga",
+      "requestedLimit": 10,
+      "httpStatus": 200,
+      "servedMode": "HYBRID",
+      "reportedTotalResults": 30,
+      "relevantEvidenceRank": 4,
+      "relevantContributionRank": 3,
+      "finding": "Relevant source returned among broader matches"
+    },
+    {
+      "id": "natural-question-gl",
+      "query": "quen falou das perdas nas tubaxes de auga?",
+      "requestedLimit": 10,
+      "httpStatus": 200,
+      "servedMode": "HYBRID",
+      "reportedTotalResults": 30,
+      "relevantEvidenceRank": 4,
+      "relevantContributionRank": 3,
+      "finding": "Relevant source returned but first result concerns questions and timing of works"
+    }
+  ],
+  "limitations": [
+    "Result totals count search documents, not unique speakers or interventions",
+    "The exact cause of the full-question miss has not been isolated",
+    "The fixture contains one unidentified synthetic voice and cannot validate named multi-speaker attribution",
+    "These diagnostic requests do not constitute a latency benchmark or a representative field study"
+  ]
+}

@@ -1,11 +1,22 @@
 # Development capability rollout — 10 September 2026
 
+**Superseded runtime state:** hosted development was suspended at the user's
+request on 21 September. See [the shutdown record](hosted-suspension-2026-09-21.md).
+The functional rollout evidence below remains historical.
+
 The user explicitly resumed development and authorized the remaining capability
 activation, existing services and credential management in Bitwarden. New
 payments require separate authorization. Production and the domain annex remain
 gated. This supersedes the 8 September suspension for development only.
 
 ## Verified state
+
+**Later diagnostic:** the user's full Spanish question about who discussed water-pipe
+leaks returned HTTP 200 / HYBRID with zero results, although shorter formulations
+found the relevant Galician evidence. Natural-language robustness and speaker grouping
+remain development work. See the [diagnostic and proposed acceptance criteria](../product/natural-language-speaker-search-2026-09-10.md)
+and [recorded observations](evidence/natural-language-search-2026-09-10.json).
+The earlier evaluation numbers below describe their specific synthetic sets.
 
 Verified search runtime at 20:06 UTC: all eight capabilities true; the principal
 development comparison passed and hybrid is retained with threshold `0.48`. API Worker

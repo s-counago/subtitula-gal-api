@@ -1,6 +1,50 @@
 # Last session
 
-## Current handoff — 10 September 2026
+## Current handoff — 21 September 2026
+
+Hosted development is suspended at the user's explicit request for cost control.
+The API returned suspended=true/running=false; processor schedules, all three
+public/preview routes and GitHub deployment gates are disabled and verified.
+DB/R2/secrets and subscriptions are preserved. Resume only on a new user request.
+Read [the shutdown record](docs/operations/hosted-suspension-2026-09-21.md).
+Manifest changes remain local/uncommitted. Billing review awaits Cloudflare
+browser sign-in; infrastructure OAuth cannot read billing history (HTTP 403).
+
+## Current handoff — 11 September 2026
+
+**Latest discussion — claim identity, context and repeatable experiments:** the user
+prefers approach 2 (bounded low-cost LLM plus validation), starting with existing GLM,
+and prioritizes avoiding incorrect data. Read the [clarifications and experiment ideas](docs/product/afirmaciones-aclaraciones-y-ensayos-2026-09-11.md).
+Claims and occurrences have separate identities; evidence remains mandatory; further
+authorized transcript context can be retrieved; structured proposals pass application
+validation before persistence/public acceptance. DeepSeek-V4.1-Flash direct-API prices
+and cache semantics were checked; no inference calls or new provider purchases occurred.
+Document/news verification is explicitly deferred in [the future scope](docs/product/afirmaciones-cotejo-documental-futuro.md)
+and backlog CLAIM-DOC-01. The 45k-token session remains an illustrative assumption,
+not a measurement. Next: discuss the proposed corpus and repeatable small experiments;
+no automatic continuous processing or implementation is started. Earlier work is preserved.
+
+**Latest follow-up — exploratory report, before implementation planning:** the user
+requested an explanatory document about persistent speaker profiles, explicit claims,
+a shared catalogue of matters, repeated statements and evidenced contradictions.
+Read [the exploration report](docs/product/afirmaciones-asuntos-informe-exploratorio-2026-09-11.md).
+It explains a worked fictional example, candidate retrieval versus matter identity,
+uncertainty, catalogue deduplication, model options, hypothetical costs and experiments.
+Official sources/prices checked on 11 September; no claim/matter model evaluation,
+application change, deployment or new provider purchase. The decision log records this
+as exploration only. Next: user review and discussion before an implementation plan.
+Natural-language search remains pending; all documentation changes remain local and
+uncommitted, preserving the previous diagram/search documentation follow-ups.
+
+**Previous follow-up — natural-language search remains incomplete:** the user's exact
+question `quién habló de las pérdidas de las tuberías del agua?` returned HTTP 200 /
+HYBRID / zero results despite relevant evidence. Short Spanish topic queries returned
+seven search documents. There is no dedicated “who” grouping, and the synthetic
+speaker remains unidentified. See the [diagnostic and next development slice](docs/product/natural-language-speaker-search-2026-09-10.md).
+NLS-01–NLS-06 are proposed acceptance criteria, not implemented or passing tests.
+The next step is query-intent/topic handling, source retrieval and speaker grouping,
+with bilingual, multi-speaker and no-answer evaluation. This follow-up changes only
+documentation; capability activation stays complete, production remains gated.
 
 **Development resumed and all eight capabilities are enabled by the user's explicit request.**
 Read [the complete rollout evidence](docs/operations/capability-rollout-2026-09-10.md). The 8 September suspension below
@@ -31,6 +75,22 @@ startup recovery preserves data volumes. Future production configuration is gene
 offline with isolated resources and a pinned approved image; see the domain launch
 annex. No domain, HA production database, sender or production credentials exist yet.
 Keep Omarchy work separate. Review the remaining field-pilot gates before launch.
+
+### Functionality diagrams — 10 September 2026
+
+The [interactive control room](docs/product/subtitula-sala-de-control.html#caps)
+now opens on the eight-capability overview, with an individual explanation and
+clickable navigation for each function. The [Mermaid diagrams](docs/product/architecture-flows.md)
+show the end-to-end user flow and current development evidence. Stale resource/flag,
+language, guide and publication-index readiness descriptions were corrected; the
+canonical plan's phase table now distinguishes synthetic dev validation from pending
+institutional field gates. Frontend README and historical UX spec link to these shared
+diagrams. No application runtime, hosting, resource or credential changed.
+
+Document checks exercised all 9 channels / 66 steps, matched all eight capability
+names to the API contract, checked navigation, play/pause, node selection and local
+links without script errors. The browser URL policy blocked opening the local HTML,
+so visual layout inspection was not completed; checks used the document DOM locally.
 
 ## Historical handoff — 8 September 2026
 

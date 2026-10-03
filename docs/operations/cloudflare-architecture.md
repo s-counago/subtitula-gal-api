@@ -1,5 +1,9 @@
 # Arquitectura Cloudflare-first con PostgreSQL
 
+**21 septiembre 2026:** hosted dev está suspendido por petición del usuario;
+véase el [estado verificado](hosted-suspension-2026-09-21.md). La topología y los
+recursos conservados se describen a continuación; no implican servicio activo.
+
 **Estado:** hosted dev y vertical de transparencia desplegados; pruebas sintéticas
 reales de ingestión, revisión, guía, publicación y búsqueda realizadas. Los gates
 de piloto institucional y producción siguen pendientes. **Actualizado:** 10 de

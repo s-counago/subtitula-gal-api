@@ -1,7 +1,9 @@
 # Transparency evidence and search — canonical implementation plan
 
-**Status:** implementation complete through the dark hybrid baseline; pilot
-hardening and hosted graduation gates remain
+**Status (10 September 2026):** all eight capabilities enabled and verified with
+synthetic sessions in hosted development. Institutional field-pilot graduation and
+production launch remain pending; see the [rollout evidence](../operations/capability-rollout-2026-09-10.md)
+and [current functionality diagrams](architecture-flows.md).
 
 **Created:** 29 July 2026
 
@@ -102,9 +104,11 @@ Do not add other transcription languages or automatic language selection.
   attachments, or withdrawn publications.
 - Do not provision production infrastructure before the existing launch annex permits it.
 
-## 4. Current baseline and gaps
+## 4. Initial baseline and gaps (29 July 2026)
 
-The current product already has the correct single-project/editor direction, but:
+The implementation started from the following gaps. These are historical context;
+section 18 and the September rollout evidence describe the current state.
+The product already had the single-project/editor direction, but:
 
 - `Project.words` is one JSONB word array.
 - uploads are buffered in Spring and discarded after synchronous transcription;
@@ -814,13 +818,15 @@ Optional/enhanced:
 
 1. Spring freezes the working transcript revision.
 2. It creates an immutable publication pinning revision, recording, guide, and documents.
-3. It creates lexical `search_documents` transactionally.
-4. It starts an index Workflow for embeddings.
-5. The public session becomes available immediately with lexical search; semantic
-   readiness is a non-blocking capability.
+3. It transactionally creates a queued lexical index job and returns `indexJobId`.
+4. The frontend dispatches the index Workflow immediately, also when hybrid is disabled;
+   the scheduler recovers pending jobs and racing dispatches reuse the admitted instance.
+5. The public session is available immediately. The Workflow builds lexical
+   `search_documents`, then optional embeddings; the UI reports readiness for each stage.
 
-If indexing fails, the publication stays accessible and searchable lexically. Retry
-indexing independently.
+If lexical indexing fails, the publication stays accessible but its new lexical
+projection is not yet ready. If embedding generation fails after lexical completion,
+literal search remains available. Retry indexing independently.
 
 ### Corrections
 
@@ -893,8 +899,14 @@ measured advantage.
 7. Group adjacent duplicate evidence.
 8. Return explanation flags: exact phrase, related meaning, speaker, agenda, document.
 
-Natural-language “when” queries return chronological occurrences. “Who” queries group
-confirmed/labelled speakers. Neither requires a chatbot answer.
+Desired intent-specific behavior: “when” queries return chronological occurrences,
+and “who” queries group explicitly identified/labelled speakers. This is a target,
+not a verified property of the current generic document ranking. The 10 September
+diagnostic found that the user's complete Spanish question returns zero results while
+shorter topic queries retrieve the relevant Galician evidence. “Who” intent handling
+and speaker grouping are not implemented. See the [diagnostic, recorded queries and
+proposed acceptance criteria](natural-language-speaker-search-2026-09-10.md).
+Do not infer a speaker's identity from a person or role mentioned in transcript text.
 
 ### Public result contract
 
@@ -1118,13 +1130,13 @@ Only one phase should be “in progress.” Update this table after every comple
 |---|---|---|
 | 0 — baseline and contracts | Complete (2026-07-29) | real Scribe v2 fixture/metrics, schemas, flags, evaluation seeds |
 | 1 — normalized evidence model | Complete (2026-07-29) | legacy-safe revisions/speakers/segments/jobs in PostgreSQL |
-| 2 — R2 and async ingestion | Implemented locally; hosted smoke pending | durable upload, Workflow/webhook transcription, processing UI |
-| 3 — exception-only transcript review | Implemented locally; task study pending | required issue queue, speaker/text corrections, review metrics |
-| 4 — automatic agenda and guide | Implemented locally; 2–5 min field gate pending | alignment, structured extraction, validation, quick checks |
-| 5 — publication and public session | Implemented and boundary-tested locally | immutable snapshot, stable public page, playback/documents |
-| 6 — lexical public search | Implemented locally; labelled-corpus gate pending | exact/FTS/trigram search, filters, within-session/global UX |
-| 7 — hybrid search | Implemented dark; relevance/cost gate pending | embeddings, pgvector candidates, RRF, measured rollout |
-| 8 — pilot hardening | In progress | real hosted ingest/webhook/Range and review UI smoke verified 10 September; downstream activation, hosted load, human task studies, accessibility and governance gates pending |
+| 2 — R2 and async ingestion | Active in dev; synthetic hosted smoke passed | actual upload, provider/webhook, duplicate/retry/abort and Range playback verified |
+| 3 — exception-only transcript review | Active in dev; human task study pending | browser exception review verified; unidentified speakers preserved |
+| 4 — automatic agenda and guide | Active in dev; 2–5 min field gate pending | agenda alignment and cited guides verified in Galician/Spanish synthetic sessions |
+| 5 — publication and public session | Active in dev; synthetic boundary checks passed | anonymous access, immutable correction, withdrawal and playback verified |
+| 6 — lexical public search | Active in dev; representative-corpus gate pending | labelled synthetic baseline, active-publication filtering and evidence navigation verified |
+| 7 — hybrid search | Active in dev after synthetic comparison; field relevance/cost gates pending | threshold 0.48; principal task success 16/16 versus lexical 13/16; no-answer cases pass |
+| 8 — pilot hardening | In progress | all eight capabilities and deployments verified 10 September; real sessions, human studies, long media, load, accessibility, restore and governance remain pending |
 
 ### Phase 0 — baseline and contracts
 
@@ -1358,6 +1370,10 @@ Gate:
 
 ### Phase 8 — pilot hardening
 
+- pending natural-language/speaker-search slice: reproduce NLS-01–NLS-06 from the
+  [10 September diagnostic](natural-language-speaker-search-2026-09-10.md), separate
+  question intent from topic, retrieve source interventions and group speakers without
+  invented identities; preserve no-answer precision and publication boundaries;
 - cross-repository E2E in local and hosted dev;
 - cold-start, long-session, concurrent-search, Range playback, and retry tests;
 - R2/database restore and publication reindex rehearsal;
@@ -1465,6 +1481,8 @@ Rollback:
 
 | Date | Change | Reason |
 |---|---|---|
+| 2026-09-10 | Documented full-question false negative and pending speaker-intent search, with five observed queries and NLS-01–NLS-06 acceptance proposals | User's exact Spanish question returned zero in HYBRID; shorter variants find evidence. Existing synthetic scores do not prove general natural-language reliability or named speaker attribution. Documentation only; search behavior unchanged. |
+| 2026-09-10 | Updated functionality diagrams and phase status after all-eight development activation; corrected publication/index readiness description | Both repos integrated and deployed; synthetic evidence includes agenda, guides, immutable correction, withdrawal, literal/hybrid search and source navigation. This does not graduate institutional field gates or authorize production. |
 | 2026-09-10 | Resumed authorized development rollout; real hosted ingest and browser review smoke; Windows Docker recovery; authenticated dev lifecycle controls; processor language/name-warning fixes | Current evidence in `../operations/capability-rollout-2026-09-10.md`. No phase graduated from synthetic smoke; production remains gated. |
 | 2026-09-08 | Recovered September Windows commits and unversioned flow diagrams; consolidated continuity and capability/credential inventory | No phase graduated or hosted capability enabled. September sessions report PlanetScale extensions and R2 account activation complete, with local E2E and hosted provisioning still pending. Separate Omarchy navigation/coherence work explicitly deferred by the user; see `../operations/continuity-2026-09-08.md`. |
 | 2026-07-29 | Initial canonical plan | Consolidates durable ingestion, evidence model, minimal human review, structured guide, public publication, and hybrid search discussion |

@@ -1,18 +1,70 @@
 # subtitula.gal — Arquitectura y flujos
 
-> Recuperado de `desktop-mes66hq-fluttering-lake` (17 agosto) y versionado el
-> 8 septiembre 2026. Es un mapa de la implementación, no una certificación de
-> despliegue. Consultar el [estado consolidado](../operations/continuity-2026-09-08.md)
-> para capacidades, copias locales y pendientes actuales.
+> Actualizado el **10 de septiembre de 2026**. Las ocho capacidades están activas
+> y verificadas en desarrollo con sesiones ficticias en gallego y castellano.
+> Producción sigue bloqueada; los criterios del piloto institucional siguen pendientes.
+> Ver las [comprobaciones del despliegue](../operations/capability-rollout-2026-09-10.md)
+> y la [Sala de control interactiva](subtitula-sala-de-control.html#caps).
 
 Diagramas de alto nivel de los dos repos (`subtitula-gal` = frontal, `subtitula-gal-api` = back)
 y de los servicios externos que ataca cada paso. Los diagramas están en **Mermaid**: un mapa de
 contenedores para el funcionamiento general y diagramas de secuencia por flujo, que es donde se ve
 qué servicio externo interviene en cada función.
 
-> Estado (a 30-jul-2026): base *hosted dev* desplegada; la vertical institucional/transparencia
-> está implementada en local detrás de *capabilities* apagadas. Los diagramas describen el sistema
-> completo tal como está en el código, marcando lo que hoy está *dark*.
+El idioma de transcripción es **gallego por defecto** (`glg`); **castellano** (`spa`)
+es la única alternativa. La configuración local se consulta por separado: este estado
+describe el desarrollo alojado y no es un monitor en tiempo real.
+
+## Las ocho capacidades
+
+**Limitación conocida:** la pregunta completa «quién habló de las pérdidas de las
+tuberías del agua?» devuelve cero resultados; «pérdidas en las tuberías de agua»
+recupera siete documentos relevantes o relacionados. La intención «quién» y la
+agrupación por hablante están pendientes. Ver el [diagnóstico y siguiente desarrollo](natural-language-speaker-search-2026-09-10.md).
+
+| Capacidad | Qué permite | Estado en desarrollo |
+|---|---|---|
+| 1. Subida duradera (`durableInstitutionalUpload`) | Conservar grabaciones en R2, procesar con el navegador cerrado y reintentar sin volver a subir | Activa; subida, cancelación, duplicados y reproducción comprobados |
+| 2. Transcripción normalizada (`normalizedTranscript`) | Versionar texto, hablantes y fragmentos con tiempos que pueden citarse | Activa; transcripción del proveedor en ambos idiomas |
+| 3. Revisión por excepciones (`exceptionReview`) | Resolver sólo los problemas que requieren una decisión; los avisos no bloquean | Activa; revisión en navegador comprobada; estudio de tiempos pendiente |
+| 4. Agenda automática (`automaticAgenda`) | Alinear el orden del día opcional con los tramos de la sesión | Activa; alineación comprobada |
+| 5. Guía estructurada (`structuredGuide`) | Organizar temas e intervenciones con fuentes y confirmar u omitir posibles acuerdos | Activa; guías citadas en ambos idiomas |
+| 6. Publicación pública (`publicPublication`) | Compartir sesión, transcripción y grabación sin cuenta; corregir por versiones y retirar | Activa; acceso anónimo, corrección inmutable y retirada comprobados |
+| 7. Búsqueda literal (`lexicalSearch`) | Encontrar palabras, frases, nombres y variantes con filtros y acceso al segundo de la evidencia | Activa; referencia de evaluación: 13/16 consultas con respuesta |
+| 8. Búsqueda híbrida (`hybridSearch`) | Combinar palabras y significado, incluidas paráfrasis entre los dos idiomas | Activa; 16/16 consultas con respuesta en el conjunto principal |
+
+```mermaid
+flowchart TD
+    Upload["1 · Subida duradera<br/>Grabación privada en R2"]
+    Transcript["2 · Transcripción normalizada<br/>Texto, hablantes, tiempos y revisiones"]
+    Review["3 · Revisión por excepciones<br/>Sólo incidencias obligatorias"]
+    Agenda["4 · Agenda automática<br/>Orden del día opcional"]
+    Guide["5 · Guía estructurada<br/>Temas e intervenciones con evidencia"]
+    Publish["6 · Publicación pública<br/>Versión inmutable y reproducción"]
+    Lexical["7 · Búsqueda literal<br/>Palabras, frases y filtros"]
+    Hybrid["8 · Búsqueda híbrida<br/>Palabras + significado"]
+    Source["Ver evidencia<br/>Fragmento y segundo de la grabación"]
+
+    Upload --> Transcript --> Review
+    Review --> Agenda --> Guide --> Publish
+    Review -.->|"Publicable sin agenda ni guía"| Publish
+    Publish -->|"Indexación en segundo plano"| Lexical
+    Lexical -->|"Añade coincidencias por significado"| Hybrid
+    Lexical --> Source
+    Hybrid --> Source
+```
+
+La guía es asistida y no sustituye al acta oficial. No exige aprobar cada tema ni leer
+por segunda vez toda la transcripción. Los acuerdos dudosos se confirman u omiten.
+Una corrección publica una versión nueva con nota visible; retirar bloquea nuevos
+accesos públicos e invalida ambas búsquedas.
+
+Las cifras corresponden a pruebas pequeñas y ficticias. El conjunto adicional obtuvo
+6/10 en literal y 9/10 en híbrida; los diez casos sin respuesta entre ambos conjuntos
+fueron correctos y el p95 híbrido en caliente quedó por debajo de 2,4 s. Una respuesta
+concreta sigue fuera de los primeros 20 resultados del conjunto adicional. Quedan
+pendientes sesiones reales y de duración habitual, tiempos humanos, carga,
+accesibilidad, restauración y gobernanza, además del anexo de producción.
 
 ---
 
@@ -58,7 +110,7 @@ flowchart TB
         end
 
         subgraph API["subtitula-api · Container (Spring Boot)"]
-            SpringPub["Rutas públicas<br/>/auth /projects /public ..."]
+            SpringPub["API de aplicación<br/>/projects con sesión · /auth y /public"]
             SpringInt["Rutas internas firmadas<br/>/internal/*"]
         end
 
@@ -162,7 +214,7 @@ sequenceDiagram
 
     B->>W: POST /backend/projects (multipart: vídeo)
     W->>S: API_SERVICE → POST /projects
-    S->>EL: POST /v1/speech-to-text (file, language_code=glg)
+    S->>EL: POST /v1/speech-to-text (file, language_code=glg o spa)
     EL-->>S: words[] + language_code
     S->>PG: guarda Project + transcripción
     S-->>B: 201 ProjectResponse
@@ -204,7 +256,7 @@ sequenceDiagram
 
     WF->>S: jobContext / startJob
     WF->>R2: presign GET para el proveedor
-    WF->>EL: submitTranscription(sourceUrl, webhookMetadata)
+    WF->>EL: submitTranscription(sourceUrl, idioma del proyecto, webhookMetadata)
     EL-->>P: POST /webhooks/elevenlabs/speech-to-text (firmado)
     P->>R2: guarda artefacto crudo
     P->>S: webhookReceived
@@ -220,7 +272,9 @@ sequenceDiagram
 
 Alinea la agenda de forma **determinista** (sin IA) y genera la guía con **Workers AI** por ventanas
 acotadas y citadas. Todos los artefactos intermedios viven en R2. La revisión humana por excepción
-es un paso aparte (cola corta), no un aprobado línea a línea.
+es una cola corta. No se exige aprobar línea a línea ni cada tema generado.
+La extracción usa `guide-v3`; cada entidad nueva tiene identidad propia y los
+reintentos exactos conservan su resultado sin sobrescribir una guía publicada.
 
 ```mermaid
 sequenceDiagram
@@ -253,8 +307,12 @@ sequenceDiagram
 
 ## 6. Publicación + indexación de búsqueda
 
-La publicación crea un **snapshot inmutable** en Spring. La indexación construye la proyección
-**léxica** (FTS de Postgres) y, si procede, la **semántica** (embeddings BGE-M3 en pgvector).
+La publicación crea un **snapshot inmutable** y encola un trabajo de indexación en
+Spring. La página pública queda accesible; la búsqueda se habilita cuando su proyección
+está lista. El frontal arranca el trabajo de inmediato, también con híbrida apagada.
+El cron recupera trabajos pendientes y reutiliza la instancia admitida si coincide
+con el navegador. Primero se construye la proyección **léxica** y después, si procede,
+la **semántica** (embeddings BGE-M3 en pgvector).
 
 ```mermaid
 sequenceDiagram
@@ -269,11 +327,12 @@ sequenceDiagram
 
     B->>W: POST /backend/.../publications (publica)
     W->>S: crea snapshot inmutable
-    S->>PG: Publication + documentos
+    S->>PG: Publication + documentos fijados + job INDEX
+    S-->>B: publicación accesible + indexJobId
 
     B->>P: POST /processing/publications/{id}/index
     P->>S: prepareLexicalWorkflow
-    P->>WF: arranca Index workflow
+    P->>WF: arranca o reutiliza Index workflow admitido
     WF->>S: buildLexicalIndex (FTS)
     S->>PG: proyección léxica (tsvector, trigram)
     alt búsqueda semántica activa
@@ -292,8 +351,11 @@ sequenceDiagram
 
 ## 7. Búsqueda híbrida pública
 
-Fusiona candidatos léxicos y semánticos con **RRF (k=60)**. Cualquier fallo de IA o interno degrada
-con gracia a **búsqueda léxica** pura. Analítica sin texto de consulta (solo HMAC + metadatos).
+Fusiona candidatos léxicos y semánticos con **RRF (k=60)** y una similitud semántica
+mínima de **0,48**. Un tema relacionado también recupera sus fragmentos citados,
+siempre dentro de la misma publicación activa y su guía fijada. Un fallo de IA o
+de la consulta híbrida recurre a **búsqueda léxica**. La analítica no guarda el texto
+de consulta (sólo HMAC y metadatos).
 
 ```mermaid
 sequenceDiagram
@@ -307,15 +369,20 @@ sequenceDiagram
     B->>P: GET /processing/search?q=... (o /sessions/{slug}/search)
     P->>RL: limit(actor)
     alt dentro de límite
-        P->>AI: embedTexts(consulta) → vector
-        P->>S: hybridSearch(query, embedding, filtros)
-        S->>PG: léxico top-100 + semántico top-100 → RRF
-        S-->>P: resultados con evidencia (timestamps)
-        P-->>B: 200 resultados
-    else IA o interno falla
-        P->>S: fallback GET /public/search (solo léxico)
-        S->>PG: FTS + trigram
-        S-->>B: 200 resultados léxicos
+        alt IA y consulta híbrida disponibles
+            P->>AI: embedTexts(consulta) → vector
+            P->>S: hybridSearch(query, embedding, filtros)
+            S->>PG: léxico + semántico con evidencia citada → RRF
+            S-->>P: resultados con evidencia (timestamps)
+            P-->>B: 200 resultados
+        else fallo de IA o consulta híbrida
+            P->>S: fallback GET /public/search (sólo léxico)
+            S->>PG: FTS + trigram
+            S-->>P: resultados léxicos
+            P-->>B: 200 resultados léxicos
+        end
+    else límite de peticiones superado
+        P-->>B: 429, sin llamada a IA
     end
 ```
 
@@ -326,7 +393,7 @@ sequenceDiagram
 ```mermaid
 flowchart LR
     C5["⏰ cada 5 min<br/>*/5 * * * *"]
-    C1["⏰ diario 03:17<br/>17 3 * * *"]
+    C1["⏰ diario 03:17 UTC<br/>17 3 * * *"]
 
     C5 --> CE["cleanupExpiredUploads"]
     C5 --> RW["reconcilePendingWorkflows"]
@@ -343,6 +410,9 @@ flowchart LR
 
 ## Notas transversales
 
+- **Desarrollo activo:** rutas públicas restauradas; previews apagadas; despliegues
+  GitHub habilitados en ambos repos y processor; dos tareas programadas activas.
+  Producción conserva rutas, tareas y capacidades apagadas hasta el lanzamiento.
 - **Un solo código, un solo artefacto:** *local*, *dev* y *prod* ejecutan el mismo binario; solo
   cambian variables/secretos y *capabilities*. Prod promociona el mismo *digest* probado en dev.
 - **Email por entorno:** local usa Mailpit (no sale correo real), dev tiene `EMAIL_PROVIDER=disabled`

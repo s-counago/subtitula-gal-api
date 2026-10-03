@@ -51,6 +51,7 @@ Convención: **P0** desbloquea el primer piloto; **P1** aumenta el valor del pil
 |---|---:|---|---|---|
 | SRCH-04 | P2 | Pendiente | Recuperación híbrida/vectorial | Comparar éxito de búsqueda, latencia y coste contra SRCH-02 en consultas reales anonimizadas. |
 | SRCH-05 | P2 | Pendiente | Preguntas en lenguaje natural con citas | Lanzar únicamente si cada respuesta expone evidencia suficiente y supera una evaluación humana. |
+| CLAIM-DOC-01 | P2 | Futura iteración por petición del usuario (2026-09-11) | [Cotejo de afirmaciones con documentos oficiales y noticias](afirmaciones-cotejo-documental-futuro.md) | Localizar y versionar fuentes, citar pasajes y tablas, resolver identidad documental y comparar bajo condiciones equivalentes; medir falsas refutaciones y revisión. Importancia alta; aplazado para contener complejidad, sin implementar ni activar búsqueda externa. |
 | INT-01 | P2 | Pendiente | Embed/API/sede electrónica | Priorizar tras saber qué usan los pilotos y si el enlace simple ya resuelve el caso. |
 | PUB-03 | P2 | Pendiente | Archivo histórico | Paquete cerrado para digitalizar plenos antiguos; estimar calidad y coste por hora antes de venderlo. |
 | CRE-01 | P2 | Pendiente | Presets sociales y publicación directa | Construir cuando creadores confirmen que reduce su paso manual más doloroso. |

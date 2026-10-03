@@ -1,10 +1,11 @@
 # Repository guide
 
-The user resumed hosted development on 10 September 2026 for the capability
-rollout. Public development routes are restored; previews stay disabled.
-GitHub deployment gates remain false while the integration branches are validated.
+Hosted development was suspended on 21 September 2026 at the user's request.
+The API container is confirmed suspended and stopped. Processor schedules,
+public/preview routes and GitHub development deployment gates are disabled.
+DB/R2/secrets and subscriptions are preserved. Resume only on a new user request.
 Production stays gated and new payments require explicit authorization. See
-`docs/operations/capability-rollout-2026-09-10.md` for current runtime evidence.
+`docs/operations/hosted-suspension-2026-09-21.md` for current runtime evidence.
 
 This is the Spring Boot API repository. Its sibling frontend is `../subtitula-gal`; the workspace parent is not a Git repository. `develop` represents hosted development and `main` represents production. The `develop` workflow deploys the API Worker and Spring Container when the GitHub development variable `DEPLOY_ENABLED` is `true`; production remains gated.
 

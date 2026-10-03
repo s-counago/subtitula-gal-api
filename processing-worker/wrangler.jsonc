@@ -88,7 +88,7 @@
   "env": {
     "development": {
       "name": "subtitula-processing-dev",
-      "workers_dev": true,
+      "workers_dev": false,
       "preview_urls": false,
       "vars": {
         "ENVIRONMENT": "development",
@@ -121,7 +121,7 @@
         "ESTIMATED_CHARS_PER_TOKEN": "3"
       },
       "triggers": {
-        "crons": ["*/5 * * * *", "17 3 * * *"]
+        "crons": []
       },
       "r2_buckets": [
         {
